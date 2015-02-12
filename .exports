@@ -32,10 +32,10 @@ export HISTFILESIZE=61440
 
 # timestamps for bash history. www.debian-administration.org/users/rossen/weblog/1
 # saved for later analysis
-export HISTTIMEFORMAT='%F %T '
+export HISTTIMEFORMAT='%F %T → '
 
 # Make some commands not show up in history
-export HISTIGNORE="&:h:history:pwd:exit:clear:date:*"
+export HISTIGNORE="&:history:pwd:exit:clear:[ \t]*"
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
