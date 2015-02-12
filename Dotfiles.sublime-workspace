@@ -1,0 +1,872 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"bashpro",
+				"bash_profile"
+			],
+			[
+				"dotf",
+				"dotfile"
+			],
+			[
+				"my",
+				"my_pwd"
+			],
+			[
+				"label",
+				"label	<label>"
+			],
+			[
+				"Leve",
+				"Levels"
+			],
+			[
+				"T",
+				"Topics"
+			],
+			[
+				"Leson",
+				"Lessons"
+			],
+			[
+				"ri",
+				"right"
+			],
+			[
+				"posi",
+				"position"
+			],
+			[
+				"posit",
+				"position"
+			],
+			[
+				"mar",
+				"margin"
+			],
+			[
+				"blo",
+				"block"
+			],
+			[
+				"disp",
+				"display"
+			],
+			[
+				"ex",
+				"excerpt"
+			],
+			[
+				"thumb",
+				"thumbnail"
+			],
+			[
+				"seriusio_is",
+				"seriusio_is_template〔function〕"
+			],
+			[
+				"cour",
+				"course_thumb"
+			],
+			[
+				"right",
+				"right"
+			],
+			[
+				"bott",
+				"bottom"
+			],
+			[
+				"left",
+				"left"
+			],
+			[
+				"margin",
+				"margin"
+			],
+			[
+				"lists",
+				"list-style"
+			],
+			[
+				"cou",
+				"course"
+			],
+			[
+				"tutori",
+				"tutorials"
+			],
+			[
+				"manage",
+				"manage_categories"
+			],
+			[
+				"categ",
+				"category"
+			],
+			[
+				"tax",
+				"taxonomy"
+			],
+			[
+				"adm",
+				"admin_menu"
+			],
+			[
+				"Cate",
+				"Category"
+			],
+			[
+				"register",
+				"register_taxonomy"
+			],
+			[
+				"unset",
+				"unset〔function〕"
+			],
+			[
+				"isset",
+				"isset〔function〕"
+			],
+			[
+				"array",
+				"array"
+			],
+			[
+				"taxono",
+				"taxonomyies"
+			],
+			[
+				"light",
+				"lighten"
+			],
+			[
+				"paddi",
+				"padding"
+			],
+			[
+				"border",
+				"border"
+			],
+			[
+				"serius",
+				"seriusio_before_navbar"
+			],
+			[
+				"ligh",
+				"lighten(color, 10%)"
+			],
+			[
+				"padding",
+				"padding"
+			],
+			[
+				"glyp",
+				"glyphicon"
+			],
+			[
+				"color",
+				"color"
+			],
+			[
+				"paddin",
+				"padding"
+			],
+			[
+				"iss",
+				"isset〔function〕"
+			],
+			[
+				"background",
+				"background"
+			],
+			[
+				"seriusme",
+				"seriusio_topmenu"
+			],
+			[
+				"arraymer",
+				"array_merge"
+			],
+			[
+				"scr",
+				"scripts"
+			],
+			[
+				"artic",
+				"article	Tag"
+			],
+			[
+				"wid",
+				"widget"
+			],
+			[
+				"vend",
+				"vendor"
+			],
+			[
+				"vendor",
+				"vendorBackup"
+			],
+			[
+				"rgba",
+				"rgba()"
+			],
+			[
+				"flex",
+				"flexslider"
+			],
+			[
+				"post",
+				"posttype"
+			],
+			[
+				"function",
+				"function_exists〔function〕"
+			],
+			[
+				"get_template",
+				"get_template_directory_uri"
+			],
+			[
+				"require",
+				"require_once"
+			],
+			[
+				"custom",
+				"custom_css"
+			],
+			[
+				"express",
+				"express:dev"
+			],
+			[
+				"pro",
+				"production"
+			],
+			[
+				"rout",
+				"route"
+			],
+			[
+				"handl",
+				"handlebars"
+			],
+			[
+				"initia",
+				"initialize"
+			],
+			[
+				"rou",
+				"router"
+			],
+			[
+				"back",
+				"backbone"
+			],
+			[
+				"bowe",
+				"bower"
+			],
+			[
+				"bo",
+				"bower"
+			],
+			[
+				"bower",
+				"bower_components"
+			],
+			[
+				"css",
+				"csslint"
+			],
+			[
+				"pass",
+				"password"
+			],
+			[
+				"local",
+				"localhost"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 368.0,
+		"selected_items":
+		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"css",
+				"Set Syntax: CSS"
+			],
+			[
+				"up",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"html",
+				"Set Syntax: HTML5"
+			],
+			[
+				"wro",
+				"Word Wrap: Toggle"
+			],
+			[
+				"rub",
+				"Set Syntax: Ruby"
+			],
+			[
+				"vim",
+				"Set Syntax: VimL"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"rubi",
+				"Set Syntax: Ruby on Rails"
+			],
+			[
+				"sy",
+				"SyncScroll: Toggle Current View Scroll Sync"
+			],
+			[
+				"syncviewscroll",
+				"SyncScroll: Toggle Current View Scroll Sync"
+			],
+			[
+				"minima",
+				"View: Toggle Minimap"
+			],
+			[
+				"upda",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"yml",
+				"Set Syntax: YAML"
+			],
+			[
+				"packa",
+				"Package Control: Add Channel"
+			]
+		],
+		"width": 561.0
+	},
+	"console":
+	{
+		"height": 238.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/feryardiant/Workspaces/.config/dotfiles",
+		"/home/feryardiant/Workspaces/.config/env"
+	],
+	"file_history":
+	[
+		"/home/feryardiant/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/feryardiant/Workspaces/.config/env/st3-packages/SublimeLinter.sublime-settings",
+		"/home/feryardiant/Workspaces/.config/dotfiles/_stuffs/src/andsens - homeshick/vimrc",
+		"/home/feryardiant/Workspaces/.config/home/.aliases",
+		"/home/feryardiant/Workspaces/.config/dotfiles/_postinstall.sh",
+		"/home/feryardiant/Workspaces/.config/dotfiles/.bashrc",
+		"/home/feryardiant/.config/sublime-text-3/Packages/User/Monokai (SL).tmTheme",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/libraries/metaboxes.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/posttypes/courses.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/metaboxes/courses.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/pytheasi/functions/meta/meta-services.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/roots/Gruntfile.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/library/functions/core.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/library/extensions/theme-layouts.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/pytheasi/functions/post-types/services.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/loop-courses.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/setup.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/headers.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/headers.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/vendor/flexslider.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/contents.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/entries.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/posttype-courses.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/courses.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/template-home.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/contents.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/posttype-posts.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/typography.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/editor.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/js/slider.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/js/src/slider.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/template-courses.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/posts.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/loop-slides.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/footer.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/single-course.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/template-blogs.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/helpers.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/initializer.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/footer-widget.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/posttypes/tutorials.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/posttypes/_courses.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/.editorconfig",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/admin-menu.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/single.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/mixins.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/functions.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/posts.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/variables.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/menu-walkers/topmenu.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/navigations.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/pytheasi/functions/menu-walker.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/loop-posts.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/widgets.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/style.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/footers.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/header.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/scripts.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/footer-bottom.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/sticky.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/404.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/index.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/page.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/archive.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/twbs-helpers.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/vendor.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/loop-standard.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/functions/setup.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/search.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/single.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/template-blog.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/sidebar-home.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/posttype-slides.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/loops.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/contents/sidebar-main.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/twbs.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/less/navbar.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/less/lib/twbs.media.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/less/lib/fa.bordered-pulled.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/css/style.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/bassic/css/smof.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/dist/asset/vendor/fontawesome/css/font-awesome.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/dist/asset/vendor/bootstrap/dist/css/bootstrap.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/vendor/fontawesome/css/font-awesome.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/vendor/bootstrap/dist/css/bootstrap.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/bower/fontawesome/less/bordered-pulled.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/bower/fontawesome/css/font-awesome.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/bower/bootstrap/less/utilities.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/bower/bootstrap/less/media.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/smofi/admin/asset/bower/bootstrap/dist/css/bootstrap.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/vendor/fontawesome/css/font-awesome.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/vendor/bootstrap/dist/css/bootstrap.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/fontawesome/less/bordered-pulled.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/fontawesome/css/font-awesome.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/less/utilities.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/less/media.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/dist/css/bootstrap.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/paths.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/csscomb.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/less.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/cssmin.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/csslint.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/copy.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/autoprefixer.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/_vendor.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/_variables.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/css/style.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/modules/wrapper.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/vendor/bootstrap.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/watch.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/css/editor.css.map",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/footers.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/widgets.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/package.json",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/Gruntfile.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/bower.json",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/clean.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/jshint.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/configs.json",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/imagemin.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/less/wrapper.less",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks/requirejs.js",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/structures/contents.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/searchform.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/sidebar.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/incl/structures/headers.php",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/style.css",
+		"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/js/script.js"
+	],
+	"find":
+	{
+		"height": 38.0
+	},
+	"find_in_files":
+	{
+		"height": 106.0,
+		"where_history":
+		[
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/less",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/less/mixins",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/asset/bower/bootstrap/less",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio/build/tasks",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/seriusio",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/juteks",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/juteks/includes/structure",
+			"/home/feryardiant/Workspaces/wp/devel/wp-content/themes/juteks",
+			"/home/feryardiant/Workspaces/www/devel/node/exbone/build/tasks",
+			"/home/feryardiant/Workspaces/www/devel/pemali/source/_data/potensi",
+			"/home/feryardiant/Workspaces/.git/modules/vim",
+			"/home/feryardiant/Workspaces/.git",
+			"/home/feryardiant/Workspaces/.config/home/vim/bundle",
+			"/home/feryardiant/Workspaces/.config/server/linux/apache2/sites-available",
+			"/home/feryardiant/Workspaces/.config/server/linux/apache2/aliases",
+			"/home/feryardiant/Workspaces/.config/server/linux/apache2/sites-available",
+			"/home/feryardiant/Workspaces/.config/server/linux/apache2/aliases"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"config",
+			"inconsolata",
+			";",
+			"/",
+			",",
+			"env",
+			"HOME",
+			"ls",
+			"theme_layouts_customize_register",
+			"\n\n		retur",
+			"password",
+			"text",
+			"td",
+			", ",
+			"priority",
+			"add_services_counts",
+			"=",
+			"taxonomy_filter",
+			"restrict_manage_posts",
+			"'services'",
+			"level",
+			"levels_list",
+			", 'wpex'",
+			" =",
+			"Course",
+			" course",
+			"Course ",
+			" course",
+			" Course",
+			"Course ",
+			"menu_name",
+			"wpse16136",
+			"trackbacks",
+			", ",
+			"=>",
+			"categories",
+			"Category",
+			"category",
+			"taxonomy_level_args",
+			"category",
+			"Categories",
+			"\n			'show_in_nav_menus'		=> true,\n			'show_ui'				=> true,\n			'show_tagcloud'			=> true,",
+			"category",
+			"categories",
+			"course",
+			"Category",
+			"Categories",
+			"  .post",
+			"post",
+			"entry",
+			"!",
+			"seriusio_get_post",
+			"seriusio_get_post_meta",
+			"post",
+			"  // Slider image",
+			"a:",
+			".flex-control-thumbs ",
+			"ist-styl",
+			"opacity: 1",
+			".flex-pauseplay ",
+			".flex-direction-nav ",
+			"  ",
+			"848",
+			".sliders",
+			"}\n.",
+			"; ",
+			" ",
+			"; ",
+			"}",
+			"{",
+			"}",
+			"{",
+			" }\n",
+			"{ ",
+			"$courses",
+			"courses",
+			"WP_query",
+			"seriusio_get_current_display",
+			"__( 'Add New Tutorial' )",
+			", ",
+			"$tax_obj->labels->name",
+			"tag_obj",
+			"\n			// 'show_in_menu'	=> 'edit.php?post_type=courses',",
+			"\n			'show_in_menu'	=> 'edit.php?post_type=courses',",
+			"_labels",
+			"_labels_obj",
+			"tag_labels_obj",
+			"tag",
+			"get_taxonomy_labels",
+			"$tax",
+			"__( 'Tutorial Tags' )",
+			"	=>",
+			"=>",
+			"$this->_id, $taxonomy",
+			"$this->_id",
+			"\n			'show_in_nav_menus'		=> true,\n			'show_ui'				=> true,\n			'show_tagcloud'			=> true,",
+			"&post_type=tutorials",
+			"post_type=tutorials",
+			"edit",
+			"=courses",
+			"courses",
+			"Tags",
+			"$_labels['name']",
+			"show_in_nav_menus",
+			"course",
+			"Course",
+			"Courses",
+			"courses",
+			"$taxonomy_course_category_args",
+			"taxonomy_course_category_args",
+			"taxonomy_course_tag_args",
+			"custom_posttype_args",
+			"seriusio_taxonomy_course_tag_args",
+			"course_",
+			"symple_",
+			"tag_",
+			"_tag",
+			"tag",
+			"tags",
+			"Tag",
+			"Tags",
+			"$args",
+			", 'wpex' ",
+			"portfolio",
+			"Portfolio",
+			"portfolio",
+			"Portfolio",
+			"s Item"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"class=\"container\"",
+			"// jshint node:true\n\nmodule.exports",
+			"@package seriusio",
+			"seriusio_",
+			"@package serius.io",
+			"class=\"entry-meta\"",
+			"class=\"entry-thumbs\"",
+			"get_template_part( 'contents/404' )",
+			"<?php\ndo_action( 'juteks_after_loop_content' );\n\nget_footer();\n?>",
+			"get_header();\n\ndo_action( 'juteks_before_loop_content' ); ?>",
+			"<?php\ndo_action( 'juteks_before_loop_content' );\n\nget_footer();\n?>",
+			"<?php the_content( '...' ); ?>",
+			"juteks_",
+			"<?php get_footer() ?>",
+			"module.exports",
+			"  ii:",
+			"- i:",
+			"- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n- data:\n    i: \"-\"\n    ii: \"-\"\n\n",
+			": \"-\"",
+			"http://bpmppt-kabpekalongan.com",
+			"bpmn5938/public_html",
+			"http://bpmppt-kabpekalongan.com",
+			"http://bpmppt-kabpekalongan.com/",
+			"worktree = ../../../../../vim/bundle",
+			"../../../.git/modules/vim/",
+			"sites-config",
+			"Include conf-available/directory.conf",
+			"Require all granted",
+			"home/feryardiant/Workspaces"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 38.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 128.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git":
+	{
+		"height": 128.0
+	},
+	"project": "Dotfiles.sublime-project",
+	"replace":
+	{
+		"height": 72.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"re",
+				"juteks/assets/styles/reset.css"
+			],
+			[
+				"style",
+				"juteks/assets/styles/style.css"
+			],
+			[
+				"reset",
+				"juteks/assets/styles/reset.css"
+			],
+			[
+				"style.",
+				"juteks/assets/styles/style.css"
+			],
+			[
+				"biupdate",
+				"application/bootigniter/libraries/Biupdate.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"~/Workspaces/www/devel/pemali/PEMALI.sublime-project"
+			],
+			[
+				"wo",
+				"~/Workspaces/.config/sublime-projects/Workspaces.sublime-project"
+			],
+			[
+				"pema",
+				"~/Workspaces/www/devel/pemali/BPSDA-Pemali.sublime-project"
+			],
+			[
+				"phps",
+				"~/Workspaces/.config/sublime-projects/PHP Starter.sublime-project"
+			],
+			[
+				"fin",
+				"~/Workspaces/.config/sublime-projects/FineUploader-distr.sublime-project"
+			],
+			[
+				"fp",
+				"~/Workspaces/.config/sublime-projects/FPDF.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 278.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -1,0 +1,90 @@
+[user]
+    name = Fery Wardiyanto
+    email = ferywardiyanto@gmail.com
+
+[alias]
+    # View the current working tree status using the short format
+    s = status -s
+    a = add -A
+    c = commit -am
+    p = push origin
+    pf = push origin -f
+    # Switch to a branch, creating it if necessary
+    co = checkout
+    go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+    get = "!git pull origin \"$(git rev-parse --abbrev-ref HEAD)\""
+    zip = archive --format=zip -9 --output="latest.zip" HEAD
+    df = diff --color --color-words --abbrev
+    # View abbreviated SHA, description, and history graph
+    # lg = log --all --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+    lg = log --oneline --decorate --all --graph
+    # Update all submodules
+    upmod = submodule -q foreach git pull -q origin
+    # Show verbose output about tags, branches or remotes
+    tags = tag -l
+    branches = branch -a
+    remotes = remote -v
+    # Interactive rebase with the given number of latest commits
+    reb = "!r() { git rebase -i HEAD~$1; }; r"
+    amend = commit --amend --reuse-message=HEAD
+    undo = reset HEAD~
+    # Subtrees
+    split = subtree split
+    subpl = subtree pull
+    subps = subtree push
+
+[apply]
+  # Detect whitespace errors when applying a patch
+  whitespace = fix
+
+[core]
+    excludesfile = ~/.gitignore_global
+    attributesfile = ~/.gitattributes_global
+
+[color]
+    ui = true
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+[color "diff"]
+    meta = yellow
+    frag = magenta
+    old = red
+    new = green
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[merge]
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
+# URL shorthands
+[url "git@github.com:"]
+    insteadOf = "gh:"
+    pushInsteadOf = "github:"
+    pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+    insteadOf = "github:"
+[url "git@gist.github.com:"]
+    insteadOf = "gst:"
+    pushInsteadOf = "gist:"
+    pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+    insteadOf = "gist:"
+
+[push]
+    # Push to remote with same branch name as local
+    default = matching
+
+[pull]
+    rebase = true
+
+[giggle]
+    main-window-maximized = false
+    main-window-geometry = 1109x689+49+24
+    history-view-vpane-position = 232
+    main-window-view = HistoryView
+    file-view-vpane-position = 347

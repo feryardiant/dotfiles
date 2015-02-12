@@ -1,0 +1,12 @@
+# ↪↳⤷〉»›↠↣↬⇒
+export PS1="\n\$(orewa)\w \$(git_info)\n→ \[$reset\]"
+export PS2='\[\033[0;32m\]> \[\033[0m\]'
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="$PS1"
+    ;;
+*)
+    ;;
+esac

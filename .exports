@@ -1,0 +1,176 @@
+# ==============================================================================
+# Defaults
+# ==============================================================================
+# Make vim the default editor
+if subl -v > /dev/null 2>&1; then
+	export GEMEDITOR="subl"
+	export EDITOR="subl"
+else
+	export GEMEDITOR="vim"
+	export EDITOR="vim"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin/" ] ; then
+	PATH="$HOME/.local/bin/:$PATH"
+fi
+
+# Setup default BROWSER
+if google-chrome-stable --version > /dev/null 2>&1; then
+	export BROWSER="google-chrome-stable"
+elif chromium-browser --version > /dev/null 2>&1; then
+	export BROWSER="chromium-browser"
+fi
+
+# Don’t clear the screen after quitting a manual page
+export MANPAGER="less -X"
+
+# Larger bash history (allow 32³ entries; default is 500)
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+export HISTSIZE=2048
+export HISTFILESIZE=61440
+
+# timestamps for bash history. www.debian-administration.org/users/rossen/weblog/1
+# saved for later analysis
+export HISTTIMEFORMAT='%F %T '
+
+# Make some commands not show up in history
+export HISTIGNORE="&:h:history:pwd:exit:clear:date:*"
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+export HISTCONTROL=ignoreboth
+
+# Limit path length in promt
+# ~/.../current/path/name
+export PROMPT_DIRTRIM=3
+
+export SSL_CERT_DIR=/etc/ssl/certs
+
+# export LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
+
+# Awesome bash prompt
+#
+# Copyright (c) 2012 "Cowboy" Ben Alman
+# Licensed under the MIT license.
+# http://benalman.com/about/license/
+#
+# Example:
+# [master:!?][cowboy@CowBook:~/.dotfiles]
+# [11:14:45] $
+#
+# Read more (and see a screenshot) in the "Prompt" section of
+# https://github.com/cowboy/dotfiles
+
+if infocmp xterm-256color >/dev/null 2>&1; then
+	export TERM=xterm-256color
+elif [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+	export TERM=gnome-256color
+fi
+
+# ANSI CODES - SEPARATE MULTIPLE VALUES WITH ;
+#
+#  0  reset          4  underline
+#  1  bold           7  inverse
+#
+# FG  BG  COLOR     FG  BG  COLOR
+# 30  40  black     34  44  blue
+# 31  41  red       35  45  magenta
+# 32  42  green     36  46  cyan
+# 33  43  yellow    37  47  white
+
+if tput setaf 1 &> /dev/null; then
+	tput sgr0
+	black=$(tput setaf 0)
+	red=$(tput setaf 1)
+	green=$(tput setaf 2)
+	yellow=$(tput setaf 3)
+	blue=$(tput setaf 4)
+	magenta=$(tput setaf 5)
+	cyan=$(tput setaf 6)
+	white=$(tput setaf 7)
+
+	bold=$(tput bold)
+	reset=$(tput sgr0)
+else
+	black="\033[01;30m"
+	red="\033[01;31m"
+	green="\033[01;32m"
+	yellow="\033[01;33m"
+	blue="\033[01;34m"
+	magenta="\033[01;35m"
+	cyan="\033[01;36m"
+	white="\033[01;37m"
+
+	bold=""
+	reset="\033[00m"
+fi
+
+# ==============================================================================
+# RBENV environments
+# ==============================================================================
+export RBENV_ROOT="${HOME}/.rbenv"
+
+if [ -d "$RBENV_ROOT" ]; then
+	export PATH="$RBENV_ROOT/bin:${PATH}"
+	eval "$(rbenv init -)"
+fi
+
+# ==============================================================================
+# Heroku
+# ==============================================================================
+if [ -d "/usr/local/heroku/bin" ] ; then
+	PATH="$PATH:/usr/local/heroku/bin"
+fi
+
+
+# ==============================================================================
+# Travis
+# ==============================================================================
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
+
+# ==============================================================================
+# Composer
+# ==============================================================================
+export COMPOSER_HOME="$HOME/.local/share/composer"
+
+if [ -d "$COMPOSER_HOME" ] ; then
+	PATH="$PATH:$COMPOSER_HOME/vendor/bin"
+
+	if [ -d "$PWD/vendor/bin" ] ; then
+		PATH="$PATH:$PWD/vendor/bin"
+	fi
+fi
+
+# ==============================================================================
+# Node Package Manager
+# ==============================================================================
+NODE_PATH="$NODE_PATH:$HOME/.npm/node_modules"
+
+if [ -d "$PWD/node_modules/.bin" ] ; then
+	PATH="$PATH:$PWD/node_modules/.bin"
+fi
+
+# ==============================================================================
+# Java environments
+# ==============================================================================
+export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
+
+if [ -d "$JAVA_HOME" ]; then
+	#export WTK_HOME="/home/feryardiant/.local/lib/wtk"
+	#export JAVA_OPTS="-J-Dswing.aatext=true -J-Dawt.useSystemAAFontSettings=lcd"
+	export JAVA_FONTS="/usr/share/fonts/truetype"
+fi
+
+# ==============================================================================
+# ORACLE DB Environtments
+# ==============================================================================
+export ORACLE_HOME="/u01/app/oracle/product/11.2.0/xe"
+
+if [ -d "$ORACLE_HOME" ]; then
+	export ORACLE_SID="XE"
+	export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`
+	export ORACLE_BASE="/u01/app/oracle"
+	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
+	export PATH="$ORACLE_HOME/bin:$PATH"
+fi
