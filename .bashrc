@@ -27,7 +27,7 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
-for file in ~/.{aliases,exports,functions,bash_prompt}; do
+for file in ~/.{env,aliases,exports,functions,bash_prompt}; do
     [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file

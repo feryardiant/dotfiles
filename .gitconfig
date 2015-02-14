@@ -16,8 +16,7 @@
     zip = archive --format=zip -9 --output="latest.zip" HEAD
     df = diff --color --color-words --abbrev
     # View abbreviated SHA, description, and history graph
-    # lg = log --all --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-    lg = log --oneline --decorate --all --graph
+    lg = log --oneline --decorate --graph
     # Update all submodules
     upmod = submodule -q foreach git pull -q origin
     # Show verbose output about tags, branches or remotes
@@ -40,6 +39,7 @@
 [core]
     excludesfile = ~/.gitignore_global
     attributesfile = ~/.gitattributes_global
+	editor = vim
 
 [color]
     ui = true

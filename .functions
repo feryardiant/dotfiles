@@ -1,11 +1,11 @@
 # Create a new directory and enter it
 function md() {
-    mkdir -p "$@" && cd "$@"
+	mkdir -p "$@" && cd "$@"
 }
 
 # find shorthand
 function f() {
-    find . -name "$1"
+	find . -name "$1"
 }
 
 # Copy w/ progress
@@ -23,16 +23,16 @@ function gz() {
 
 # Fixing file and folder permissions
 function fixperms() {
-    if [ -z "$1" ]; then
-        path="$1"
-    else
-        path="."
-    fi
+	if [ -z "$1" ]; then
+		path="$1"
+	else
+		path="."
+	fi
 
-    # File permissions
-    find $path -type f -exec chmod 664 {} +
-    # Folder permissions
-    find $path -type d -exec chmod 775 {} +
+	# Change all files perm to 664
+	find $path -type f -exec chmod 664 {} +
+	# Change all directories perm to 775
+	find $path -type d -exec chmod 775 {} +
 }
 
 # Extract archives - usage: extract <file>
@@ -122,7 +122,7 @@ function orewa() {
 
 # PHP Server
 function phpserv() {
-    if [ $# -eq 0 ]; then
+	if [ $# -eq 0 ]; then
 		echo "usage: phpserv <port>"
 	else
 		php -S localhost:$1
@@ -135,12 +135,12 @@ function evalssh() {
 	ssh-add ~/.ssh/*_rsa
 }
 
-function add_ppa() {
-    if [ $# -eq 0 ]; then
-		echo "usage: add_ppa <ppa>[ <package_name>]"
+function addppa() {
+	if [ $# -eq 0 ]; then
+		echo "usage: addppa <ppa>"
 		echo ""
 		echo "examples:"
-		echo " - add_ppa gue/ganteng"
+		echo " - addppa gue/ganteng"
 		echo "   that's mean you run"
 		echo "   $ sudo add-apt-repository -y ppa:gue/ganteng"
 		echo "   $ sudo apt-get update"
@@ -152,5 +152,15 @@ function add_ppa() {
 			echo "Dude, this OS is not Ubuntu btw."
 		fi
 	fi
+}
+
+# Get list of installed PPAs
+# http://askubuntu.com/a/148968/10706 (modified)
+function listppa() {
+	for APT in `find /etc/apt/ -name \*.list`; do
+		grep -Po "(?<=^deb\s).*?(?=#|$)" $APT | while read ENTRY ; do
+			echo '  '${ENTRY}
+		done
+	done
 }
 
