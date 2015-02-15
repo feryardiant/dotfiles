@@ -123,9 +123,15 @@ function orewa() {
 # PHP Server
 function phpserv() {
 	if [ $# -eq 0 ]; then
-		echo "usage: phpserv <port>"
+		echo "usage: phpserv <port>[ <docroot>]"
 	else
-		php -S localhost:$1
+		if [ -z "$2" ]; then
+			docroot="-t ."
+		else
+			docroot="-t $2"
+		fi
+
+		php -S localhost:$1 $docroot
 	fi
 }
 
