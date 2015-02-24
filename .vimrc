@@ -199,4 +199,4 @@ let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
 " Powerline.VIM (binding)
-set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
+"set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
