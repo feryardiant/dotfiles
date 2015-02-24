@@ -151,7 +151,7 @@ function addppa() {
 		echo "   $ sudo add-apt-repository -y ppa:gue/ganteng"
 		echo "   $ sudo apt-get update"
 	else
-		if add-apt-repository &> /dev/null; then
+		if add-apt-repository > /dev/null 2>&1; then
 			sudo add-apt-repository -y ppa:$1
 			sudo apt-get update
 		else
