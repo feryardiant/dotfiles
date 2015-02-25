@@ -11,33 +11,43 @@ cetak() {
     printf '\033[%sm%s\033[m\n' "$@"
 }
 
+me() {
+    git_name="$(git config --global user.name)"
+    git_email="$(git config --global user.email)"
+    [[ -n "${git_name}" && -n "${git_email}" ]] && echo "${git_name} <${git_email}>"
+}
+
 my_pwd="$PWD"
+now=`date +'%Y-%m-%d'`
+backup_dir="${my_pwd}/dotfiles.old/${now}"
+dotfiles="aliases bash_profile profile bash_prompt bashrc exports functions gitconfig vimrc"
 
 cd $HOME
 
-for dotfile in aliases bash_profile bash_prompt bashrc exports functions gitconfig vimrc; do
-    [ ! -d "dotfiles.old" ] && mkdir dotfiles.old
+for dotfile in $dotfiles; do
+    [ ! -d "$backup_dir" ] && mkdir -p $backup_dir
 
     if [ -f "$HOME/.$dotfile" ]; then
-        mv "$HOME/.$dotfile" "dotfiles.old/.$dotfile"
-        cetak "33;5" "Backing up your .$dotfile to dotfiles.old/.$dotfile"
+        mv "$HOME/.$dotfile" "$backup_dir/.$dotfile"
+        cetak "33;5" "Backing up your .$dotfile"
     fi
 
-    ln -s "$my_pwd/.$dotfile" .
+    if [[ $dotfile = 'gitconfig' ]]; then
+        cp "$my_pwd/.$dotfile" .
+    elif [[ $dotfile = 'profile' ]]; then
+        ln -s .bash_profile .profile
+    else
+        ln -s "$my_pwd/.$dotfile" .
+    fi
 done
 unset dotfile
 
-if [ -f ~/.profile ]; then
-    mv ~/.profile dotfiles.old/.profile
-fi
-
-ln -s .bash_profile .profile
 source ~/.bashrc
+
 cetak "32;5" 'Your dotfiles are ready!'
 
 if [ -d ~/.vim ]; then
-    mv ~/.vim dotfiles.old/.vim
-    cetak "33;5" "Backing up your .vim directory to dotfiles.old/.vim"
+    mv ~/.vim $backup_dir/.vim
 fi
 
 mkdir ~/.vim && cd ~/.vim
@@ -46,7 +56,7 @@ cetak "32;5" "Begin setup your vim plugins using pathogen"
 mkdir -p autoload bundle && \
 curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init && \
-git add -A && git commit -m "Initial commit && install autoload/pathogen"
+git a && git c "Initial commit && install autoload/pathogen"
 
 declare -A plugins
 plugins[mattn/emmet-vim]=bundle/emmet
@@ -63,10 +73,19 @@ plugins[terryma/vim-multiple-cursors]=bundle/multiple-cursors
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
-    cetak "33;5" "Installing $plugin"
-    git submodule --quiet add github:$repo $plugin && git add -A && git commit -m "$plugin Installed"
+    git submodule -q add github:$repo $plugin && git a && git c "~/.vim/$plugin plugin installed"
 done
 unset repo plugin
 
 cd $my_pwd
-cetak "32;5" 'Done!'
+cetak "32;5" "Everything's done!"
+cetak "32;5" "Your old files are backed up in $backup_dir"
+
+if [[ -n "$(me)" ]]; then
+    cetak "32;5" "Thank you $(me)"
+    unset git_name git_email
+else
+    cetak "33;5" "Don't forget to setup your git user.name and user.email, Please run"
+    cetak "33;5" ' $ git config --global user.name <your name>'
+    cetak "33;5" ' $ git config --global user.email <your email>'
+fi
