@@ -13,7 +13,7 @@
     co = checkout
     go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
     get = "!git pull origin \"$(git rev-parse --abbrev-ref HEAD)\""
-    zip = archive --format=zip -9 --output="latest.zip" HEAD
+    zip = "!f() { fmt=`date +'%Y-%m-%d'`; git archive --format=zip -9 -o "${fmt}.zip" HEAD; }; f"
     df = diff --color --color-words --abbrev
     # View abbreviated SHA, description, and history graph
     lg = log --oneline --decorate --graph
@@ -41,6 +41,17 @@
     attributesfile = ~/.gitattributes_global
 	editor = vim
 
+[merge]
+    # Include summaries of merged commits in newly created merge commit messages
+    log = true
+
+[push]
+    # Push to remote with same branch name as local
+    default = matching
+
+[pull]
+    rebase = true
+
 [color]
     ui = true
 [color "branch"]
@@ -57,10 +68,6 @@
     changed = green
     untracked = cyan
 
-[merge]
-    # Include summaries of merged commits in newly created merge commit messages
-    log = true
-
 # URL shorthands
 [url "git@github.com:"]
     insteadOf = "gh:"
@@ -74,17 +81,3 @@
     pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
     insteadOf = "gist:"
-
-[push]
-    # Push to remote with same branch name as local
-    default = matching
-
-[pull]
-    rebase = true
-
-[giggle]
-    main-window-maximized = false
-    main-window-geometry = 1109x689+49+24
-    history-view-vpane-position = 232
-    main-window-view = HistoryView
-    file-view-vpane-position = 347
