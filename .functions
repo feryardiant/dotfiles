@@ -103,18 +103,6 @@ function git_release() {
 	fi
 }
 
-# take this repo and copy it to somewhere else minus the .git stuff.
-function git_export() {
-	if [ $# -eq 0 ]; then
-		echo "usage: git_export <filename>"
-		echo "e.g: git_export mybranch.zip"
-	else
-		#mkdir -p "$1"
-		git archive --format=zip -9 --output="$1" HEAD
-		#git archive master | tar -x -C "$1"
-	fi
-}
-
 function orewa() {
 	local my_pwd="${PWD/$HOME/~}"
 	echo "${yellow}${USER} ${white}in ${cyan}";
@@ -151,12 +139,8 @@ function addppa() {
 		echo "   $ sudo add-apt-repository -y ppa:gue/ganteng"
 		echo "   $ sudo apt-get update"
 	else
-		if add-apt-repository > /dev/null 2>&1; then
-			sudo add-apt-repository -y ppa:$1
-			sudo apt-get update
-		else
-			echo "Dude, this OS is not Ubuntu btw."
-		fi
+		sudo add-apt-repository -y ppa:$1
+		sudo apt-get update
 	fi
 }
 

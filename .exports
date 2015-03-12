@@ -11,7 +11,7 @@ else
 fi
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin/" ] ; then
+if [ -d "$HOME/.local/bin/" ]; then
 	PATH="$HOME/.local/bin/:$PATH"
 fi
 
@@ -35,14 +35,13 @@ export HISTFILESIZE=61440
 export HISTTIMEFORMAT='%F %T → '
 
 # Make some commands not show up in history
-export HISTIGNORE="&:history:pwd:exit:clear:[ \t]*"
+export HISTIGNORE="&:h:history:pwd:exit:clear:[ \t]*"
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 export HISTCONTROL=ignoreboth
 
-# Limit path length in promt
-# ~/.../current/path/name
+# Limit path length in promt (e.g. ~/.../current/path/name)
 export PROMPT_DIRTRIM=3
 
 export SSL_CERT_DIR=/etc/ssl/certs
@@ -107,60 +106,73 @@ else
 fi
 
 # ==============================================================================
+# PHPENV environments
+# ==============================================================================
+export PHPENV_ROOT="${HOME}/.local/share/phpenv"
+[ phpenv > /dev/null 2>&1 ] && eval "$(phpenv init -)"
+
+if [ -d "$PHPENV_ROOT" ]; then
+	PATH="$PHPENV_ROOT/bin:$PATH"
+fi
+
+# ==============================================================================
 # RBENV environments
 # ==============================================================================
-export RBENV_ROOT="${HOME}/.rbenv"
+export RBENV_ROOT="${HOME}/.local/share/rbenv"
+[ rbenv > /dev/null 2>&1 ] && eval "$(rbenv init -)"
 
 if [ -d "$RBENV_ROOT" ]; then
-	export PATH="$RBENV_ROOT/bin:${PATH}"
-	eval "$(rbenv init -)"
+	PATH="$RBENV_ROOT/bin:$PATH"
 fi
 
 # ==============================================================================
-# Heroku
+# NVM environments
 # ==============================================================================
-if [ -d "/usr/local/heroku/bin" ] ; then
-	PATH="$PATH:/usr/local/heroku/bin"
+export NVM_DIR="${HOME}/.local/share/nvm"
+
+if [ -d "$NVM_DIR" ]; then
+	export NVM_SYMLINK_CURRENT=true
+	. $NVM_DIR/nvm.sh
+	. $NVM_DIR/bash_completion
 fi
 
+# ==============================================================================
+# Node Package Manager
+# ==============================================================================
+# Enable bash completion for NPM (see: https://docs.npmjs.com/cli/completion)
+[ npm > /dev/null 2>&1 ] && . <(npm completion)
+# Enable bash completion for Grunt (see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion)
+[ grunt > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
 
-# ==============================================================================
-# Travis
-# ==============================================================================
-[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
+if [ -d "$PWD/node_modules/.bin" ]; then
+	PATH="$PATH:$PWD/node_modules/.bin"
+fi
 
 # ==============================================================================
 # Composer
 # ==============================================================================
 export COMPOSER_HOME="$HOME/.local/share/composer"
 
-if [ -d "$COMPOSER_HOME" ] ; then
+if [ -d "$COMPOSER_HOME" ]; then
 	PATH="$PATH:$COMPOSER_HOME/vendor/bin"
+fi
 
-	if [ -d "$PWD/vendor/bin" ] ; then
-		PATH="$PATH:$PWD/vendor/bin"
-	fi
+if [ -d "$PWD/vendor/bin" ]; then
+	PATH="$PATH:$PWD/vendor/bin"
 fi
 
 # ==============================================================================
-# Node Package Manager
+# Go
 # ==============================================================================
-NODE_PATH="$NODE_PATH:$HOME/.npm/node_modules"
+export GOROOT="$HOME/.local/share/go"
+export GOPATH="$HOME/.local/share/go-packages"
 
-if [ -d "$PWD/node_modules/.bin" ] ; then
-	PATH="$PATH:$PWD/node_modules/.bin"
-fi
+PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 
 # ==============================================================================
 # Java environments
 # ==============================================================================
 export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
-
-if [ -d "$JAVA_HOME" ]; then
-	#export WTK_HOME="/home/feryardiant/.local/lib/wtk"
-	#export JAVA_OPTS="-J-Dswing.aatext=true -J-Dawt.useSystemAAFontSettings=lcd"
-	export JAVA_FONTS="/usr/share/fonts/truetype"
-fi
 
 # ==============================================================================
 # ORACLE DB Environtments
@@ -172,5 +184,5 @@ if [ -d "$ORACLE_HOME" ]; then
 	export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`
 	export ORACLE_BASE="/u01/app/oracle"
 	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
-	export PATH="$ORACLE_HOME/bin:$PATH"
+	PATH="$ORACLE_HOME/bin:$PATH"
 fi
