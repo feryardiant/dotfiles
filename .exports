@@ -109,20 +109,20 @@ fi
 # PHPENV environments
 # ==============================================================================
 export PHPENV_ROOT="${HOME}/.local/share/phpenv"
-[ phpenv > /dev/null 2>&1 ] && eval "$(phpenv init -)"
 
 if [ -d "$PHPENV_ROOT" ]; then
 	PATH="$PHPENV_ROOT/bin:$PATH"
+	eval "$(phpenv init -)"
 fi
 
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
 export RBENV_ROOT="${HOME}/.local/share/rbenv"
-[ rbenv > /dev/null 2>&1 ] && eval "$(rbenv init -)"
 
 if [ -d "$RBENV_ROOT" ]; then
 	PATH="$RBENV_ROOT/bin:$PATH"
+	eval "$(rbenv init -)"
 fi
 
 # ==============================================================================
@@ -142,7 +142,10 @@ fi
 # Enable bash completion for NPM (see: https://docs.npmjs.com/cli/completion)
 [ npm > /dev/null 2>&1 ] && . <(npm completion)
 # Enable bash completion for Grunt (see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion)
-[ grunt > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
+
+if [ -f "$PWD/Gruntfile.js" ]; then
+	[ grunt > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
+fi
 
 if [ -d "$PWD/node_modules/.bin" ]; then
 	PATH="$PATH:$PWD/node_modules/.bin"
@@ -177,12 +180,12 @@ export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
 # ==============================================================================
 # ORACLE DB Environtments
 # ==============================================================================
-export ORACLE_HOME="/u01/app/oracle/product/11.2.0/xe"
+# export ORACLE_HOME="/u01/app/oracle/product/11.2.0/xe"
 
-if [ -d "$ORACLE_HOME" ]; then
-	export ORACLE_SID="XE"
-	export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`
-	export ORACLE_BASE="/u01/app/oracle"
-	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
-	PATH="$ORACLE_HOME/bin:$PATH"
-fi
+# if [ -d "$ORACLE_HOME" ]; then
+# 	export ORACLE_SID="XE"
+# 	export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`
+# 	export ORACLE_BASE="/u01/app/oracle"
+# 	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
+# 	PATH="$ORACLE_HOME/bin:$PATH"
+# fi
