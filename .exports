@@ -106,49 +106,52 @@ else
 fi
 
 # ==============================================================================
-# PHPENV environments
-# ==============================================================================
-export PHPENV_ROOT="${HOME}/.local/share/phpenv"
-
-if [ -d "$PHPENV_ROOT" ]; then
-	PATH="$PHPENV_ROOT/bin:$PATH"
-	eval "$(phpenv init -)"
-fi
-
-# ==============================================================================
 # RBENV environments
 # ==============================================================================
-export RBENV_ROOT="${HOME}/.local/share/rbenv"
+# export RBENV_ROOT="${HOME}/.local/share/rbenv"
 
-if [ -d "$RBENV_ROOT" ]; then
-	PATH="$RBENV_ROOT/bin:$PATH"
-	eval "$(rbenv init -)"
-fi
+# if [ -d "$RBENV_ROOT" ]; then
+# 	PATH="$RBENV_ROOT/bin:$PATH"
+# 	eval "$(rbenv init -)"
+# fi
+
+# ==============================================================================
+# PHPENV environments
+# ==============================================================================
+# export PHPENV_ROOT="${HOME}/.local/share/phpenv"
+
+# if [ -d "$PHPENV_ROOT" ]; then
+# 	PATH="$PHPENV_ROOT/bin:$PATH"
+# 	eval "$(phpenv init -)"
+# fi
 
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-export NVM_DIR="${HOME}/.local/share/nvm"
+# export NVM_DIR="${HOME}/.local/share/nvm"
 
-if [ -d "$NVM_DIR" ]; then
-	export NVM_SYMLINK_CURRENT=true
-	. $NVM_DIR/nvm.sh
-	. $NVM_DIR/bash_completion
-fi
+# if [ -d "$NVM_DIR" ]; then
+# 	export NVM_SYMLINK_CURRENT=true
+# 	. $NVM_DIR/nvm.sh
+# 	. $NVM_DIR/bash_completion
+# fi
 
 # ==============================================================================
 # Node Package Manager
 # ==============================================================================
 # Enable bash completion for NPM (see: https://docs.npmjs.com/cli/completion)
 [ npm > /dev/null 2>&1 ] && . <(npm completion)
-# Enable bash completion for Grunt (see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion)
-
-if [ -f "$PWD/Gruntfile.js" ]; then
-	[ grunt > /dev/null 2>&1 ] && eval "$(grunt --completion=bash)"
-fi
 
 if [ -d "$PWD/node_modules/.bin" ]; then
 	PATH="$PATH:$PWD/node_modules/.bin"
+fi
+
+if [ -f "$PWD/Gruntfile.js" ]; then
+	# Enable bash completion for Grunt (see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion)
+	[ grunt > /dev/null 2>&1 ] && eval `grunt --completion=bash`
+elif [ -f "$PWD/gulpfile.js" ]; then
+	# Enable bash completion for Gulp (see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp)
+	[ gulp > /dev/null 2>&1 ]  && eval `gulp --completion=bash`
 fi
 
 # ==============================================================================
@@ -167,15 +170,15 @@ fi
 # ==============================================================================
 # Go
 # ==============================================================================
-export GOROOT="$HOME/.local/share/go"
-export GOPATH="$HOME/.local/share/go-packages"
+# export GOROOT="$HOME/.local/share/go"
+# export GOPATH="$HOME/.local/share/go-packages"
 
-PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+# PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 
 # ==============================================================================
 # Java environments
 # ==============================================================================
-export JAVA_HOME="/usr/lib/jvm/java-7-oracle"
+export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 
 # ==============================================================================
 # ORACLE DB Environtments

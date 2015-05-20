@@ -1,1 +1,1 @@
-PS1="\n\$(orewa)\w \$(git_info)\n→ \[$reset\]"
+PS1="\n\[$cyan\]\w \$(git_info)\[$reset\]› "

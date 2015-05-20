@@ -46,3 +46,6 @@ if ! shopt -oq posix; then
 fi
 
 #[ -f $HOME/.Xdefaults ] && xrdb -merge $HOME/.Xdefaults
+
+# added by travis gem
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
