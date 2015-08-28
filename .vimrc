@@ -173,6 +173,13 @@ map <PageDown> <C-D>
 imap <PageUp> <C-O><C-U>
 imap <PageDown> <C-O><C-D>
 
+" Tab Navgations?
+set switchbuf=usetab
+imap <C-PageUp> :tabprevious<CR>
+imap <C-PageDown> :tabNext<CR>
+nmap <C-PageUp> :tabprevious<CR>
+nmap <C-PageDown> :tabNext<CR>
+
 " Pencil.VIM
 let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
 

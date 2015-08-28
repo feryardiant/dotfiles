@@ -108,27 +108,27 @@ fi
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
-# export RBENV_ROOT="${HOME}/.local/share/rbenv"
+export RBENV_ROOT="${HOME}/.local/tools/rbenv"
 
-# if [ -d "$RBENV_ROOT" ]; then
-# 	PATH="$RBENV_ROOT/bin:$PATH"
-# 	eval "$(rbenv init -)"
-# fi
+if [ -d "$RBENV_ROOT" ]; then
+	PATH="$RBENV_ROOT/bin:$PATH"
+	eval "$(rbenv init -)"
+fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
-# export PHPENV_ROOT="${HOME}/.local/share/phpenv"
+export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
 
-# if [ -d "$PHPENV_ROOT" ]; then
-# 	PATH="$PHPENV_ROOT/bin:$PATH"
-# 	eval "$(phpenv init -)"
-# fi
+if [ -d "$PHPENV_ROOT" ]; then
+	PATH="$PHPENV_ROOT/bin:$PATH"
+	eval "$(phpenv init -)"
+fi
 
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-# export NVM_DIR="${HOME}/.local/share/nvm"
+# export NVM_DIR="${HOME}/.local/tools/nvm"
 
 # if [ -d "$NVM_DIR" ]; then
 # 	export NVM_SYMLINK_CURRENT=true
