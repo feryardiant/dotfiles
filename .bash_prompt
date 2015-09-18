@@ -1,1 +1,0 @@
-PS1="\n\[$cyan\]\w \$(git_info)\[$reset\]› "

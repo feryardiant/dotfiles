@@ -12,8 +12,9 @@
     # Switch to a branch, creating it if necessary
     co = checkout
     go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
-    get = "!git pull origin \"$(git rev-parse --abbrev-ref HEAD)\""
+    get = "!git pull origin `git rev-parse --abbrev-ref HEAD`"
     zip = "!f() { fmt=`date +'%Y-%m-%d'`; git archive --format=zip -9 -o "${fmt}.zip" HEAD; }; f"
+    release = "!f() { if [ -z \"$2\" ]; then msg=\"$1 released\"; else msg=$2; fi; git tag -s \"$1\" -m \"$msg\" }; f"
     df = diff --color --color-words --abbrev
     # View abbreviated SHA, description, and history graph
     lg = log --oneline --decorate --graph

@@ -27,7 +27,7 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
-for file in ~/.{env,aliases,exports,functions,bash_prompt}; do
+for file in ~/.{env,aliases,exports,functions}; do
     [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
@@ -49,3 +49,7 @@ fi
 
 # added by travis gem
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+
+# Bash Git Prompt, see: https://github.com/magicmonty/bash-git-prompt
+GIT_PROMPT_HOME="${HOME}/.local/tools/bash-git-prompt"
+[ -f $GIT_PROMPT_HOME/gitprompt.sh ] && source $GIT_PROMPT_HOME/gitprompt.sh
