@@ -11,18 +11,14 @@ e() {
     printf '\033[%sm%s\033[m\n' "$@"
 }
 
-me() {
-    git_name="$(git config --global user.name)"
-    git_email="$(git config --global user.email)"
-    [[ -n "${git_name}" && -n "${git_email}" ]] && echo "${git_name} <${git_email}>"
-}
-
 my_pwd="$PWD"
 now=`date +'%Y-%m-%d'`
 backup_dir="${my_pwd}/dotfiles.old/${now}"
-dotfiles="aliases bash_profile profile bash_prompt bashrc exports functions gitconfig vimrc"
+dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 
 cd $HOME
+
+cp -f $my_pwd/.gitconfig $HOME/.gitconfig
 
 for dotfile in $dotfiles; do
     [ ! -d "$backup_dir" ] && mkdir -p $backup_dir
@@ -35,7 +31,7 @@ for dotfile in $dotfiles; do
     if [[ $dotfile = 'gitconfig' ]]; then
         cp "$my_pwd/.$dotfile" .
     elif [[ $dotfile = 'profile' ]]; then
-        ln -s .bash_profile .profile
+        ln -s .profile .bash_profile
     else
         ln -s "$my_pwd/.$dotfile" .
     fi
@@ -76,6 +72,12 @@ for repo in ${!plugins[@]}; do
     git submodule -q add github:$repo $plugin && git a && git c "~/.vim/$plugin plugin installed"
 done
 unset repo plugin
+
+me() {
+    git_name="$(git config --global user.name)"
+    git_email="$(git config --global user.email)"
+    [[ -n "${git_name}" && -n "${git_email}" ]] && echo "${git_name} <${git_email}>"
+}
 
 cd $my_pwd
 e "32;5" "Everything's done!"

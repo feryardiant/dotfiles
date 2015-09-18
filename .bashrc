@@ -46,10 +46,3 @@ if ! shopt -oq posix; then
 fi
 
 #[ -f $HOME/.Xdefaults ] && xrdb -merge $HOME/.Xdefaults
-
-# added by travis gem
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
-
-# Bash Git Prompt, see: https://github.com/magicmonty/bash-git-prompt
-GIT_PROMPT_HOME="${HOME}/.local/tools/bash-git-prompt"
-[ -f $GIT_PROMPT_HOME/gitprompt.sh ] && source $GIT_PROMPT_HOME/gitprompt.sh
