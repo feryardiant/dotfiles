@@ -49,6 +49,18 @@ alias laf='la | grep "^-"'
 # Stopwatch
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 
+# Disable XDebug for composer
+# @see: http://stackoverflow.com/a/31083865/881743
+options=$(ls -1 /usr/lib/php5/20131226/| \
+    grep --invert-match xdebug| \
+    # remove problematic extensions
+    egrep --invert-match 'mysql|pgsql|opcache'| \
+    sed --expression 's/\(.*\)/ --define extension=\1/'| \
+    # join everything together back in one big line
+    tr --delete '\n'
+)
+alias composer='php --no-php-ini $options ~/.local/share/composer/composer $*'
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'

@@ -6,7 +6,7 @@
     # View the current working tree status using the short format
     s = status -s
     a = add -A
-    c = commit -am
+    c = commit -sm
     p = push origin
     pf = push origin -f
     # Switch to a branch, creating it if necessary
@@ -14,7 +14,7 @@
     go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
     get = "!git pull origin `git rev-parse --abbrev-ref HEAD`"
     zip = "!f() { fmt=`date +'%Y-%m-%d'`; git archive --format=zip -9 -o "${fmt}.zip" HEAD; }; f"
-    release = "!f() { if [ -z \"$2\" ]; then msg=\"$1 released\"; else msg=$2; fi; git tag -s \"$1\" -m \"$msg\" }; f"
+    release = "!f() { if [ -z \"$2\" ]; then msg=\"$1 released\"; else msg=$2; fi; git tag -s \"$1\" -m \"$msg\"; }; f"
     df = diff --color --color-words --abbrev
     # View abbreviated SHA, description, and history graph
     lg = log --oneline --decorate --graph

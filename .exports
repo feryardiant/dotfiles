@@ -121,6 +121,7 @@ fi
 export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
 
 if [ -d "$PHPENV_ROOT" ]; then
+	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
 	PATH="$PHPENV_ROOT/bin:$PATH"
 	eval "$(phpenv init -)"
 fi
@@ -128,13 +129,13 @@ fi
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-# export NVM_DIR="${HOME}/.local/tools/nvm"
+export NVM_DIR="${HOME}/.local/tools/nvm"
 
-# if [ -d "$NVM_DIR" ]; then
-# 	export NVM_SYMLINK_CURRENT=true
-# 	. $NVM_DIR/nvm.sh
-# 	. $NVM_DIR/bash_completion
-# fi
+if [ -d "$NVM_DIR" ]; then
+	export NVM_SYMLINK_CURRENT=true
+	. $NVM_DIR/nvm.sh
+	. $NVM_DIR/bash_completion
+fi
 
 # ==============================================================================
 # Node Package Manager
@@ -159,13 +160,8 @@ fi
 # ==============================================================================
 export COMPOSER_HOME="$HOME/.local/share/composer"
 
-if [ -d "$COMPOSER_HOME" ]; then
-	PATH="$PATH:$COMPOSER_HOME/vendor/bin"
-fi
-
-if [ -d "$PWD/vendor/bin" ]; then
-	PATH="$PATH:$PWD/vendor/bin"
-fi
+if [ -d "$COMPOSER_HOME" ]; then PATH="$PATH:$COMPOSER_HOME/vendor/bin"; fi
+if [ -d "$PWD/vendor/bin" ]; then PATH="$PATH:$PWD/vendor/bin"; fi
 
 # ==============================================================================
 # added by travis gem
@@ -173,11 +169,10 @@ fi
 [ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
 
 # ==============================================================================
-# Bash Git Prompt
-# see: https://github.com/magicmonty/bash-git-prompt
+# Git Prompt
+# see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # ==============================================================================
-GIT_PROMPT_HOME="${HOME}/.local/tools/bash-git-prompt"
-[ -f $GIT_PROMPT_HOME/gitprompt.sh ] && source $GIT_PROMPT_HOME/gitprompt.sh
+[ -f "$HOME/.local/tools/git-prompt.sh" ] && source "$HOME/.local/tools/git-prompt.sh"
 
 # ==============================================================================
 # Go
