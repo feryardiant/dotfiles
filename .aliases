@@ -55,7 +55,7 @@ if [ -d "/usr/lib/php5" ]; then
 	options=$(ls -1 /usr/lib/php5/20131226/| \
 	    grep --invert-match xdebug| \
 	    # remove problematic extensions
-	    egrep --invert-match 'mysql|pgsql|opcache'| \
+	    egrep --invert-match 'mysql|wddx|pgsql|opcache'| \
 	    sed --expression 's/\(.*\)/ --define extension=\1/'| \
 	    # join everything together back in one big line
 	    tr --delete '\n'
@@ -64,7 +64,7 @@ elif [ -d "/usr/lib/php/7.0" ]; then
 	options=$(ls -1 /usr/lib/php/20151012/| \
 	    grep --invert-match xdebug| \
 	    # remove problematic extensions
-	    egrep --invert-match 'mysql|pgsql|opcache'| \
+	    egrep --invert-match 'mysql|wddx|pgsql|opcache'| \
 	    sed --expression 's/\(.*\)/ --define extension=\1/'| \
 	    # join everything together back in one big line
 	    tr --delete '\n'
