@@ -114,6 +114,9 @@ set laststatus=2                                      " Always show status line
 set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
 let g:Powerline_symbols = 'fancy'
 
+" Powerline.VIM (binding)
+set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
+
 " Speed up viewport scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
@@ -205,5 +208,3 @@ let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
-" Powerline.VIM (binding)
-set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
