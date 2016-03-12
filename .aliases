@@ -71,7 +71,7 @@ elif [ -d "/usr/lib/php/7.0" ]; then
 	)
 fi
 
-alias composer='php --no-php-ini $options ~/.local/share/composer/composer $*'
+alias composer='php --no-php-ini $options ~/.local/bin/composer $*'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
