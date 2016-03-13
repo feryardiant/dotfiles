@@ -2,7 +2,7 @@
 
 set -e
 
-# usage color "31;5" "string"
+# usage color "31;0" "string"
 # 0 default
 # 5 blink, 1 strong, 4 underlined
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
@@ -25,7 +25,7 @@ for dotfile in $dotfiles; do
 
     if [ -f "$HOME/.$dotfile" ]; then
         mv "$HOME/.$dotfile" "$backup_dir/.$dotfile"
-        e "33;5" "Backing up your .$dotfile"
+        e "33;0" "Backing up your .$dotfile"
     fi
 
     if [[ $dotfile = 'gitconfig' ]]; then
@@ -40,7 +40,7 @@ unset dotfile
 
 source ~/.bashrc
 
-e "32;5" 'Your dotfiles are ready!'
+e "32;0" 'Your dotfiles are ready!'
 
 if [ -d ~/.vim ]; then
     mv ~/.vim $backup_dir/.vim
@@ -48,7 +48,7 @@ fi
 
 mkdir ~/.vim && cd ~/.vim
 
-e "32;5" "Begin setup your vim plugins using pathogen"
+e "32;0" "Begin setup your vim plugins using pathogen"
 mkdir -p autoload bundle && \
 curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init && \
@@ -80,14 +80,14 @@ me() {
 }
 
 cd $my_pwd
-e "32;5" "Everything's done!"
-e "32;5" "Your old files are backed up in $backup_dir"
+e "32;0" "Everything's done!"
+e "32;0" "Your old files are backed up in $backup_dir"
 
 if [[ -n "$(me)" ]]; then
-    e "32;5" "Thank you $(me)"
+    e "32;0" "Thank you $(me)"
     unset git_name git_email
 else
-    e "33;5" "Don't forget to setup your git user.name and user.email, Please run"
-    e "33;5" ' $ git config --global user.name <your name>'
-    e "33;5" ' $ git config --global user.email <your email>'
+    e "33;0" "Don't forget to setup your git user.name and user.email, Please run"
+    e "33;0" ' $ git config --global user.name <your name>'
+    e "33;0" ' $ git config --global user.email <your email>'
 fi
