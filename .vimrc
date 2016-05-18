@@ -112,10 +112,16 @@ set laststatus=2                                      " Always show status line
 " hi User1 guibg=#455354 guifg=fg      ctermbg=238 ctermfg=fg  gui=bold,underline cterm=bold,underline term=bold,underline
 " hi User2 guibg=#455354 guifg=#CC4329 ctermbg=238 ctermfg=196 gui=bold           cterm=bold           term=bold
 set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
-let g:Powerline_symbols = 'fancy'
+
+let g:airline_powerline_fonts = 1
+let g:Powerline_symbols='unicode'
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
 
 " Powerline.VIM (binding)
-set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
+"set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
 
 " Speed up viewport scrolling
 nnoremap <C-e> 3<C-e>

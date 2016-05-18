@@ -3,8 +3,7 @@
 set -e
 
 # usage color "31;0" "string"
-# 0 default
-# 5 blink, 1 strong, 4 underlined
+# 0 default, 1 strong, 4 underlined, 5 blink
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
 e() {
@@ -18,7 +17,9 @@ dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 
 cd $HOME
 
-cp -f $my_pwd/.gitconfig $HOME/.gitconfig
+if [ ! -f $HOME/.gitconfig ]; then
+    cp -f $my_pwd/.gitconfig $HOME/.gitconfig
+fi
 
 for dotfile in $dotfiles; do
     [ ! -d "$backup_dir" ] && mkdir -p $backup_dir
@@ -28,9 +29,8 @@ for dotfile in $dotfiles; do
         e "33;0" "Backing up your .$dotfile"
     fi
 
-    if [[ $dotfile = 'gitconfig' ]]; then
-        cp "$my_pwd/.$dotfile" .
-    elif [[ $dotfile = 'profile' ]]; then
+    if [[ $dotfile = 'profile' ]]; then
+        [ ! -f $HOME/.bash_profile ] && rm $HOME/.bash_profile
         ln -s .profile .bash_profile
     else
         ln -s "$my_pwd/.$dotfile" .
@@ -40,20 +40,33 @@ unset dotfile
 
 source ~/.bashrc
 
-e "32;0" 'Your dotfiles are ready!'
+e "32;0" 'Your dotfiles are ready to use!'
 
-if [ -d ~/.vim ]; then
-    mv ~/.vim $backup_dir/.vim
-fi
+e "32;0" "Begin setup your VIM"
 
+[ -d ~/.vim ] && mv ~/.vim $backup_dir/.vim
 mkdir ~/.vim && cd ~/.vim
 
-e "32;0" "Begin setup your vim plugins using pathogen"
+[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
+curl -LSso ~/.local/share/fonts/PowerlineSymbols.otf https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+fc-cache -f ~/.local/share/fonts
+
+[ ! -d ~/.config/fontconfig/conf.d ] && mkdir -p ~/.config/fontconfig/conf.d
+curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+
+vim_dirs="swap undo backup"
+for vim_dir in $vim_dirs; do
+    [ ! -d ~/.cache/vim/$vim_dir ] && mkdir -p ~/.cache/vim/$vim_dir
+done
+unset vim_dir vim_dirs
+
+e "32;0" "Begin installing pathogen"
 mkdir -p autoload bundle && \
 curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init && \
 git a && git c "Initial commit && install autoload/pathogen"
 
+e "32;0" "Begin installing VIM plugins"
 declare -A plugins
 plugins[mattn/emmet-vim]=bundle/emmet
 plugins[scrooloose/nerdtree]=bundle/nerdtree
@@ -66,6 +79,8 @@ plugins[ervandew/supertab]=bundle/supertab
 plugins[reedes/vim-pencil]=bundle/pencil
 plugins[Shougo/neocomplcache.vim]=bundle/neocomplcache
 plugins[terryma/vim-multiple-cursors]=bundle/multiple-cursors
+plugins[vim-airline/vim-airline]=bundle/vim-airline
+plugins[vim-airline/vim-airline-themes]=bundle/vim-airline-themes
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
@@ -76,7 +91,7 @@ unset repo plugin
 me() {
     git_name="$(git config --global user.name)"
     git_email="$(git config --global user.email)"
-    [[ -n "${git_name}" && -n "${git_email}" ]] && echo "${git_name} <${git_email}>"
+    [[ -n "$git_name" && -n "$git_email" ]] && echo "$git_name <$git_email>"
 }
 
 cd $my_pwd
