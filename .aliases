@@ -56,15 +56,17 @@ elif [ -d "/usr/lib/php/7.0" ]; then
 	lib_path='/usr/lib/php/20151012/'
 fi
 
-# @see: http://stackoverflow.com/a/31083865/881743
-options=$(ls -1 "$lib_path"| \
-	grep --invert-match xdebug| \
-	# remove problematic extensions
-	egrep --invert-match 'mysql|wddx|pgsql|opcache'| \
-	sed --expression 's/\(.*\)/ --define extension=\1/'| \
-	# join everything together back in one big line
-	tr --delete '\n'
-)
+if [ -d "$lib_path" ]; then
+	# @see: http://stackoverflow.com/a/31083865/881743
+	options=$(ls -1 "$lib_path"| \
+		grep --invert-match xdebug| \
+		# remove problematic extensions
+		egrep --invert-match 'build|mysql|wddx|pgsql|opcache'| \
+		sed --expression 's/\(.*\)/ --define extension=\1/'| \
+		# join everything together back in one big line
+		tr --delete '\n'
+	)
+fi
 
 unset lib_path
 
