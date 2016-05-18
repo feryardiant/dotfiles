@@ -108,51 +108,56 @@ fi
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
-export RBENV_ROOT="${HOME}/.local/tools/rbenv"
-
-if [ -d "$RBENV_ROOT" ]; then
-	PATH="$RBENV_ROOT/bin:$PATH"
-	eval "$(rbenv init -)"
-fi
+#export RBENV_ROOT="${HOME}/.local/tools/rbenv"
+#
+#if [ -d "$RBENV_ROOT" ]; then
+#	PATH="$RBENV_ROOT/bin:$PATH"
+#	eval "$(rbenv init -)"
+#fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
-export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
-
-if [ -d "$PHPENV_ROOT" ]; then
-	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
-	PATH="$PHPENV_ROOT/bin:$PATH"
-	eval "$(phpenv init -)"
-fi
+#export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
+#
+#if [ -d "$PHPENV_ROOT" ]; then
+#	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
+#	PATH="$PHPENV_ROOT/bin:$PATH"
+#	eval "$(phpenv init -)"
+#fi
 
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-export NVM_DIR="${HOME}/.local/tools/nvm"
-
-if [ -d "$NVM_DIR" ]; then
-	export NVM_SYMLINK_CURRENT=true
-	. $NVM_DIR/nvm.sh
-	. $NVM_DIR/bash_completion
-fi
+#export NVM_DIR="${HOME}/.local/tools/nvm"
+#
+#if [ -d "$NVM_DIR" ]; then
+#	export NVM_SYMLINK_CURRENT=true
+#	. $NVM_DIR/nvm.sh
+#	. $NVM_DIR/bash_completion
+#fi
 
 # ==============================================================================
 # Node Package Manager
+# Enable bash completion for NPM 
+# see: https://docs.npmjs.com/cli/completion
 # ==============================================================================
-# Enable bash completion for NPM (see: https://docs.npmjs.com/cli/completion)
-[ npm > /dev/null 2>&1 ] && . <(npm completion)
+if [ npm > /dev/null 2>&1 ]; then
+	. <(npm completion)
 
-if [ -d "$PWD/node_modules/.bin" ]; then
-	PATH="$PATH:$PWD/node_modules/.bin"
-fi
+	if [ -d "$PWD/node_modules/.bin" ]; then
+		PATH="$PATH:$PWD/node_modules/.bin"
 
-if [ -f "$PWD/Gruntfile.js" ]; then
-	# Enable bash completion for Grunt (see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion)
-	[ grunt > /dev/null 2>&1 ] && eval `grunt --completion=bash`
-elif [ -f "$PWD/gulpfile.js" ]; then
-	# Enable bash completion for Gulp (see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp)
-	[ gulp > /dev/null 2>&1 ]  && eval `gulp --completion=bash`
+		if [ -f "$PWD/Gruntfile.js" ]; then
+			# Enable bash completion for Grunt
+			# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
+			[ grunt > /dev/null 2>&1 ] && eval `grunt --completion=bash`
+		elif [ -f "$PWD/gulpfile.js" ]; then
+			# Enable bash completion for Gulp
+			# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
+			[ gulp > /dev/null 2>&1 ]  && eval `gulp --completion=bash`
+		fi
+	fi
 fi
 
 # ==============================================================================
