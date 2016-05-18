@@ -30,7 +30,7 @@ for dotfile in $dotfiles; do
     fi
 
     if [[ $dotfile = 'profile' ]]; then
-        [ ! -f $HOME/.bash_profile ] && rm $HOME/.bash_profile
+        [ -f $HOME/.bash_profile ] && rm $HOME/.bash_profile
         ln -s .profile .bash_profile
     else
         ln -s "$my_pwd/.$dotfile" .
