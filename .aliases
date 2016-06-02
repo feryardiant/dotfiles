@@ -61,7 +61,7 @@ if [ -d "$lib_path" ]; then
 	options=$(ls -1 "$lib_path"| \
 		grep --invert-match xdebug| \
 		# remove problematic extensions
-		egrep --invert-match 'build|mysql|wddx|pgsql|opcache'| \
+		egrep --invert-match 'build|mysql|wddx|pgsql|opcache|blackfire'| \
 		sed --expression 's/\(.*\)/ --define extension=\1/'| \
 		# join everything together back in one big line
 		tr --delete '\n'
