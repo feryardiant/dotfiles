@@ -139,7 +139,7 @@ fi
 
 # ==============================================================================
 # Node Package Manager
-# Enable bash completion for NPM 
+# Enable bash completion for NPM
 # see: https://docs.npmjs.com/cli/completion
 # ==============================================================================
 if [ npm > /dev/null 2>&1 ]; then
