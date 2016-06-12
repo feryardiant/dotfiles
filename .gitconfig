@@ -17,7 +17,7 @@
     release = "!f() { if [ -z \"$2\" ]; then msg=\"$1 released\"; else msg=$2; fi; git tag -s \"$1\" -m \"$msg\"; }; f"
     df = diff --color --color-words --abbrev
     # View abbreviated SHA, description, and history graph
-    lg = log --oneline --decorate --graph
+    lg = log --oneline --graph --abbrev-commit
     # Update all submodules
     upmod = submodule -q foreach git pull -q origin
     # Show verbose output about tags, branches or remotes
@@ -34,24 +34,31 @@
     subps = subtree push
 
 [apply]
-  # Detect whitespace errors when applying a patch
-  whitespace = fix
+    # Detect whitespace errors when applying a patch
+    whitespace = fix
 
 [core]
     excludesfile = ~/.gitignore_global
     attributesfile = ~/.gitattributes_global
 	editor = vim
+	trustctime = false
+
+[format]
+    pretty = %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
 
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
 
+[fetch]
+    prune = true
+
 [push]
     # Push to remote with same branch name as local
-    default = matching
+	default = matching
 
-[pull]
-    rebase = true
+# [pull]
+#     rebase = true
 
 [color]
     ui = true
@@ -82,5 +89,3 @@
     pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
     insteadOf = "gist:"
-[fetch]
-	prune = true
