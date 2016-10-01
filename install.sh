@@ -7,10 +7,10 @@ set -e
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
 e() {
-    if [[ ! -z "$3" ]]; then
-        printf '\033[%sm%s\033[m\n' "$@"
+    if [[ -z $3 ]]; then
+        printf ' \033[%sm%s\033[m' "$@"
     else
-        printf '\033[%sm%s\033[m' "$@"
+        printf ' \033[%sm%s\033[m\n' "$@"
     fi
 }
 
@@ -111,36 +111,33 @@ e "33" '- Installing Pathogen'
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init > /dev/null && git a && git c "Initial commit && install autoload/pathogen" > /dev/null
 
-e '32' '✔ Installed' true
+e '32' ' ✔ Installed' true
 
 declare -A plugins
-plugins[mattn/emmet-vim]=bundle/emmet
-plugins[scrooloose/nerdtree]=bundle/nerdtree
-plugins[tpope/vim-fugitive]=bundle/fugitive
-plugins[tpope/vim-surround]=bundle/surround
-plugins[scrooloose/syntastic]=bundle/syntastic
-plugins[kien/ctrlp.vim]=bundle/ctrlp
-plugins[Lokaltog/vim-easymotion]=bundle/easymotion
-plugins[ervandew/supertab]=bundle/supertab
-plugins[reedes/vim-pencil]=bundle/pencil
-plugins[Shougo/neocomplcache.vim]=bundle/neocomplcache
-plugins[terryma/vim-multiple-cursors]=bundle/multiple-cursors
-plugins[vim-airline/vim-airline]=bundle/vim-airline
-plugins[vim-airline/vim-airline-themes]=bundle/vim-airline-themes
+plugins[mattn/emmet-vim]=emmet
+plugins[scrooloose/nerdtree]=nerdtree
+plugins[tpope/vim-fugitive]=fugitive
+plugins[tpope/vim-surround]=surround
+plugins[scrooloose/syntastic]=syntastic
+plugins[kien/ctrlp.vim]=ctrlp
+plugins[Lokaltog/vim-easymotion]=easymotion
+plugins[ervandew/supertab]=supertab
+plugins[reedes/vim-pencil]=pencil
+plugins[Shougo/neocomplcache.vim]=neocomplcache
+plugins[terryma/vim-multiple-cursors]=multiple-cursors
+plugins[vim-airline/vim-airline]=vim-airline
+plugins[vim-airline/vim-airline-themes]=vim-airline-themes
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
 
     e '33' "- Installing $plugin"
-    git submodule -q add github:$repo $plugin
+    git submodule -q add github:$repo bundle/$plugin
     git a && git c "$plugin plugin is installed" > /dev/null
     e '32' ' ✔ Installed' true
 done
 unset repo plugin message
 
-e '32' '✔ All of your VIM plugins are installed' true
-
 cd $my_pwd
 e '32' '✔ Everything is done! your dotfiles is ready to use' true
-e '32' '✔ Your old files are backed up in $backup_dir' true
-e '32' 'Thank you $git_name <$git_email>'
+e '34' "Your old files are backed up in $backup_dir, thank you $git_name <$git_email>" true
