@@ -7,7 +7,7 @@ set -e
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
 e() {
-    if [[ ! -z "$3" ]] && [[ "$3" == true ]]; then
+    if [[ ! -z "$3" ]]; then
         printf '\033[%sm%s\033[m\n' "$@"
     else
         printf '\033[%sm%s\033[m' "$@"
@@ -95,7 +95,7 @@ command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
 curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
 
 e '32' '✔ Ready' true
-e '33' 'Setup VIM'
+e '33' 'Setup VIM' true
 
 [ -d ~/.vim ] && mv ~/.vim $backup_dir/.vim
 mkdir ~/.vim && cd ~/.vim
