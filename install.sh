@@ -38,7 +38,7 @@ for dotfile in $dotfiles; do
 done
 unset dotfile
 
-if [ command -v zsh >/dev/null 2>&1 ]; then
+if command -v zsh >/dev/null 2>&1; then
     e '33' 'Begin Installing Oh-my-ZSH'
     [ -d ~/.oh-my-zsh ] || curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     [ -f ~/.oh-my-zsh/themes/honukai.zsh-theme ] && rm ~/.oh-my-zsh/themes/honukai.zsh-theme
@@ -48,7 +48,7 @@ if [ command -v zsh >/dev/null 2>&1 ]; then
 fi
 
 
-if [ command -v tmux >/dev/null 2>&1 ]; then
+if command -v tmux >/dev/null 2>&1; then
     e '33' 'Begin setup your TMUX'
     [ -f ~/.tmux.conf ] && mv ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
