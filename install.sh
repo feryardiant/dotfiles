@@ -113,7 +113,6 @@ git init > /dev/null && git a && git c "Initial commit && install autoload/patho
 
 e '32' '✔ Installed' true
 
-e '33' '- VIM plugins' true
 declare -A plugins
 plugins[mattn/emmet-vim]=bundle/emmet
 plugins[scrooloose/nerdtree]=bundle/nerdtree
