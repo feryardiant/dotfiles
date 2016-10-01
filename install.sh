@@ -29,14 +29,29 @@ for dotfile in $dotfiles; do
         e "33;0" "Backing up your .$dotfile"
     fi
 
+    ln -s "$my_pwd/.$dotfile" .
+    
     if [[ $dotfile = 'profile' ]]; then
         [ ! -f $HOME/.bash_profile ] || rm $HOME/.bash_profile
         ln -s .profile .bash_profile
-    else
-        ln -s "$my_pwd/.$dotfile" .
     fi
 done
 unset dotfile
+
+if [ zsh >/dev/null 2>&1 ]; then
+    e "32;0" "Installing Oh-my-ZSH"
+    [ ! -d ~/.oh-my-zsh  ] && curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
+    [ -f ~/.oh-my-zsh/themes/honukai.zsh-theme ] && rm ~/.oh-my-zsh/themes/honukai.zsh-theme
+    ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
+    [ -f ~/.zshrc ] && mv ~/.zshrc $backup_dir/
+    ln -s $my_pwd/.zshrc ~/.zshrc
+fi
+
+
+if [ tmux >/dev/null 2>&1 ]; then
+    [ -f ~/.tmux.conf ] && mv ~/.tmux.conf $backup_dir/
+    ln -s $my_pwd/.tmux.conf ~/.tmux.conf
+fi
 
 source ~/.bashrc
 
