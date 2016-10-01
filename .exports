@@ -22,9 +22,9 @@ elif chromium-browser --version > /dev/null 2>&1; then
 	export BROWSER="chromium-browser"
 fi
 
-if [ zsh >/dev/null 2>&1 ]; then
+if [ command -v zsh >/dev/null 2>&1 ]; then
     export SHELL=`which zsh`
-    [ -z "$ZSH_VERSION" ] && exec "$SHELL" -l
+    exec "$SHELL" -l
 fi
 
 # Don’t clear the screen after quitting a manual page

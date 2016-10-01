@@ -40,7 +40,7 @@ unset dotfile
 
 if [ command -v zsh >/dev/null 2>&1 ]; then
     e '33' 'Begin Installing Oh-my-ZSH'
-    [ ! -d ~/.oh-my-zsh  ] && curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
+    [ -d ~/.oh-my-zsh ] || curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     [ -f ~/.oh-my-zsh/themes/honukai.zsh-theme ] && rm ~/.oh-my-zsh/themes/honukai.zsh-theme
     ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     [ -f ~/.zshrc ] && mv ~/.zshrc $backup_dir/
