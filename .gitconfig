@@ -17,7 +17,7 @@
     release = "!f() { if [ -z \"$2\" ]; then msg=\"$1 released\"; else msg=$2; fi; git tag -s \"$1\" -m \"$msg\"; }; f"
     df = diff --color --color-words --abbrev
     # View abbreviated SHA, description, and history graph
-    lg = log --oneline --graph --abbrev-commit --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+    lg = log --graph --abbrev-commit --pretty=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%n%C(reset)%s %C(yellow)by %cn'
     # Update all submodules
     upmod = submodule -q foreach git pull -q origin
     # Show verbose output about tags, branches or remotes
