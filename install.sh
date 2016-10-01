@@ -7,7 +7,7 @@ set -e
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
 e() {
-    if [ -z "$3" ] && [ "$3" -eq 'true' ]; then
+    if [[ ! -z "$3" ]] && [[ "$3" == true ]]; then
         printf '\033[%sm%s\033[m\n' "$@"
     else
         printf '\033[%sm%s\033[m' "$@"
@@ -47,7 +47,7 @@ for dotfile in $dotfiles; do
 done
 unset dotfile dorfiles
 
-e '32' '✔ Ready' 'true'
+e '32' '✔ Ready' true
 
 if command -v zsh >/dev/null 2>&1; then
     e '33' 'Setup Oh-my-ZSH        '
@@ -56,7 +56,7 @@ if command -v zsh >/dev/null 2>&1; then
     ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     [ -f ~/.zshrc ] && mv ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
-    e '32' '✔ Ready' 'true'
+    e '32' '✔ Ready' true
 fi
 
 
@@ -64,7 +64,7 @@ if command -v tmux >/dev/null 2>&1; then
     e '33' 'Setup TMUX             '
     [ -f ~/.tmux.conf ] && mv ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
-    e '32' '✔ Ready' 'true'
+    e '32' '✔ Ready' true
 fi
 
 source ~/.bashrc
@@ -84,7 +84,7 @@ if [ ! -z "$git_email" ] && [ ! -z "$git_name" ]; then
     git config --global user.name $git_name
 fi
 
-e '32' '✔ Ready' 'true'
+e '32' '✔ Ready' true
 e '33' 'Setup Powerline Fonts  '
 
 [ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
@@ -94,7 +94,7 @@ command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
 [ ! -d ~/.config/fontconfig/conf.d ] && mkdir -p ~/.config/fontconfig/conf.d
 curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
 
-e '32' '✔ Ready' 'true'
+e '32' '✔ Ready' true
 e '33' 'Setup VIM'
 
 [ -d ~/.vim ] && mv ~/.vim $backup_dir/.vim
@@ -106,14 +106,14 @@ for vim_dir in $vim_dirs; do
 done
 unset vim_dir vim_dirs
 
-e "33" '- Setup Pathogen'
+e "33" '- Installing Pathogen'
 
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
-git init && git a && git c "Initial commit && install autoload/pathogen" > /dev/null
+git init > /dev/null && git a && git c "Initial commit && install autoload/pathogen" > /dev/null
 
-e '32' '✔ Ready' 'true'
+e '32' '✔ Installed' true
 
-e '33' '- VIM plugins' 'true'
+e '33' '- VIM plugins' true
 declare -A plugins
 plugins[mattn/emmet-vim]=bundle/emmet
 plugins[scrooloose/nerdtree]=bundle/nerdtree
@@ -132,16 +132,16 @@ plugins[vim-airline/vim-airline-themes]=bundle/vim-airline-themes
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
 
-    e '33' '   - Installing $plugin'
+    e '33' "- Installing $plugin"
     git submodule -q add github:$repo $plugin
     git a && git c "$plugin plugin is installed" > /dev/null
-    e '33' " ✔ Installed" 'true'
+    e '32' ' ✔ Installed' true
 done
 unset repo plugin message
 
-e '32' '✔ All of your VIM plugins are installed' 'true'
+e '32' '✔ All of your VIM plugins are installed' true
 
 cd $my_pwd
-e '32' '✔ Everything is done! your dotfiles is ready to use' 'true'
-e '32' '✔ Your old files are backed up in $backup_dir' 'true'
+e '32' '✔ Everything is done! your dotfiles is ready to use' true
+e '32' '✔ Your old files are backed up in $backup_dir' true
 e '32' 'Thank you $git_name <$git_email>'
