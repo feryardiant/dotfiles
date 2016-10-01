@@ -38,7 +38,7 @@ for dotfile in $dotfiles; do
 done
 unset dotfile
 
-if [ zsh >/dev/null 2>&1 ]; then
+if [ command -v zsh >/dev/null 2>&1 ]; then
     e "32;0" "Installing Oh-my-ZSH"
     [ ! -d ~/.oh-my-zsh  ] && curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     [ -f ~/.oh-my-zsh/themes/honukai.zsh-theme ] && rm ~/.oh-my-zsh/themes/honukai.zsh-theme
@@ -48,7 +48,7 @@ if [ zsh >/dev/null 2>&1 ]; then
 fi
 
 
-if [ tmux >/dev/null 2>&1 ]; then
+if [ command -v tmux >/dev/null 2>&1 ]; then
     [ -f ~/.tmux.conf ] && mv ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
 fi
@@ -57,17 +57,19 @@ source ~/.bashrc
 
 e "32;0" 'Your dotfiles are ready to use!'
 
+e "32;0" 'Begin installing Powerline Fonts!'
+
+[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
+curl -LSso ~/.local/share/fonts/PowerlineSymbols.otf https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
+
+[ ! -d ~/.config/fontconfig/conf.d ] && mkdir -p ~/.config/fontconfig/conf.d
+curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+
 e "32;0" "Begin setup your VIM"
 
 [ -d ~/.vim ] && mv ~/.vim $backup_dir/.vim
 mkdir ~/.vim && cd ~/.vim
-
-[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
-curl -LSso ~/.local/share/fonts/PowerlineSymbols.otf https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-fc-cache -f ~/.local/share/fonts
-
-[ ! -d ~/.config/fontconfig/conf.d ] && mkdir -p ~/.config/fontconfig/conf.d
-curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
 
 vim_dirs="swap undo backup"
 for vim_dir in $vim_dirs; do
