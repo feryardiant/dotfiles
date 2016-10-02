@@ -22,18 +22,18 @@ function gz() {
 }
 
 # Get filesize in human-readable format
-function size() {
-	local filesize=cat "$1" | wc -c
+function sizeof() {
+	local fsize=`cat "$1" | wc -c`
 
-	if [ $filesize -ge 1073741824 ]; then
-		filesize=`echo "scale=2;$filesize/1073741824"| bc` G
-	elif [ $filesize -ge 1048576 ]; then
-	    filesize=`echo "scale=2;$filesize/1048576"| bc` M
-	elif [ $filesize -ge 1024 ]; then
-	    filesize=`echo "scale=2;$filesize/1024" | bc` K
+	if [[ $size -ge 1073741824 ]]; then
+		fsize=`echo "scale=2;$fsize/1073741824"| bc`G
+	elif [[ $fsize -ge 1048576 ]]; then
+	    fsize=`echo "scale=2;$fsize/1048576"| bc`M
+	elif [[ $fsize -ge 1024 ]]; then
+	    fsize=`echo "scale=2;$fsize/1024" | bc`K
 	fi
 
-	echo $filesize
+	echo $fsize
 }
 
 # Fixing file and folder permissions
