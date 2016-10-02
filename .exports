@@ -11,7 +11,7 @@ else
 fi
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin/" ]; then
+if [ -d ~/.local/bin/ ]; then
 	PATH="$HOME/.local/bin/:$PATH"
 fi
 
@@ -113,7 +113,7 @@ fi
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
-export RBENV_ROOT="${HOME}/.local/tools/rbenv"
+export RBENV_ROOT=~/.local/tools/rbenv
 
 if [ -d "$RBENV_ROOT" ]; then
 	PATH="$RBENV_ROOT/bin:$PATH"
@@ -123,7 +123,7 @@ fi
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
-# export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
+# export PHPENV_ROOT=~/.local/tools/phpenv
 
 # if [ -d "$PHPENV_ROOT" ]; then
 # 	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
@@ -134,7 +134,7 @@ fi
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-# export NVM_DIR="${HOME}/.local/tools/nvm"
+# export NVM_DIR=~/.local/tools/nvm
 
 # if [ -d "$NVM_DIR" ]; then
 # 	export NVM_SYMLINK_CURRENT=true
@@ -170,7 +170,7 @@ fi
 # ==============================================================================
 # Composer
 # ==============================================================================
-export COMPOSER_HOME="$HOME/.local/share/composer"
+export COMPOSER_HOME="~/.local/share/composer"
 
 [[ -d $COMPOSER_HOME ]] && PATH="$PATH:$COMPOSER_HOME/vendor/bin"
 [[ -d $PWD/vendor/composer ]] && PATH="$PATH:$PWD/vendor/bin"
@@ -189,10 +189,10 @@ export COMPOSER_HOME="$HOME/.local/share/composer"
 # ==============================================================================
 # Go
 # ==============================================================================
-export GOROOT='~/.local/share/go'
+export GOROOT=~/.local/share/go
 
 if [[ -d $GOROOT ]]; then
-	export GOPATH='~/.local/share/go-packages'
+	export GOPATH=~/.local/share/go-packages
 
 	PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
 fi
