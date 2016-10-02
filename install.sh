@@ -27,10 +27,10 @@ git_email=`git config --global user.email`
 git_name=`git config --global user.name`
 
 if [[ -n $git_email && -n $git_name ]]; then
-    e '37;41' ' Please setup your git config email and name first '
-    e '37;41' ' Use:                                              '
-    e '37;41' '   $ git config --global user.email <your-email>   '
-    e '37;41' '   $ git config --global user.name <your-name>     '
+    e '37;41' $' Please setup your git config email and name first \n'
+    e '37;41' $' Use:                                              \n'
+    e '37;41' $'   $ git config --global user.email <your-email>   \n'
+    e '37;41' $'   $ git config --global user.name <your-name>     \n'
     exit 1
 fi
 
