@@ -8,19 +8,21 @@ case $- in
 		*) return;;
 esac
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+if [[ `basename $SHELL` != 'zsh' ]]; then
+	# append to the history file, don't overwrite it
+	shopt -s histappend
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
+	# check the window size after each command and, if necessary,
+	# update the values of LINES and COLUMNS.
+	shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-shopt -s globstar
+	# If set, the pattern "**" used in a pathname expansion context will
+	# match all files and zero or more directories and subdirectories.
+	shopt -s globstar
 
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+	# make less more friendly for non-text input files, see lesspipe(1)
+	[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -28,7 +30,7 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 for file in ~/.{env,exports,aliases,functions,bash_prompt}; do
-	[ -r "$file" ] && [ -f "$file" ] && source "$file"
+    [[ -r $file && -f $file ]] && . $file
 done
 unset file
 
@@ -45,4 +47,7 @@ if ! shopt -oq posix; then
 	fi
 fi
 
-#[ -f $HOME/.Xdefaults ] && xrdb -merge $HOME/.Xdefaults
+if command -v zsh >/dev/null 2>&1; then
+    export SHELL=`which zsh`
+    exec "$SHELL" -l
+fi

@@ -22,11 +22,6 @@ elif chromium-browser --version > /dev/null 2>&1; then
 	export BROWSER="chromium-browser"
 fi
 
-if command -v zsh >/dev/null 2>&1; then
-    export SHELL=`which zsh`
-    exec "$SHELL" -l
-fi
-
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
 
