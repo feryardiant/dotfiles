@@ -27,6 +27,8 @@ e '33' 'Setup dotfiles'
 
 cd $HOME
 
+[[ ! -d $backup_dir ]] && mkdir -p $backup_dir
+
 if command -v zsh >/dev/null 2>&1; then
     e '33' 'Setup oh-my-zsh'
     [ -d ~/.oh-my-zsh ] || curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
@@ -39,8 +41,6 @@ fi
 
 dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 for dotfile in $dotfiles; do
-    [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
-
     if [ -f ~/.$dotfile ]; then
         mv -f ~/.$dotfile $backup_dir/
     fi
