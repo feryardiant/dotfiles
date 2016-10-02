@@ -172,7 +172,9 @@ fi
 # ==============================================================================
 
 if command -v npm >/dev/null 2>&1; then
-	. <(npm completion)
+	if [[ $shellname = bash && $OSTYPE != cygwin ]]; then
+		. <(npm completion)
+	fi
 
 	if [[ -d $PWD/node_modules/.bin ]]; then
 		PATH=$PATH:$PWD/node_modules/.bin
