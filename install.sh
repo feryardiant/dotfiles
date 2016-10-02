@@ -23,6 +23,17 @@ for program in $requirements; do
 done
 unset requirements program
 
+git_email=`git config --global user.email`
+git_name=`git config --global user.name`
+
+if [[ -n $git_email && -n $git_name ]]; then
+    e '37;41' ' Please setup your git config email and name first '
+    e '37;41' ' Use:                                              '
+    e '37;41' '   $ git config --global user.email <your-email>   '
+    e '37;41' '   $ git config --global user.name <your-name>     '
+    exit 1
+fi
+
 [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
 if command -v zsh >/dev/null 2>&1; then
@@ -73,18 +84,11 @@ fi
 
 e '33' 'Setup git config'
 
-if [ -f ~/.gitconfig ]; then
-    git_email=`git config --global user.email`
-    git_name=`git config --global user.name`
-    mv -f ~/.gitconfig $backup_dir/
-fi
-
+[ -f ~/.gitconfig ] && mv -f ~/.gitconfig $backup_dir/
 cp -f $my_pwd/.gitconfig ~/.gitconfig
 
-if [[ ! -n $git_email && ! -n $git_name ]]; then
-    git config --global user.email "$git_email"
-    git config --global user.name "$git_name"
-fi
+git config --global user.email "$git_email"
+git config --global user.name "$git_name"
 
 e '32' $' ✔ Done\n'
 e '33' 'Setup Powerline Fonts'
