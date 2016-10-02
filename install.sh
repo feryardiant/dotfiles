@@ -7,7 +7,7 @@ set -e
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
 e() {
-    printf '\033[%sm%s\033' "$@"
+    printf '\e[%sm%s\e[0m' "$@"
 }
 
 my_pwd="$PWD"
@@ -17,7 +17,7 @@ backup_dir=$my_pwd/dotfiles.old/$now
 requirements="git curl vim"
 for program in $requirements; do
     if ! command -v $program >/dev/null 2>&1; then
-        e '31' "We need $program but it's not installed."
+        e '41' " We need $program but it's not installed. "$'\n'
         exit 1
     fi
 done
@@ -26,11 +26,11 @@ unset requirements program
 git_email=`git config --global user.email`
 git_name=`git config --global user.name`
 
-if [[ -z $git_email && -z $git_name ]]; then
-    e '37;41' $' Please setup your git config email and name first \n'
-    e '37;41' $' Use:                                              \n'
-    e '37;41' $'   $ git config --global user.email <your-email>   \n'
-    e '37;41' $'   $ git config --global user.name <your-name>     \n'
+if [ -z "$git_email" ] && [ -z "$git_name" ]; then
+    e '41' $' Please setup your git config email and name first \n'
+    e '41' $' Use:                                              \n'
+    e '41' $'   - git config --global user.email <your-email>   \n'
+    e '41' $'   - git config --global user.name <your-name>     \n'
     exit 1
 fi
 
@@ -58,9 +58,7 @@ cd $HOME
 
 dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 for dotfile in $dotfiles; do
-    if [ -f ~/.$dotfile ]; then
-        mv -f ~/.$dotfile $backup_dir/
-    fi
+    [ -f ~/.$dotfile ] && mv -f ~/.$dotfile $backup_dir/
 
     ln -s $my_pwd/.$dotfile .
 
@@ -75,8 +73,10 @@ e '32' $' ✔ Done\n'
 
 if command -v tmux >/dev/null 2>&1; then
     e '33' 'Setup tmux config'
+
     [ -f ~/.tmux.conf ] && mv -f ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
+
     e '32' $' ✔ Done\n'
 fi
 
@@ -153,11 +153,10 @@ for repo in ${!plugins[@]}; do
     git a && git c "$plugin plugin is installed" -q
     e '32' $' ✔ Done\n'
 done
-unset repo plugin message
+unset repo plugin
 
 cd $my_pwd
-echo ''
-e '32' $'Everything is done ✔\n'
+e '32' $'\nEverything is done ✔\n'
 e '37' 'Your old files are backed up in '
 e '33' "$backup_dir"$'\n'
 e '37' 'Thank you '
