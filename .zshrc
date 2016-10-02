@@ -83,4 +83,8 @@ fi
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-source ~/.aliases
+
+for file in ~/.{env,exports,aliases,functions}; do
+    [ -r "$file" ] && [ -f "$file" ] && source "$file"
+done
+unset file
