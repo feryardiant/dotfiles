@@ -28,13 +28,12 @@ cd $HOME
 [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
 if command -v zsh >/dev/null 2>&1; then
-    e '33' 'Setup oh-my-zsh'
+    e '33' $'Setup oh-my-zsh\n'
     [ -d ~/.oh-my-zsh ] && mv ~/.oh-my-zsh $backup_dir/
-    curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
-    ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
+    curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
+    ln -s $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     ln -s $my_pwd/.zshrc ~/.zshrc
-    e '32' $' ✔ Done\n'
 fi
 
 e '33' 'Setup dotfiles'
@@ -64,10 +63,6 @@ if command -v tmux >/dev/null 2>&1; then
 fi
 
 . ~/.bashrc
-
-if [[ -z $ZSH_VERSION ]]; then
-    exec $(which zsh) -l
-fi
 
 e '33' 'Setup git config'
 
