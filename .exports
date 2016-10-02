@@ -108,22 +108,27 @@ fi
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
-export RBENV_ROOT=~/.local/tools/rbenv
+export RBENV_ROOT=~/.rbenv
 
 if [[ -d $RBENV_ROOT ]]; then
-	PATH=$RBENV_ROOT/bin:$PATH
-	eval `rbenv init -`
+	PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
+	shellext=`basename $SHELL`
+
+	if [ -f "$RBENV_ROOT/completions/rbenv.$shellext" ]; then
+		. "$RBENV_ROOT/completions/rbenv.$shellext"
+	fi
+	# eval `rbenv init -`
 fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
-# export PHPENV_ROOT=~/.local/tools/phpenv
+# export PHPENV_ROOT=~/.phpenv
 
-# if [ -d "$PHPENV_ROOT" ]; then
+# if [[ -d $PHPENV_ROOT ]]; then
 # 	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
 # 	PATH="$PHPENV_ROOT/bin:$PATH"
-# 	eval "$(phpenv init -)"
+# 	# eval "$(phpenv init -)"
 # fi
 
 # ==============================================================================
