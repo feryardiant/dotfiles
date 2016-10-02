@@ -8,7 +8,7 @@ case $- in
 		*) return;;
 esac
 
-if [[ `basename $SHELL` != 'zsh' ]]; then
+if [[ `basename $SHELL` = bash ]]; then
 	# append to the history file, don't overwrite it
 	shopt -s histappend
 
@@ -22,6 +22,19 @@ if [[ `basename $SHELL` != 'zsh' ]]; then
 
 	# make less more friendly for non-text input files, see lesspipe(1)
 	[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+	# enable programmable completion features (you don't need to enable
+	# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+	# sources /etc/bash.bashrc).
+	if ! shopt -oq posix; then
+		if [ -f /usr/share/bash-completion/bash_completion ]; then
+			. /usr/share/bash-completion/bash_completion
+		elif [ -f /etc/bash_completion ]; then
+			. /etc/bash_completion
+		elif [ -f ~/.bash_completion ]; then
+			. ~/.bash_completion
+		fi
+	fi
 fi
 
 # enable color support of ls and also add handy aliases
@@ -34,20 +47,6 @@ for file in ~/.{env,exports,aliases,functions,bash_prompt}; do
 done
 unset file
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-	if [ -f /usr/share/bash-completion/bash_completion ]; then
-		. /usr/share/bash-completion/bash_completion
-	elif [ -f /etc/bash_completion ]; then
-		. /etc/bash_completion
-	elif [ -f ~/.bash_completion ]; then
-		. ~/.bash_completion
-	fi
-fi
-
 if command -v zsh >/dev/null 2>&1; then
-    export SHELL=`which zsh`
     exec "$SHELL" -l
 fi

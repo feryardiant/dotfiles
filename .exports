@@ -105,12 +105,16 @@ else
 	reset="\033[00m"
 fi
 
+if command -v zsh >/dev/null 2>&1; then
+    export SHELL=`which zsh`
+fi
+
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
 export RBENV_ROOT=~/.rbenv
 
-if [[ -d $RBENV_ROOT ]]; then
+if command -v rbenv >/dev/null 2>&1 && [[ -d $RBENV_ROOT ]]; then
 	PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
 	shellext=`basename $SHELL`
 
@@ -171,10 +175,13 @@ fi
 # ==============================================================================
 # Composer
 # ==============================================================================
-export COMPOSER_HOME=~/.local/share/composer
 
-[[ -d $COMPOSER_HOME ]] && PATH=$PATH:$COMPOSER_HOME/vendor/bin
-[[ -d $PWD/vendor/composer ]] && PATH=$PATH:$PWD/vendor/bin
+if command -v composer >/dev/null 2>&1; then
+	# export COMPOSER_HOME=~/.local/share/composer
+
+	[[ -d $COMPOSER_HOME ]] && PATH=$PATH:$COMPOSER_HOME/vendor/bin
+	[[ -f $PWD/composer.json ]] && PATH=$PATH:$PWD/vendor/bin
+fi
 
 # ==============================================================================
 # added by travis gem
