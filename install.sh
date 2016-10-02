@@ -37,8 +37,8 @@ if command -v zsh >/dev/null 2>&1; then
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
 
-    cd $zsh_dir && git checkout -b local >/dev/null && \
-    git add themes && git commit -m "Add honukai.zsh-theme" >/dev/null
+    cd $zsh_dir && git checkout -bq local && \
+    git add themes && git commit -mq "Add honukai.zsh-theme"
 
     e '32' $' ✔ Done\n'
 fi
