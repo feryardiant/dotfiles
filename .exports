@@ -151,13 +151,13 @@ if [ command -v npm >/dev/null 2>&1 ]; then
 
 		# Enable bash completion for Grunt
 		# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
-		if [[ -f $PWD/Gruntfile.js && command -v grunt >/dev/null 2>&1 ]]; then
+		if [[ -f $PWD/Gruntfile.js ]] && command -v grunt >/dev/null 2>&1; then
 			eval `grunt --completion=$shell`
 		fi
 
 		# Enable bash completion for Gulp
 		# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
-		if [[ -f $PWD/gulpfile.js && command -v gulp >/dev/null 2>&1 ]]; then
+		if [[ -f $PWD/gulpfile.js ]] && command -v gulp >/dev/null 2>&1; then
 			eval `gulp --completion=$shell`
 		fi
 	fi
