@@ -18,59 +18,58 @@ requirements="git curl vim"
 
 for program in $requirements; do
     if ! command -v $program >/dev/null 2>&1; then
-        e '31' "We need ${program} but it's not installed."
+        e '31' "We need $program but it's not installed."
         exit 1
     fi
 done
 
-e '33' 'Setup dotfiles         '
+e '33' 'Setup dotfiles'
 
 cd $HOME
 
 for dotfile in $dotfiles; do
-    [ ! -d "$backup_dir" ] && mkdir -p $backup_dir
+    [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
-    if [ -f "$HOME/.$dotfile" ]; then
-        mv "$HOME/.$dotfile" "$backup_dir/.$dotfile"
+    if [ -f ~/.$dotfile ]; then
+        mv -f ~/.$dotfile $backup_dir/
     fi
 
-    ln -s "$my_pwd/.$dotfile" .
+    ln -s $my_pwd/.$dotfile .
 
     if [[ $dotfile = 'profile' ]]; then
-        [ ! -f $HOME/.bash_profile ] || rm $HOME/.bash_profile
+        [ ! -f ~/.bash_profile ] || mv -f ~/.bash_profile $backup_dir/
         ln -s .profile .bash_profile
     fi
 done
 unset dotfile dorfiles
 
-e '32' $'✔ Ready\n'
+e '32' $' ✔ Done\n'
 
 if command -v zsh >/dev/null 2>&1; then
-    e '33' 'Setup Oh-my-ZSH        '
+    e '33' 'Setup oh-my-zsh'
     [ -d ~/.oh-my-zsh ] || curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     [ -f ~/.oh-my-zsh/themes/honukai.zsh-theme ] && rm ~/.oh-my-zsh/themes/honukai.zsh-theme
     ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
-    [ -f ~/.zshrc ] && mv ~/.zshrc $backup_dir/
+    [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
-    e '32' $'✔ Ready\n'
+    e '32' $' ✔ Done\n'
 fi
 
-
 if command -v tmux >/dev/null 2>&1; then
-    e '33' 'Setup TMUX             '
-    [ -f ~/.tmux.conf ] && mv ~/.tmux.conf $backup_dir/
+    e '33' 'Setup tmux config'
+    [ -f ~/.tmux.conf ] && mv -f ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
-    e '32' $'✔ Ready\n'
+    e '32' $' ✔ Done\n'
 fi
 
 source ~/.bashrc
 
-e '33' 'Setup gitconfig        '
+e '33' 'Setup git config'
 
 if [ -f $HOME/.gitconfig ]; then
     git_email=`git config --global user.email`
     git_name=`git config --global user.name`
-    mv ~/.gitconfig $backup_dir/
+    mv -f ~/.gitconfig $backup_dir/
 fi
 
 cp -f $my_pwd/.gitconfig ~/.gitconfig
@@ -80,8 +79,8 @@ if [[ ! -n "$git_email" && ! -n "$git_name" ]]; then
     git config --global user.name "$git_name"
 fi
 
-e '32' $'✔ Ready\n'
-e '33' 'Setup Powerline Fonts  '
+e '32' $' ✔ Done\n'
+e '33' 'Setup Powerline Fonts'
 
 [ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
 [ ! -f ~/.local/share/fonts/PowerlineSymbols.otf ] && \
@@ -93,7 +92,7 @@ curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.
 
 command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
 
-e '32' $'✔ Ready\n'
+e '32' $' ✔ Done\n'
 e '33' $'Setup VIM\n'
 
 [ -d ~/.vim ] && mv -f ~/.vim $backup_dir/
@@ -105,13 +104,12 @@ for vim_dir in $vim_dirs; do
 done
 unset vim_dir vim_dirs
 
-e "37" '- Installing '
-e "33" 'pathogen'
+e "37" '- Installing pathogen'
 
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init > /dev/null && git a && git c "Initial commit && install autoload/pathogen" > /dev/null
 
-e '32' $' ✔ Installed\n'
+e '32' $' ✔ Done\n'
 
 declare -A plugins
 plugins[mattn/emmet-vim]=emmet
@@ -131,17 +129,18 @@ plugins[vim-airline/vim-airline-themes]=vim-airline-themes
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
     len=$((20 - ${#plugin}))
-    spaces=`printf ' %.0s' {1..$len}`
+    spaces=`printf '%.0s ' {1..$len}`
 
-    e '37' "- Installing "
-    e '33' "$plugin" 
+    e '37' "- Installing $plugin"
     git submodule -q add github:$repo bundle/$plugin
     git a && git c "$plugin plugin is installed" > /dev/null
-    e '32' "$spaces"$'✔ Installed\n'
+    e '32' "$spaces"$'✔ Done\n'
 done
 unset repo plugin message
 
 cd $my_pwd
-e '32' $'✔ Everything is done! your dotfiles is ready to use\n'
-e '37' $"Your old files are backed up in $backup_dir, thank you $git_name <$git_email>\n"
-
+e '32' '✔ Everything is done! '
+e '37' 'Your old files are backed up in '
+e '33' "$backup_dir"$'\n'
+e '37' 'Thank you '
+e '33' "$git_name <$git_email>"$'\n'
