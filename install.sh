@@ -30,9 +30,10 @@ cd $HOME
 if command -v zsh >/dev/null 2>&1; then
     e '33' $'Setup oh-my-zsh\n'
     [ -d ~/.oh-my-zsh ] && mv ~/.oh-my-zsh $backup_dir/
-    [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     ln -s $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
+    [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
+    [ -f ~/.zshrc.pre-oh-my-zsh ] && rm ~/.zshrc.pre-oh-my-zsh
     ln -s $my_pwd/.zshrc ~/.zshrc
 fi
 
