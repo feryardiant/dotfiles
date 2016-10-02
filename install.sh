@@ -82,13 +82,17 @@ fi
 e '32' $' ✔ Done\n'
 e '33' 'Setup Powerline Fonts'
 
-[ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
-[ ! -f ~/.local/share/fonts/PowerlineSymbols.otf ] && \
-curl -LSso ~/.local/share/fonts/PowerlineSymbols.otf https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
+declare -A powerline
+powerline[PowerlineSymbols.otf]=~/.local/share/fonts
+powerline[10-powerline-symbols.conf]=~/.config/fontconfig/conf.d
 
-[ ! -d ~/.config/fontconfig/conf.d ] && mkdir -p ~/.config/fontconfig/conf.d
-[ ! -f  ~/.config/fontconfig/conf.d/10-powerline-symbols.conf ] && \
-curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
+for font in ${!powerline[@]}; do
+    installdir=${powerline[$font]}
+
+    [ -d $installdir ] || mkdir -p $installdir
+    [ -f $installdir/$font ] || curl -LSso $installdir/$font https://github.com/powerline/powerline/raw/develop/font/$font
+done
+unset powerline font installdir
 
 command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
 
@@ -128,7 +132,7 @@ plugins[vim-airline/vim-airline-themes]=vim-airline-themes
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
-    
+
     # still can't found it working
     #len=$((20 - ${#plugin}))
     #spaces=`printf '%.0s ' {1..$len}`
