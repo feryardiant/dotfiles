@@ -26,7 +26,7 @@ unset requirements program
 git_email=`git config --global user.email`
 git_name=`git config --global user.name`
 
-if [[ -n $git_email && -n $git_name ]]; then
+if [[ -z $git_email && -z $git_name ]]; then
     e '37;41' $' Please setup your git config email and name first \n'
     e '37;41' $' Use:                                              \n'
     e '37;41' $'   $ git config --global user.email <your-email>   \n'
