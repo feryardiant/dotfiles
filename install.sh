@@ -12,7 +12,7 @@ e() {
 
 my_pwd="$PWD"
 now=`date +'%Y-%m-%d_%H-%M-%S'`
-backup_dir=~/dotfiles.old/$now
+backup_dir=$my_pwd/dotfiles.old/$now
 
 requirements="git curl vim"
 for program in $requirements; do
@@ -29,7 +29,7 @@ cd $HOME
 
 if command -v zsh >/dev/null 2>&1; then
     e '33' 'Setup oh-my-zsh'
-    [ -d ~/.oh-my-zsh ] || mv ~/.oh-my-zsh $backup_dir/
+    [ -d ~/.oh-my-zsh ] && mv ~/.oh-my-zsh $backup_dir/
     curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
