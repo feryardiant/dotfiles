@@ -23,21 +23,21 @@ for program in $requirements; do
 done
 unset requirements program
 
-e '33' 'Setup dotfiles'
-
 cd $HOME
 
 [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
 if command -v zsh >/dev/null 2>&1; then
     e '33' 'Setup oh-my-zsh'
-    [ -d ~/.oh-my-zsh ] || curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
-    [ -f ~/.oh-my-zsh/themes/honukai.zsh-theme ] && rm ~/.oh-my-zsh/themes/honukai.zsh-theme
+    [ -d ~/.oh-my-zsh ] || mv ~/.oh-my-zsh $backup_dir/
+    curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
     ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
     e '32' $' ✔ Done\n'
 fi
+
+e '33' 'Setup dotfiles'
 
 dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 for dotfile in $dotfiles; do
@@ -63,10 +63,10 @@ if command -v tmux >/dev/null 2>&1; then
     e '32' $' ✔ Done\n'
 fi
 
+. ~/.bashrc
+
 if [[ -z $ZSH_VERSION ]]; then
-    . ~/.zshrc
-else
-    . ~/.bashrc
+    exec $(which zsh) -l
 fi
 
 e '33' 'Setup git config'
