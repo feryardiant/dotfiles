@@ -28,13 +28,16 @@ cd $HOME
 [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
 if command -v zsh >/dev/null 2>&1; then
-    e '33' $'Setup oh-my-zsh\n'
-    [ -d ~/.oh-my-zsh ] && mv ~/.oh-my-zsh $backup_dir/
-    curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
-    ln -s $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
+    e '33' 'Setup oh-my-zsh'
+
+    zsh_dir=~/.oh-my-zsh
+    [[ -d $zsh_dir ]] && mv $zsh_dir $backup_dir/
+    git clone -q --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $zsh_dir
+    ln -s $my_pwd/.zsh-themes/honukai.zsh-theme $zsh_dir/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
-    [ -f ~/.zshrc.pre-oh-my-zsh ] && rm ~/.zshrc.pre-oh-my-zsh
     ln -s $my_pwd/.zshrc ~/.zshrc
+
+    e '32' $' ✔ Done\n'
 fi
 
 e '33' 'Setup dotfiles'
