@@ -113,54 +113,56 @@ fi
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
-#export RBENV_ROOT="${HOME}/.local/tools/rbenv"
-#
-#if [ -d "$RBENV_ROOT" ]; then
-#	PATH="$RBENV_ROOT/bin:$PATH"
-#	eval "$(rbenv init -)"
-#fi
+export RBENV_ROOT="${HOME}/.local/tools/rbenv"
+
+if [ -d "$RBENV_ROOT" ]; then
+	PATH="$RBENV_ROOT/bin:$PATH"
+	eval `rbenv init -`
+fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
-#export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
-#
-#if [ -d "$PHPENV_ROOT" ]; then
-#	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
-#	PATH="$PHPENV_ROOT/bin:$PATH"
-#	eval "$(phpenv init -)"
-#fi
+# export PHPENV_ROOT="${HOME}/.local/tools/phpenv"
+
+# if [ -d "$PHPENV_ROOT" ]; then
+# 	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
+# 	PATH="$PHPENV_ROOT/bin:$PATH"
+# 	eval "$(phpenv init -)"
+# fi
 
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-#export NVM_DIR="${HOME}/.local/tools/nvm"
-#
-#if [ -d "$NVM_DIR" ]; then
-#	export NVM_SYMLINK_CURRENT=true
-#	. $NVM_DIR/nvm.sh
-#	. $NVM_DIR/bash_completion
-#fi
+# export NVM_DIR="${HOME}/.local/tools/nvm"
+
+# if [ -d "$NVM_DIR" ]; then
+# 	export NVM_SYMLINK_CURRENT=true
+# 	. $NVM_DIR/nvm.sh
+# 	. $NVM_DIR/bash_completion
+# fi
 
 # ==============================================================================
 # Node Package Manager
 # Enable bash completion for NPM
 # see: https://docs.npmjs.com/cli/completion
 # ==============================================================================
-if [ npm > /dev/null 2>&1 ]; then
+if [ command -v npm >/dev/null 2>&1 ]; then
 	. <(npm completion)
 
-	if [ -d "$PWD/node_modules/.bin" ]; then
+	if [[ -d $PWD/node_modules/.bin ]]; then
 		PATH="$PATH:$PWD/node_modules/.bin"
 
-		if [ -f "$PWD/Gruntfile.js" ]; then
-			# Enable bash completion for Grunt
-			# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
-			[ grunt > /dev/null 2>&1 ] && eval `grunt --completion=bash`
-		elif [ -f "$PWD/gulpfile.js" ]; then
-			# Enable bash completion for Gulp
-			# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
-			[ gulp > /dev/null 2>&1 ]  && eval `gulp --completion=bash`
+		# Enable bash completion for Grunt
+		# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
+		if [[ -f $PWD/Gruntfile.js && command -v grunt >/dev/null 2>&1 ]]; then
+			eval `grunt --completion=bash`
+		fi
+
+		# Enable bash completion for Gulp
+		# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
+		if [[ -f $PWD/gulpfile.js && command -v gulp >/dev/null 2>&1 ]]; then
+			eval `gulp --completion=bash`
 		fi
 	fi
 fi
@@ -170,27 +172,30 @@ fi
 # ==============================================================================
 export COMPOSER_HOME="$HOME/.local/share/composer"
 
-if [ -d "$COMPOSER_HOME" ]; then PATH="$PATH:$COMPOSER_HOME/vendor/bin"; fi
-if [ -d "$PWD/vendor/bin" ]; then PATH="$PATH:$PWD/vendor/bin"; fi
+[[ -d $COMPOSER_HOME ]] && PATH="$PATH:$COMPOSER_HOME/vendor/bin"
+[[ -d $PWD/vendor/composer ]] && PATH="$PATH:$PWD/vendor/bin"
 
 # ==============================================================================
 # added by travis gem
 # ==============================================================================
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 # ==============================================================================
 # Git Prompt
 # see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # ==============================================================================
-[ -f "$HOME/.local/tools/git-prompt.sh" ] && source "$HOME/.local/tools/git-prompt.sh"
+[ -f ~/.local/tools/git-prompt.sh ] && source ~/.local/tools/git-prompt.sh
 
 # ==============================================================================
 # Go
 # ==============================================================================
-# export GOROOT="$HOME/.local/share/go"
-# export GOPATH="$HOME/.local/share/go-packages"
+export GOROOT='~/.local/share/go'
 
-# PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+if [[ -d $GOROOT ]]; then
+	export GOPATH='~/.local/share/go-packages'
+
+	PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+fi
 
 # ==============================================================================
 # Java environments
