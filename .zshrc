@@ -73,7 +73,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-for file in ~/.{exports,aliases,functions}; do
+for file in ~/.{env,exports,aliases,functions}; do
     [[ -r $file && -f $file ]] && . $file
 done
 unset file
