@@ -12,21 +12,22 @@ e() {
 
 my_pwd="$PWD"
 now=`date +'%Y-%m-%d_%H-%M-%S'`
-backup_dir="${my_pwd}/dotfiles.old/${now}"
-dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
-requirements="git curl vim"
+backup_dir=~/dotfiles.old/$now
 
+requirements="git curl vim"
 for program in $requirements; do
     if ! command -v $program >/dev/null 2>&1; then
         e '31' "We need $program but it's not installed."
         exit 1
     fi
 done
+unset requirements program
 
 e '33' 'Setup dotfiles'
 
 cd $HOME
 
+dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 for dotfile in $dotfiles; do
     [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
@@ -104,7 +105,7 @@ mkdir ~/.vim && cd ~/.vim
 
 vim_dirs="swap undo backup"
 for vim_dir in $vim_dirs; do
-    [ ! -d ~/.cache/vim/$vim_dir ] && mkdir -p ~/.cache/vim/$vim_dir
+    [ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
 done
 unset vim_dir vim_dirs
 
