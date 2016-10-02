@@ -109,65 +109,84 @@ if command -v zsh >/dev/null 2>&1; then
     export SHELL=`which zsh`
 fi
 
+shellname=`basename $SHELL`
+
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
-export RBENV_ROOT=~/.rbenv
 
-if command -v rbenv >/dev/null 2>&1 && [[ -d $RBENV_ROOT ]]; then
-	PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
-	shellext=`basename $SHELL`
-
-	if [ -f "$RBENV_ROOT/completions/rbenv.$shellext" ]; then
-		. "$RBENV_ROOT/completions/rbenv.$shellext"
+if command -v rbenv >/dev/null 2>&1; then
+	if [[ -z $RBENV_ROOT ]]; then
+		export RBENV_ROOT=~/.rbenv
 	fi
+
+	if [[ -d $RBENV_ROOT ]]; then
+		PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
+
+		if [ -f "$RBENV_ROOT/completions/rbenv.$shellname" ]; then
+			. "$RBENV_ROOT/completions/rbenv.$shellname"
+		fi
+	fi
+
 	# eval `rbenv init -`
 fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
-# export PHPENV_ROOT=~/.phpenv
 
-# if [[ -d $PHPENV_ROOT ]]; then
-# 	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
-# 	PATH="$PHPENV_ROOT/bin:$PATH"
-# 	# eval "$(phpenv init -)"
-# fi
+if command -v phpenv >/dev/null 2>&1; then
+	if [[ -z $PHPENV_ROOT ]]; then
+		export PHPENV_ROOT=~/.phpenv
+	fi
+
+	if [[ -d $PHPENV_ROOT ]]; then
+		# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
+		PATH="$PHPENV_ROOT/bin:$PATH"
+	fi
+
+	# eval `phpenv init -`
+fi
 
 # ==============================================================================
 # NVM environments
 # ==============================================================================
-# export NVM_DIR=~/.local/tools/nvm
 
-# if [ -d "$NVM_DIR" ]; then
-# 	export NVM_SYMLINK_CURRENT=true
-# 	. $NVM_DIR/nvm.sh
-# 	. $NVM_DIR/bash_completion
-# fi
+if command -v nvm >/dev/null 2>&1; then
+	if [[ -z $NVM_DIR ]]; then
+		export NVM_DIR=~/.nvm
+	fi
+
+	if [ -d "$NVM_DIR" ]; then
+		export NVM_SYMLINK_CURRENT=true
+
+		. "$NVM_DIR/nvm.sh"
+		. "$NVM_DIR/${shellname}_completion"
+	fi
+fi
 
 # ==============================================================================
 # Node Package Manager
 # Enable bash completion for NPM
 # see: https://docs.npmjs.com/cli/completion
 # ==============================================================================
-if [ command -v npm >/dev/null 2>&1 ]; then
+
+if command -v npm >/dev/null 2>&1; then
 	. <(npm completion)
 
 	if [[ -d $PWD/node_modules/.bin ]]; then
 		PATH=$PATH:$PWD/node_modules/.bin
-		local shell=`basename $SHELL`
 
 		# Enable bash completion for Grunt
 		# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
 		if [[ -f $PWD/Gruntfile.js ]] && command -v grunt >/dev/null 2>&1; then
-			eval `grunt --completion=$shell`
+			eval `grunt --completion=$shellname`
 		fi
 
 		# Enable bash completion for Gulp
 		# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
 		if [[ -f $PWD/gulpfile.js ]] && command -v gulp >/dev/null 2>&1; then
-			eval `gulp --completion=$shell`
+			eval `gulp --completion=$shellname`
 		fi
 	fi
 fi
@@ -177,7 +196,9 @@ fi
 # ==============================================================================
 
 if command -v composer >/dev/null 2>&1; then
-	# export COMPOSER_HOME=~/.local/share/composer
+	if [[ -z $COMPOSER_HOME ]]; then
+		export COMPOSER_HOME=~/.composer
+	fi
 
 	[[ -d $COMPOSER_HOME ]] && PATH=$PATH:$COMPOSER_HOME/vendor/bin
 	[[ -f $PWD/composer.json ]] && PATH=$PATH:$PWD/vendor/bin
@@ -186,17 +207,20 @@ fi
 # ==============================================================================
 # added by travis gem
 # ==============================================================================
+
 [ -f ~/.travis/travis.sh ] && . ~/.travis/travis.sh
 
 # ==============================================================================
 # Git Prompt
 # see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # ==============================================================================
+
 [ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
 
 # ==============================================================================
 # Go
 # ==============================================================================
+
 export GOROOT=~/.local/share/go
 
 if [[ -d $GOROOT ]]; then
@@ -208,11 +232,13 @@ fi
 # ==============================================================================
 # Java environments
 # ==============================================================================
+
 export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
 # ==============================================================================
 # ORACLE DB Environtments
 # ==============================================================================
+
 # export ORACLE_HOME="/u01/app/oracle/product/11.2.0/xe"
 
 # if [ -d "$ORACLE_HOME" ]; then
@@ -222,3 +248,5 @@ export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 # 	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
 # 	PATH="$ORACLE_HOME/bin:$PATH"
 # fi
+
+unset shellname
