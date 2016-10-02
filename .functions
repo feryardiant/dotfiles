@@ -39,9 +39,9 @@ function sizeof() {
 # Fixing file and folder permissions
 function fixperms() {
 	if [ -z "$1" ]; then
-		path="./$1"
-	else
 		path="."
+	else
+		path="./$1"
 	fi
 
 	# Change all files perm to 664
@@ -89,6 +89,11 @@ function extract() {
 
 # PHP Server
 function phpserv() {
+	if ! command -v php >/dev/null 2>&1; then
+		echo 'Your system does not have PHP binnary installed'
+		exit 1;
+	fi
+
 	if [ $# -eq 0 ]; then
 		echo "usage: phpserv <port>[ <docroot>]"
 	else
@@ -109,6 +114,11 @@ function evalssh() {
 }
 
 function addppa() {
+	if [[ $OSTYPE != 'linux-gnu' ]]; then
+		echo 'This command only work on Linux'
+		exit 1
+	fi
+
 	if [ $# -eq 0 ]; then
 		echo "usage: addppa <ppa>"
 		echo ""
@@ -126,6 +136,11 @@ function addppa() {
 # Get list of installed PPAs
 # http://askubuntu.com/a/148968/10706 (modified)
 function listppa() {
+	if [[ $OSTYPE != 'linux-gnu' ]]; then
+		printf 'This command only work on Linux'
+		exit 1
+	fi
+
 	for APT in `find /etc/apt/ -name \*.list`; do
 		grep -Po "(?<=^deb\s).*?(?=#|$)" $APT | while read ENTRY ; do
 			echo '  '${ENTRY}
