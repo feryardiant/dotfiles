@@ -11,7 +11,7 @@ e() {
 }
 
 my_pwd="$PWD"
-now=`date +'%Y-%m-%d'`
+now=`date +'%Y-%m-%d_%H-%M-%S'`
 backup_dir="${my_pwd}/dotfiles.old/${now}"
 dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 requirements="git curl vim"
