@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -7,11 +7,7 @@ set -e
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
 e() {
-    if [[ -z $3 ]]; then
-        printf ' \033[%sm%s\033[m' "$@"
-    else
-        printf ' \033[%sm%s\033[m\n' "$@"
-    fi
+    printf '\033[%sm%s\033' "$@"
 }
 
 my_pwd="$PWD"
@@ -47,7 +43,7 @@ for dotfile in $dotfiles; do
 done
 unset dotfile dorfiles
 
-e '32' '✔ Ready' true
+e '32' $'✔ Ready\n'
 
 if command -v zsh >/dev/null 2>&1; then
     e '33' 'Setup Oh-my-ZSH        '
@@ -56,7 +52,7 @@ if command -v zsh >/dev/null 2>&1; then
     ln -s  $my_pwd/.zsh-themes/honukai.zsh-theme ~/.oh-my-zsh/themes/
     [ -f ~/.zshrc ] && mv ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
-    e '32' '✔ Ready' true
+    e '32' $'✔ Ready\n'
 fi
 
 
@@ -64,7 +60,7 @@ if command -v tmux >/dev/null 2>&1; then
     e '33' 'Setup TMUX             '
     [ -f ~/.tmux.conf ] && mv ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
-    e '32' '✔ Ready' true
+    e '32' $'✔ Ready\n'
 fi
 
 source ~/.bashrc
@@ -79,25 +75,28 @@ fi
 
 cp -f $my_pwd/.gitconfig ~/.gitconfig
 
-if [ ! -z "$git_email" ] && [ ! -z "$git_name" ]; then
-    git config --global user.email $git_email
-    git config --global user.name $git_name
+if [[ ! -n "$git_email" && ! -n "$git_name" ]]; then
+    git config --global user.email "$git_email"
+    git config --global user.name "$git_name"
 fi
 
-e '32' '✔ Ready' true
+e '32' $'✔ Ready\n'
 e '33' 'Setup Powerline Fonts  '
 
 [ ! -d ~/.local/share/fonts ] && mkdir -p ~/.local/share/fonts
+[ ! -f ~/.local/share/fonts/PowerlineSymbols.otf ] && \
 curl -LSso ~/.local/share/fonts/PowerlineSymbols.otf https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf
-command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
 
 [ ! -d ~/.config/fontconfig/conf.d ] && mkdir -p ~/.config/fontconfig/conf.d
+[ ! -f  ~/.config/fontconfig/conf.d/10-powerline-symbols.conf ] && \
 curl -LSso ~/.config/fontconfig/conf.d/10-powerline-symbols.conf https://github.com/powerline/powerline/raw/develop/font/10-powerline-symbols.conf
 
-e '32' '✔ Ready' true
-e '33' 'Setup VIM' true
+command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
 
-[ -d ~/.vim ] && mv ~/.vim $backup_dir/.vim
+e '32' $'✔ Ready\n'
+e '33' $'Setup VIM\n'
+
+[ -d ~/.vim ] && mv -f ~/.vim $backup_dir/
 mkdir ~/.vim && cd ~/.vim
 
 vim_dirs="swap undo backup"
@@ -106,12 +105,13 @@ for vim_dir in $vim_dirs; do
 done
 unset vim_dir vim_dirs
 
-e "33" '- Installing Pathogen'
+e "37" '- Installing '
+e "33" 'pathogen'
 
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init > /dev/null && git a && git c "Initial commit && install autoload/pathogen" > /dev/null
 
-e '32' ' ✔ Installed' true
+e '32' $' ✔ Installed\n'
 
 declare -A plugins
 plugins[mattn/emmet-vim]=emmet
@@ -130,14 +130,18 @@ plugins[vim-airline/vim-airline-themes]=vim-airline-themes
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
+    len=$((20 - ${#plugin}))
+    spaces=`printf ' %.0s' {1..$len}`
 
-    e '33' "- Installing $plugin"
+    e '37' "- Installing "
+    e '33' "$plugin" 
     git submodule -q add github:$repo bundle/$plugin
     git a && git c "$plugin plugin is installed" > /dev/null
-    e '32' ' ✔ Installed' true
+    e '32' "$spaces"$'✔ Installed\n'
 done
 unset repo plugin message
 
 cd $my_pwd
-e '32' '✔ Everything is done! your dotfiles is ready to use' true
-e '34' "Your old files are backed up in $backup_dir, thank you $git_name <$git_email>" true
+e '32' $'✔ Everything is done! your dotfiles is ready to use\n'
+e '37' $"Your old files are backed up in $backup_dir, thank you $git_name <$git_email>\n"
+
