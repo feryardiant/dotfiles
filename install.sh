@@ -128,13 +128,15 @@ plugins[vim-airline/vim-airline-themes]=vim-airline-themes
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
-    len=$((20 - ${#plugin}))
-    spaces=`printf '%.0s ' {1..$len}`
+    
+    # still can't found it working
+    #len=$((20 - ${#plugin}))
+    #spaces=`printf '%.0s ' {1..$len}`
 
     e '37' "- Installing $plugin"
     git submodule -q add github:$repo bundle/$plugin
     git a && git c "$plugin plugin is installed" > /dev/null
-    e '32' "$spaces"$'✔ Done\n'
+    e '32' $' ✔ Done\n'
 done
 unset repo plugin message
 
