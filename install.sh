@@ -23,8 +23,6 @@ for program in $requirements; do
 done
 unset requirements program
 
-cd $HOME
-
 [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
 if command -v zsh >/dev/null 2>&1; then
@@ -37,13 +35,15 @@ if command -v zsh >/dev/null 2>&1; then
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
 
-    cd $zsh_dir && git checkout -bq local && \
-    git add themes && git commit -mq "Add honukai.zsh-theme"
+    cd $zsh_dir && git checkout -q -b local && \
+    git add themes && git commit -q -m "Add honukai.zsh-theme"
 
     e '32' $' ✔ Done\n'
 fi
 
 e '33' 'Setup dotfiles'
+
+cd $HOME
 
 dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 for dotfile in $dotfiles; do
@@ -118,7 +118,7 @@ unset vim_dir vim_dirs
 e "37" '- Installing pathogen'
 
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
-git init > /dev/null && git a && git c "Initial commit && install autoload/pathogen" > /dev/null
+git init -q && git a && git c "Initial commit && install autoload/pathogen" -q
 
 e '32' $' ✔ Done\n'
 
@@ -146,13 +146,14 @@ for repo in ${!plugins[@]}; do
 
     e '37' "- Installing $plugin"
     git submodule -q add github:$repo bundle/$plugin
-    git a && git c "$plugin plugin is installed" > /dev/null
+    git a && git c "$plugin plugin is installed" -q
     e '32' $' ✔ Done\n'
 done
 unset repo plugin message
 
 cd $my_pwd
-e '32' '✔ Everything is done! '
+echo ''
+e '32' $'Everything is done ✔\n'
 e '37' 'Your old files are backed up in '
 e '33' "$backup_dir"$'\n'
 e '37' 'Thank you '
