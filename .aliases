@@ -30,9 +30,9 @@ fi
 alias ls="command ls ${colorflag} --group-directories-first"
 
 # List all files colorized in long format
-alias l="ls -lF"
+alias l="ls -lFh"
 # List all files colorized in long format, including dot files
-alias la="ls -laF"
+alias la="ls -laFh"
 # List only directories
 alias ld='l | grep "^d"'
 # List only directories, including dot files

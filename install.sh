@@ -27,25 +27,6 @@ e '33' 'Setup dotfiles'
 
 cd $HOME
 
-dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
-for dotfile in $dotfiles; do
-    [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
-
-    if [ -f ~/.$dotfile ]; then
-        mv -f ~/.$dotfile $backup_dir/
-    fi
-
-    ln -s $my_pwd/.$dotfile .
-
-    if [[ $dotfile = 'profile' ]]; then
-        [ ! -f ~/.bash_profile ] || mv -f ~/.bash_profile $backup_dir/
-        ln -s .profile .bash_profile
-    fi
-done
-unset dotfile dorfiles
-
-e '32' $' ✔ Done\n'
-
 if command -v zsh >/dev/null 2>&1; then
     e '33' 'Setup oh-my-zsh'
     [ -d ~/.oh-my-zsh ] || curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh -
@@ -56,6 +37,25 @@ if command -v zsh >/dev/null 2>&1; then
     e '32' $' ✔ Done\n'
 fi
 
+dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
+for dotfile in $dotfiles; do
+    [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
+
+    if [ -f ~/.$dotfile ]; then
+        mv -f ~/.$dotfile $backup_dir/
+    fi
+
+    ln -s $my_pwd/.$dotfile .
+
+    if [[ -z $ZSH_VERSION && $dotfile = 'profile' ]]; then
+        [ ! -f ~/.bash_profile ] || mv -f ~/.bash_profile $backup_dir/
+        ln -s .profile .bash_profile
+    fi
+done
+unset dotfile dorfiles
+
+e '32' $' ✔ Done\n'
+
 if command -v tmux >/dev/null 2>&1; then
     e '33' 'Setup tmux config'
     [ -f ~/.tmux.conf ] && mv -f ~/.tmux.conf $backup_dir/
@@ -63,11 +63,15 @@ if command -v tmux >/dev/null 2>&1; then
     e '32' $' ✔ Done\n'
 fi
 
-source ~/.bashrc
+if [[ -z $ZSH_VERSION ]]; then
+    . ~/.zshrc
+else
+    . ~/.bashrc
+fi
 
 e '33' 'Setup git config'
 
-if [ -f $HOME/.gitconfig ]; then
+if [ -f ~/.gitconfig ]; then
     git_email=`git config --global user.email`
     git_name=`git config --global user.name`
     mv -f ~/.gitconfig $backup_dir/
@@ -75,7 +79,7 @@ fi
 
 cp -f $my_pwd/.gitconfig ~/.gitconfig
 
-if [[ ! -n "$git_email" && ! -n "$git_name" ]]; then
+if [[ ! -n $git_email && ! -n $git_name ]]; then
     git config --global user.email "$git_email"
     git config --global user.name "$git_name"
 fi

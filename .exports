@@ -115,8 +115,8 @@ fi
 # ==============================================================================
 export RBENV_ROOT=~/.local/tools/rbenv
 
-if [ -d "$RBENV_ROOT" ]; then
-	PATH="$RBENV_ROOT/bin:$PATH"
+if [[ -d $RBENV_ROOT ]]; then
+	PATH=$RBENV_ROOT/bin:$PATH
 	eval `rbenv init -`
 fi
 
@@ -151,18 +151,19 @@ if [ command -v npm >/dev/null 2>&1 ]; then
 	. <(npm completion)
 
 	if [[ -d $PWD/node_modules/.bin ]]; then
-		PATH="$PATH:$PWD/node_modules/.bin"
+		PATH=$PATH:$PWD/node_modules/.bin
+		local shell=`basename $SHELL`
 
 		# Enable bash completion for Grunt
 		# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
 		if [[ -f $PWD/Gruntfile.js && command -v grunt >/dev/null 2>&1 ]]; then
-			eval `grunt --completion=bash`
+			eval `grunt --completion=$shell`
 		fi
 
 		# Enable bash completion for Gulp
 		# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
 		if [[ -f $PWD/gulpfile.js && command -v gulp >/dev/null 2>&1 ]]; then
-			eval `gulp --completion=bash`
+			eval `gulp --completion=$shell`
 		fi
 	fi
 fi
@@ -170,21 +171,21 @@ fi
 # ==============================================================================
 # Composer
 # ==============================================================================
-export COMPOSER_HOME="~/.local/share/composer"
+export COMPOSER_HOME=~/.local/share/composer
 
-[[ -d $COMPOSER_HOME ]] && PATH="$PATH:$COMPOSER_HOME/vendor/bin"
-[[ -d $PWD/vendor/composer ]] && PATH="$PATH:$PWD/vendor/bin"
+[[ -d $COMPOSER_HOME ]] && PATH=$PATH:$COMPOSER_HOME/vendor/bin
+[[ -d $PWD/vendor/composer ]] && PATH=$PATH:$PWD/vendor/bin
 
 # ==============================================================================
 # added by travis gem
 # ==============================================================================
-[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
+[ -f ~/.travis/travis.sh ] && . ~/.travis/travis.sh
 
 # ==============================================================================
 # Git Prompt
 # see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # ==============================================================================
-[ -f ~/.local/tools/git-prompt.sh ] && source ~/.local/tools/git-prompt.sh
+[ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
 
 # ==============================================================================
 # Go
@@ -194,13 +195,13 @@ export GOROOT=~/.local/share/go
 if [[ -d $GOROOT ]]; then
 	export GOPATH=~/.local/share/go-packages
 
-	PATH="$GOROOT/bin:$GOPATH/bin:$PATH"
+	PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 fi
 
 # ==============================================================================
 # Java environments
 # ==============================================================================
-export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
 # ==============================================================================
 # ORACLE DB Environtments

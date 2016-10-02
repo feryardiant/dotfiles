@@ -21,6 +21,21 @@ function gz() {
 	gzip -c "$1" | wc -c
 }
 
+# Get filesize in human-readable format
+function size() {
+	local filesize=cat "$1" | wc -c
+
+	if [ $filesize -ge 1073741824 ]; then
+		filesize=`echo "scale=2;$filesize/1073741824"| bc` G
+	elif [ $filesize -ge 1048576 ]; then
+	    filesize=`echo "scale=2;$filesize/1048576"| bc` M
+	elif [ $filesize -ge 1024 ]; then
+	    filesize=`echo "scale=2;$filesize/1024" | bc` K
+	fi
+
+	echo $filesize
+}
+
 # Fixing file and folder permissions
 function fixperms() {
 	if [ -z "$1" ]; then
