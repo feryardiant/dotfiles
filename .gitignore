@@ -1,5 +1,6 @@
 *.old
 *.bak
+*.log
 *~
 _*
 .directory
