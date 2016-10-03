@@ -176,7 +176,7 @@ fi
 if command -v composer >/dev/null 2>&1; then
 	[[ -z $COMPOSER_HOME ]] && export COMPOSER_HOME=~/.composer
 
-	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$PATH:$composer_bin
+	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$PATH:$COMPOSER_HOME/vendor/bin
 	[[ -f $PWD/composer.json ]] && PATH=$PATH:$PWD/vendor/bin
 fi
 
