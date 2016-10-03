@@ -117,7 +117,7 @@ shellname=`basename $SHELL`
 # ==============================================================================
 
 for sbin_dir in {/sbin,/usr/sbin,/usr/local/sbin}; do
-	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] && PATH=$PATH:$sbin_dir
+	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$PATH:$sbin_dir
 done
 unset sbin_dir
 
@@ -176,12 +176,8 @@ fi
 if command -v composer >/dev/null 2>&1; then
 	[[ -z $COMPOSER_HOME ]] && export COMPOSER_HOME=~/.composer
 
-	composer_bin=$COMPOSER_HOME/vendor/bin
-
-	[[ -d $COMPOSER_HOME && -z "${PATH##*$composer_bin*}" ]] && PATH=$PATH:$composer_bin
+	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$PATH:$composer_bin
 	[[ -f $PWD/composer.json ]] && PATH=$PATH:$PWD/vendor/bin
-
-	unset composer_bin
 fi
 
 # ==============================================================================
