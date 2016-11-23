@@ -4,5 +4,5 @@
 *~
 _*
 .directory
-
+.env
 *.sublime-*
