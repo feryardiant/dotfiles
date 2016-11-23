@@ -76,32 +76,8 @@ alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date
 # 	unset composerbin
 # fi
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-if apt-get &> /dev/null; then
-	alias ag-pasang='sudo apt-get install'
-	alias ag-copot='sudo apt-get purge'
-	alias ag-sundul='sudo apt-get update'
-	alias ag-angkat='sudo apt-get dist-upgrade'
-	alias ag-dongkrak='ag-sundul && ag-angkat'
-	alias ag-sapu='sudo apt-get clean && sudo apt-get autoclean && sudo apt-get autoremove'
-fi
-
-if sudo &> /dev/null; then
-	alias ap2conf="sudo $EDITOR /etc/apache2/apache2.conf"
-	alias phpconf="sudo $EDITOR /etc/php5/apache2/php.ini"
-	alias mysqlconf="sudo $EDITOR /etc/mysql/my.cnf"
-	alias ftpconf="sudo $EDITOR /etc/vsftpd.conf"
-
-	alias vhdir="cd /etc/apache2/sites-available/"
-else
-	server_dir=/cygdrive/c/utils/server
-	alias ap2conf="$EDITOR $server_dir/apache/conf/httpd.conf"
-	alias phpconf="$EDITOR $server_dir/php/php.ini"
-	alias mysqlconf="$EDITOR $server_dir/mysql/my.cnf"
-	alias ftpconf="$EDITOR $server_dir/vsftpd.conf"
-
-	alias vhdir="cd $server_dir/apache/conf/vhost/"
+if command -v notify-send >/dev/null 2>&1; then
+	# Add an "alert" alias for long running commands.  Use like so:
+	#   sleep 10; alert
+	alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 fi
