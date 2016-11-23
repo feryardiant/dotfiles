@@ -2,13 +2,18 @@
 
 set -e
 
+e() {
+    printf '\e[%sm%s\e[0m' "$@"
+}
+
 # usage color "31;0" "string"
 # 0 default, 1 strong, 4 underlined, 5 blink
 # fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
 # bg: 40 black, 41 red, 44 blue, 45 purple
-e() {
-    printf '\e[%sm%s\e[0m' "$@"
-}
+c_err='41'
+c_inf='33'
+c_suc='32'
+c_rst='37'
 
 my_pwd="$PWD"
 now=`date +'%Y-%m-%d_%H-%M-%S'`
@@ -17,7 +22,7 @@ backup_dir=$my_pwd/dotfiles.old/$now
 requirements="git curl vim"
 for program in $requirements; do
     if ! command -v $program >/dev/null 2>&1; then
-        e '41' " We need $program but it's not installed. "$'\n'
+        e $c_err " We need $program but it's not installed. "$'\n'
         exit 1
     fi
 done
@@ -26,18 +31,18 @@ unset requirements program
 git_email=`git config --global user.email`
 git_name=`git config --global user.name`
 
-if [ -z "$git_email" ] && [ -z "$git_name" ]; then
-    e '41' $' Please setup your git config email and name first \n'
-    e '41' $' Use:                                              \n'
-    e '41' $'   - git config --global user.email <your-email>   \n'
-    e '41' $'   - git config --global user.name <your-name>     \n'
+if [[ -z $git_email || -z $git_name ]]; then
+    e $c_err $' Please setup your git config email and name first \n'
+    e $c_err $' Use:                                              \n'
+    e $c_err $'   - git config --global user.email <your-email>   \n'
+    e $c_err $'   - git config --global user.name <your-name>     \n'
     exit 1
 fi
 
 [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
 if command -v zsh >/dev/null 2>&1; then
-    e '33' 'Setup oh-my-zsh'
+    e $c_inf 'Setup oh-my-zsh'
 
     zsh_dir=~/.oh-my-zsh
     [[ -d $zsh_dir ]] && mv $zsh_dir $backup_dir/
@@ -49,10 +54,10 @@ if command -v zsh >/dev/null 2>&1; then
     cd $zsh_dir && git checkout -q -b local && \
     git add themes && git commit -q -m "Add honukai.zsh-theme"
 
-    e '32' $' ✔ Done\n'
+    e $c_suc $' ✔ Done\n'
 fi
 
-e '33' 'Setup dotfiles'
+e $c_inf 'Setup dotfiles'
 
 cd $HOME
 
@@ -69,20 +74,20 @@ for dotfile in $dotfiles; do
 done
 unset dotfile dorfiles
 
-e '32' $' ✔ Done\n'
+e $c_suc $' ✔ Done\n'
 
 if command -v tmux >/dev/null 2>&1; then
-    e '33' 'Setup tmux config'
+    e $c_inf 'Setup tmux config'
 
     [ -f ~/.tmux.conf ] && mv -f ~/.tmux.conf $backup_dir/
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
 
-    e '32' $' ✔ Done\n'
+    e $c_suc $' ✔ Done\n'
 fi
 
 . ~/.bashrc
 
-e '33' 'Setup git config'
+e $c_inf 'Setup git config'
 
 [ -f ~/.gitconfig ] && mv -f ~/.gitconfig $backup_dir/
 cp -f $my_pwd/.gitconfig ~/.gitconfig
@@ -90,8 +95,8 @@ cp -f $my_pwd/.gitconfig ~/.gitconfig
 git config --global user.email "$git_email"
 git config --global user.name "$git_name"
 
-e '32' $' ✔ Done\n'
-e '33' 'Setup Powerline Fonts'
+e $c_suc $' ✔ Done\n'
+e $c_inf 'Setup Powerline Fonts'
 
 declare -A powerline
 powerline[PowerlineSymbols.otf]=~/.local/share/fonts
@@ -102,13 +107,13 @@ for font in ${!powerline[@]}; do
 
     [ -d $installdir ] || mkdir -p $installdir
     [ -f $installdir/$font ] || curl -LSso $installdir/$font https://github.com/powerline/powerline/raw/develop/font/$font
+
+    command -v fc-cache >/dev/null 2>&1 && fc-cache -f $installdir
 done
 unset powerline font installdir
 
-command -v fc-cache >/dev/null 2>&1 && fc-cache -f ~/.local/share/fonts
-
-e '32' $' ✔ Done\n'
-e '33' $'Setup VIM\n'
+e $c_suc $' ✔ Done\n'
+e $c_inf $'Setup VIM\n'
 
 [ -d ~/.vim ] && mv -f ~/.vim $backup_dir/
 mkdir ~/.vim && cd ~/.vim
@@ -119,12 +124,12 @@ for vim_dir in $vim_dirs; do
 done
 unset vim_dir vim_dirs
 
-e "37" '- Installing pathogen'
+e rst '- Installing pathogen'
 
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init -q && git a && git c "Initial commit && install autoload/pathogen" -q
 
-e '32' $' ✔ Done\n'
+e $c_suc $' ✔ Done\n'
 
 declare -A plugins
 plugins[mattn/emmet-vim]=emmet
@@ -148,16 +153,16 @@ for repo in ${!plugins[@]}; do
     #len=$((20 - ${#plugin}))
     #spaces=`printf '%.0s ' {1..$len}`
 
-    e '37' "- Installing $plugin"
+    e $c_rst "- Installing $plugin"
     git submodule -q add github:$repo bundle/$plugin
     git a && git c "$plugin plugin is installed" -q
-    e '32' $' ✔ Done\n'
+    e $c_suc $' ✔ Done\n'
 done
 unset repo plugin
 
 cd $my_pwd
-e '32' $'\nEverything is done ✔\n'
-e '37' 'Your old files are backed up in '
-e '33' "$backup_dir"$'\n'
-e '37' 'Thank you '
-e '33' "$git_name <$git_email>"$'\n'
+e $c_suc $'\nEverything is done ✔\n'
+e $c_rst 'Your old files are backed up in '
+e $c_inf "$backup_dir"$'\n'
+e $c_rst 'Thank you '
+e $c_inf "$git_name <$git_email>"$'\n'
