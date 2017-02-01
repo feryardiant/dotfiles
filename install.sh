@@ -46,7 +46,7 @@ if command -v zsh >/dev/null 2>&1; then
 
     zsh_dir=~/.oh-my-zsh
     [[ ! -d $zsh_dir ]] && git clone -q --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $zsh_dir
-    [[ -d $zsh_dir/themes ]] && ln -s $my_pwd/.zsh-themes/honukai.zsh-theme $zsh_dir/themes/
+    [[ -d $zsh_dir/themes ]] && ln -sf $my_pwd/.zsh-themes/honukai.zsh-theme $zsh_dir/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
 
