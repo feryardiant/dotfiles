@@ -125,33 +125,25 @@ unset sbin_dir
 # RBENV environments
 # ==============================================================================
 
-if command -v rbenv >/dev/null 2>&1; then
-	[[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
+if [[ -d ~/.rbenv ]]; then
+    [[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
 
-	if [[ -d $RBENV_ROOT ]]; then
-		PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
+	PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
 
-		if [ -f "$RBENV_ROOT/completions/rbenv.$shellname" ]; then
-			. "$RBENV_ROOT/completions/rbenv.$shellname"
-		fi
+	if [ -f "$RBENV_ROOT/completions/rbenv.$shellname" ]; then
+		. "$RBENV_ROOT/completions/rbenv.$shellname"
 	fi
-
-	# eval `rbenv init -`
 fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
 
-if command -v phpenv >/dev/null 2>&1; then
-	[[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
+if [[ -d ~/.phpenv ]]; then
+    [[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
 
-	if [[ -d $PHPENV_ROOT ]]; then
-		# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
-		PATH=$PHPENV_ROOT/shims:$PHPENV_ROOT/bin:$PATH
-	fi
-
-	# eval `phpenv init -`
+	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
+	PATH=$PHPENV_ROOT/shims:$PHPENV_ROOT/bin:$PATH
 fi
 
 # ==============================================================================

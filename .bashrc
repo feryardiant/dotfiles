@@ -50,3 +50,6 @@ unset file
 if command -v zsh >/dev/null 2>&1; then
     exec "$SHELL" -l
 fi
+
+# added by travis gem
+[ -f /home/feryardiant/.travis/travis.sh ] && source /home/feryardiant/.travis/travis.sh

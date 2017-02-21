@@ -77,3 +77,6 @@ for file in ~/.{env,exports,aliases,functions}; do
     [[ -r $file && -f $file ]] && . $file
 done
 unset file
+
+# added by travis gem
+[ -f /home/feryardiant/.travis/travis.sh ] && source /home/feryardiant/.travis/travis.sh
