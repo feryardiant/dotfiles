@@ -38,25 +38,15 @@ ys_hg_prompt_info() {
 	fi
 }
 
+local my_prompt="%{$fg[cyan]%}%n %{$fg[white]%}at %{$fg[green]%}%m %{$fg[white]%}in %{$terminfo[bold]$fg[yellow]%}${current_dir}
+%{$reset_color%}${hg_info}${git_info}%{$fg[white]%}[%*] \
+%{$terminfo[bold]$fg[red]%}→ %{$reset_color%}"
+
 # Prompt format: \n # USER at MACHINE in DIRECTORY on git:BRANCH STATE [TIME] \n $
 PROMPT="
-%{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
-%{$fg[cyan]%}%n \
-%{$fg[white]%}in \
-%{$terminfo[bold]$fg[yellow]%}${current_dir}%{$reset_color%}\
-${hg_info}\
-${git_info}
-%{$fg[white]%}[%*] \
-%{$terminfo[bold]$fg[red]%}→ %{$reset_color%}"
+%{$terminfo[bold]$fg[blue]%}$%{$reset_color%} %{$my_prompt%}"
 
 if [[ "$USER" == "root" ]]; then
 PROMPT="
-%{$terminfo[bold]$fg[blue]%}#%{$reset_color%} \
-%{$bg[yellow]%}%{$fg[cyan]%}%n%{$reset_color%} \
-%{$fg[white]%}in \
-%{$terminfo[bold]$fg[yellow]%}${current_dir}%{$reset_color%}\
-${hg_info}\
-${git_info}
-%{$fg[white]%}[%*] \
-%{$terminfo[bold]$fg[red]%}→ %{$reset_color%}"
+%{$terminfo[bold]$fg[red]%}#%{$reset_color%} %{$my_prompt%}"
 fi
