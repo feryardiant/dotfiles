@@ -10,6 +10,8 @@ if has("gui_running")
   set guitablabel=%M\ %t
 endif
 
+set guifont=Menlo\ 12
+
 " Pathogen
 execute pathogen#infect()
 
