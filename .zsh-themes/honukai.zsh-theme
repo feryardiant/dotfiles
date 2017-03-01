@@ -38,9 +38,9 @@ ys_hg_prompt_info() {
 	fi
 }
 
-local my_prompt="%{$fg[cyan]%}%n %{$fg[white]%}at %{$fg[green]%}%m %{$fg[white]%}in %{$terminfo[bold]$fg[yellow]%}${current_dir}
-%{$reset_color%}${hg_info}${git_info}%{$fg[white]%}[%*] \
-%{$terminfo[bold]$fg[red]%}→ %{$reset_color%}"
+local my_prompt="%{$fg[cyan]%}%n %{$fg[white]%}at %{$fg[green]%}%m %{$fg[white]%}in \
+%{$terminfo[bold]$fg[yellow]%}${current_dir}%{$reset_color%}${hg_info}${git_info}
+%{$fg[white]%}[%*] %{$terminfo[bold]$fg[red]%}→ %{$reset_color%}"
 
 # Prompt format: \n # USER at MACHINE in DIRECTORY on git:BRANCH STATE [TIME] \n $
 PROMPT="
