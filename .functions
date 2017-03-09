@@ -10,7 +10,7 @@ function f() {
 
 # Copy w/ progress
 function cp_p() {
-  rsync -WavP --human-readable --progress $1 $2
+	rsync -WavP --human-readable --progress $1 $2
 }
 
 # get gzipped size
@@ -91,7 +91,7 @@ function extract() {
 function phpserv() {
 	if ! command -v php >/dev/null 2>&1; then
 		echo 'Your system does not have PHP binnary installed'
-		exit 1;
+		return 1;
 	fi
 
 	if [ $# -eq 0 ]; then
@@ -129,10 +129,10 @@ function evalssh() {
 
 function clipboard() {
 	case "$OSTYPE" in
-		gnu-linux)
+		linux-gnu)
 			if ! command -v xclip >/dev/null 2>&1; then
 				echo 'This command require xclip to be installed.'
-				exit 1
+				return 1
 			fi
 
 			xclip -selection clipboard -i
@@ -142,38 +142,43 @@ function clipboard() {
 	esac
 }
 
-function addppa() {
+function repo() {
 	if [[ $OSTYPE != 'linux-gnu' ]]; then
 		echo 'This command only work on Linux'
-		exit 1
+		return 1
 	fi
 
 	if [ $# -eq 0 ]; then
-		echo "usage: addppa <ppa>"
+		echo "usage: repo [command] <ppa>"
 		echo ""
-		echo "examples:"
-		echo " - addppa vendor/repo"
-		echo "   that's mean you run"
-		echo "   $ sudo add-apt-repository -y ppa:vendor/repo"
-		echo "   $ sudo apt-get update"
-	else
-		sudo add-apt-repository -y ppa:$1
-		sudo apt-get update
-	fi
-}
-
-# Get list of installed PPAs
-# http://askubuntu.com/a/148968/10706 (modified)
-function listppa() {
-	if [[ $OSTYPE != 'linux-gnu' ]]; then
-		echo 'This command only work on Linux'
-		exit 1
+		echo "Available commands:"
+		echo ""
+		echo " add   Add new repository"
+		echo " list  List all installed repository"
+		return 1
 	fi
 
-	for APT in `find /etc/apt/ -name \*.list`; do
-		grep -Po "(?<=^deb\s).*?(?=#|$)" $APT | while read ENTRY ; do
-			echo '  '${ENTRY}
-		done
-	done
-}
+	case $1 in
+		add)
+			if [ -z $2 ]; then
+				echo "usage: repo add <ppa>"
+				echo ""
+				echo "examples:"
+				echo " - repo add vendor/repo"
+				echo "   that's mean you run"
+				echo "   $ sudo add-apt-repository -y ppa:vendor/repo"
+				echo "   $ sudo apt-get update"
+				return 1
+			fi
 
+			sudo add-apt-repository -y ppa:$2 && sudo apt-get update
+			;;
+		list)
+			for APT in `find /etc/apt/ -name \*.list`; do
+				grep -Po "(?<=^deb\s).*?(?=#|$)" $APT | while read ENTRY ; do
+					echo '  '${ENTRY}
+				done
+			done
+			;;
+	esac
+}
