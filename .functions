@@ -127,6 +127,21 @@ function evalssh() {
 	ssh-add ~/.ssh/*_rsa
 }
 
+function clipboard() {
+	case "$OSTYPE" in
+		gnu-linux)
+			if ! command -v xclip >/dev/null 2>&1; then
+				echo 'This command require xclip to be installed.'
+				exit 1
+			fi
+
+			xclip -selection clipboard -i
+			;;
+		darwin) pbcopy ;;
+		cygwin) clip ;;
+	esac
+}
+
 function addppa() {
 	if [[ $OSTYPE != 'linux-gnu' ]]; then
 		echo 'This command only work on Linux'
