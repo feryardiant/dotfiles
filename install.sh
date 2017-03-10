@@ -134,10 +134,12 @@ declare -A plugins
 plugins[mattn/emmet-vim]=emmet
 plugins[scrooloose/nerdtree]=nerdtree
 plugins[tpope/vim-fugitive]=fugitive
+plugins[gregsexton/gitv]=gitv
 plugins[tpope/vim-surround]=surround
 plugins[scrooloose/syntastic]=syntastic
 plugins[kien/ctrlp.vim]=ctrlp
 plugins[Lokaltog/vim-easymotion]=easymotion
+plugins[godlygeek/tabular]=tabular
 plugins[ervandew/supertab]=supertab
 plugins[reedes/vim-pencil]=pencil
 plugins[Shougo/neocomplcache.vim]=neocomplcache
