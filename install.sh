@@ -144,8 +144,9 @@ plugins[ervandew/supertab]=supertab
 plugins[reedes/vim-pencil]=pencil
 plugins[Shougo/neocomplcache.vim]=neocomplcache
 plugins[terryma/vim-multiple-cursors]=multiple-cursors
-plugins[vim-airline/vim-airline]=vim-airline
-plugins[vim-airline/vim-airline-themes]=vim-airline-themes
+plugins[vim-airline/vim-airline]=airline
+plugins[vim-airline/vim-airline-themes]=airline-themes
+plugins[wakatime/vim-wakatime]=wakatime
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
