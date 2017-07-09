@@ -113,9 +113,11 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 set laststatus=2                                      " Always show status line
 " hi User1 guibg=#455354 guifg=fg      ctermbg=238 ctermfg=fg  gui=bold,underline cterm=bold,underline term=bold,underline
 " hi User2 guibg=#455354 guifg=#CC4329 ctermbg=238 ctermfg=196 gui=bold           cterm=bold           term=bold
-set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
+"set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
 
 let g:airline_powerline_fonts = 1
+let g:airline_theme = 'hybrid'
+
 let g:Powerline_symbols='unicode'
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -164,11 +166,11 @@ command W w
 nnoremap ' `
 
 " Hard to type things
-imap >> →
-imap << ←
-imap ^^ ↑
-imap VV ↓
-imap aaa λ
+"imap >> →
+"imap << ←
+"imap ^^ ↑
+"imap VV ↓
+"imap aaa λ
 
 " Toggle show tabs and trailing spaces (,c)
 set lcs=eol:¬,tab:›\ ,trail:·,extends:>,precedes:<
