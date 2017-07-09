@@ -49,6 +49,9 @@ alias laf='la | grep "^-"'
 # Stopwatch
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 
+# BrowserStack Local
+alias bs-local="`which browserstack-local` -k $BROWSERSTACK_KEY"
+
 # if [[ -n $COMPOSER_HOME ]]; then
 # 	# Disable XDebug and some other module for composer
 # 	if [ -d "/usr/lib/php5" ]; then
