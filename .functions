@@ -28,9 +28,9 @@ function sizeof() {
 	if [[ $size -ge 1073741824 ]]; then
 		fsize=`echo "scale=2;$fsize/1073741824"| bc`G
 	elif [[ $fsize -ge 1048576 ]]; then
-	    fsize=`echo "scale=2;$fsize/1048576"| bc`M
+		fsize=`echo "scale=2;$fsize/1048576"| bc`M
 	elif [[ $fsize -ge 1024 ]]; then
-	    fsize=`echo "scale=2;$fsize/1024" | bc`K
+		fsize=`echo "scale=2;$fsize/1024" | bc`K
 	fi
 
 	echo $fsize
@@ -38,16 +38,24 @@ function sizeof() {
 
 # Fixing file and folder permissions
 function fixperms() {
-	local onpath="."
+	local inPath='.'
+	local filePerm=664
+	local dirPerm=775
 
-	if [ ! -z "$1" ]; then
-		onpath="./$1"
-	fi
+	while getopts ':f:d:p:' opts; do
+		case $opts in
+			p) $inPath="./$OPTARG" ;;
+			f) $filePerm=$OPTARG ;;
+			d) $dirPerm=$OPTARG ;;
+			:) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
+			\?) echo "Invalid option -$OPTARG" >&2; exit 1 ;;
+		esac
+	done
 
 	# Change all files perm to 664
-	find $onpath -type f -exec chmod 664 {} +
+	find $inPath -type f -exec chmod $filePerm {} +
 	# Change all directories perm to 775
-	find $onpath -type d -exec chmod 775 {} +
+	find $inPath -type d -exec chmod $dirPerm {} +
 }
 
 # Extract archives - usage: extract <file>
@@ -109,15 +117,15 @@ function phpserv() {
 
 function print_colours() {
 	if [ -z $1 ]; then
-	    BREAK=1
+		BREAK=1
 	else
-	    BREAK=$1
+		BREAK=$1
 	fi
 	for i in {0..255} ; do
-	    printf "\x1b[38;5;${i}mcolour${i} \t"
-	    if [ $(( i % $BREAK )) -eq $(($BREAK-1)) ] ; then
-	        printf "\n"
-	    fi
+		printf "\x1b[38;5;${i}mcolour${i} \t"
+		if [ $(( i % $BREAK )) -eq $(($BREAK-1)) ] ; then
+			printf "\n"
+		fi
 	done
 }
 
