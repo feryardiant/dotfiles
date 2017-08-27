@@ -150,15 +150,13 @@ fi
 # NVM environments
 # ==============================================================================
 
-if command -v nvm >/dev/null 2>&1; then
-	[[ -z $NVM_DIR ]] && export NVM_DIR=~/.nvm
+[[ -z $NVM_DIR ]] && export NVM_DIR=~/.nvm
 
-	if [ -d "$NVM_DIR" ]; then
-		export NVM_SYMLINK_CURRENT=true
+if [ -d "$NVM_DIR" ]; then
+	export NVM_SYMLINK_CURRENT=true
 
-		. "$NVM_DIR/nvm.sh"
-		. "$NVM_DIR/${shellname}_completion"
-	fi
+	. $NVM_DIR/nvm.sh
+	[[ -f $NVM_DIR/${shellname}_completion ]] && . $NVM_DIR/${shellname}_completion
 fi
 
 # ==============================================================================
