@@ -148,6 +148,7 @@ plugins[terryma/vim-multiple-cursors]=multiple-cursors
 plugins[vim-airline/vim-airline]=airline
 plugins[vim-airline/vim-airline-themes]=airline-themes
 plugins[wakatime/vim-wakatime]=wakatime
+plugins[joonty/vdebug]=vdebug
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
