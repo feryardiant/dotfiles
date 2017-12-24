@@ -1,16 +1,8 @@
 " Make vim more useful
 set nocompatible
 
-" Set extra options when running in GUI mode
-if has("gui_running")
-  set guioptions-=T
-  set background=dark
-  set guioptions+=e
-  set t_Co=256
-  set guitablabel=%M\ %t
-endif
-
-set guifont=Menlo\ 12
+" Enable filetype plugins
+filetype plugin indent on
 
 " Pathogen
 execute pathogen#infect()
@@ -18,8 +10,27 @@ execute pathogen#infect()
 " Enable syntax highlighting
 syntax on
 
-" Enable filetype plugins
-filetype plugin indent on
+" Set extra options when running in GUI mode
+if has("gui_running")
+  set guifont=Menlo\ for\ Powerline
+
+  set guioptions-=T
+  set guioptions+=e
+  set guitablabel=%M\ %t
+
+  set t_Co=256
+else
+  " highlight Comment ctermfg=Gray
+endif
+
+" Vim color scheme http://vimcolors.com/
+set termguicolors
+set background=dark
+let ayucolor="dark"     " light, dark & mirage
+colorscheme ayu
+
+hi Normal guibg=#000000
+"hi NonText guibg=#000000 ctermbg=000
 
 " Change mapleader
 let mapleader = ","
@@ -110,11 +121,8 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
 " Status Line
-set laststatus=2                                      " Always show status line
-" hi User1 guibg=#455354 guifg=fg      ctermbg=238 ctermfg=fg  gui=bold,underline cterm=bold,underline term=bold,underline
-" hi User2 guibg=#455354 guifg=#CC4329 ctermbg=238 ctermfg=196 gui=bold           cterm=bold           term=bold
+set laststatus=2  " Always show status line
 "set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
-
 
 " Speed up viewport scrolling
 nnoremap <C-e> 3<C-e>
@@ -137,6 +145,13 @@ nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
 vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
 vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
 
 if has("mac") || has("macunix")
   nmap <D-j> <M-j>
@@ -177,10 +192,10 @@ imap <PageDown> <C-O><C-D>
 
 " Tab Navgations?
 set switchbuf=usetab
-imap <C-PageUp> :tabprevious<CR>
-imap <C-PageDown> :tabNext<CR>
-nmap <C-PageUp> :tabprevious<CR>
-nmap <C-PageDown> :tabNext<CR>
+"imap <C-PageUp> :tabprevious<CR>
+"imap <C-PageDown> :tabnext<CR>
+"nmap <C-PageUp> :tabprevious<CR>
+"nmap <C-PageDown> :tabnext<CR>
 
 " Pencil.VIM
 let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
@@ -193,14 +208,15 @@ augroup pencil
 augroup END
 
 "" NERDTree configuration
-let g:NERDTreeChDirMode=2
-let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
-let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let g:NERDTreeShowBookmarks=1
-let g:nerdtree_tabs_focus_on_files=1
+let g:NERDTreeChDirMode = 2
+let g:NERDTreeIgnore = ['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let g:NERDTreeShowBookmarks = 1
+let g:nerdtree_tabs_focus_on_files = 1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
+let g:NERDTreeMapOpenInTab = '<C-ENTER>'
 let g:NERDTreeWinSize = 50
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.old,*~
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
 
@@ -226,27 +242,27 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
+let g:airline_theme = 'wombat'
+
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
   let g:airline#extensions#tabline#left_alt_sep = '|'
 
-  let g:airline_left_sep          = '▶'
+  let g:airline_left_sep          = ''
   let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = '◀'
+  let g:airline_right_sep         = ''
   let g:airline_right_alt_sep     = '«'
 
-  let g:airline#extensions#branch#prefix     = '⤴' "➔, ➥, ⎇
+  let g:airline#extensions#branch#prefix     = '∏' "➔, ➥, ⎇
   let g:airline#extensions#readonly#symbol   = '⊘'
   let g:airline#extensions#linecolumn#prefix = '¶'
   let g:airline#extensions#paste#symbol      = 'ρ'
 
   let g:airline_symbols.linenr = '␊'
-  let g:airline_symbols.branch = '⎇'
+  let g:airline_symbols.branch = '∏'
   let g:airline_symbols.paste = 'ρ'
   let g:airline_symbols.whitespace = 'Ξ'
 else
-  let g:airline_theme = 'hybrid'
-
   let g:airline#extensions#tabline#left_sep = ''
   let g:airline#extensions#tabline#left_alt_sep = ''
 

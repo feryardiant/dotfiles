@@ -46,7 +46,7 @@ if command -v zsh >/dev/null 2>&1; then
 
     zsh_dir=~/.oh-my-zsh
     [[ ! -d $zsh_dir ]] && git clone -q --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $zsh_dir
-    [[ -d $zsh_dir/themes ]] && ln -sf $my_pwd/.zsh-themes/honukai.zsh-theme $zsh_dir/themes/
+    [[ -d $zsh_dir/themes ]] && ln -sf $my_pwd/zsh-themes/honukai.zsh-theme $zsh_dir/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
 
@@ -147,8 +147,14 @@ plugins[shawncplus/phpcomplete.vim]=phpcomplete
 plugins[terryma/vim-multiple-cursors]=multiple-cursors
 plugins[vim-airline/vim-airline]=airline
 plugins[vim-airline/vim-airline-themes]=airline-themes
-plugins[wakatime/vim-wakatime]=wakatime
 plugins[joonty/vdebug]=vdebug
+plugins[Yggdroot/indentLine]=indent-lint
+plugins[ayu-theme/ayu-vim]=ayu-vim
+plugins[matze/vim-move]=vim-move
+
+if [[ -f ~/wakatime.cfg ]]; then
+    plugins[wakatime/vim-wakatime]=wakatime
+fi
 
 for repo in ${!plugins[@]}; do
     plugin=${plugins[$repo]}
