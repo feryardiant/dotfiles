@@ -1,3 +1,14 @@
+# usage:
+#   e [color] [string]
+#
+# Available Colour
+# 0 default, 1 strong, 4 underlined, 5 blink
+# fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
+# bg: 40 black, 41 red, 44 blue, 45 purple
+e() {
+    printf '\e[%sm%s\e[0m' "$@"
+}
+
 # Create a new directory and enter it
 function md() {
 	mkdir -p "$@" && cd "$@"
@@ -187,6 +198,48 @@ function repo() {
 					echo '  '${ENTRY}
 				done
 			done
+			;;
+	esac
+}
+
+# BrowserStack Local
+function bslocal() {
+	if ! command -v browserstack-local >/dev/null 2>&1; then
+		echo 'Your system does not have Browserstack Local binnary installed'
+		return 1;
+	fi
+
+	local help_ctx="usage: bslocal [command] [options]
+
+Available commands:
+
+ start    Start browserstack local daemon
+ stop     Stop browserstack local daemon"
+
+	if [ $# -eq 0 ]; then
+		echo $help_ctx
+		return 1
+	fi
+
+	case $1 in
+		start)
+			export BROWSERSTACK_LOCAL=true BROWSERSTACK_LOCAL_IDENTIFIER=${PWD##*/}-`git rev-parse --short HEAD`
+
+			browserstack-local --key ${BROWSERSTACK_ACCESS_KEY} \
+			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
+			--force-local --daemon start ${@:2}
+			;;
+		stop)
+			browserstack-local --key ${BROWSERSTACK_ACCESS_KEY} \
+			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
+			--force-local --daemon stop ${@:2}
+
+			unset BROWSERSTACK_LOCAL BROWSERSTACK_LOCAL_IDENTIFIER
+			;;
+		*)
+			echo "command ${1} is invalid"
+			echo ""
+			echo $help_ctx
 			;;
 	esac
 }

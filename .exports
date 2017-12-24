@@ -112,6 +112,15 @@ fi
 shellname=`basename $SHELL`
 
 # ==============================================================================
+# Browserstack
+# ==============================================================================
+
+if command -v browserstack-local >/dev/null 2>&1; then
+	export BROWSERSTACK_USER=ferywardiyanto1
+	export BROWSERSTACK_ACCESS_KEY=cAWSXxPysHfbbU3h5mN2
+fi
+
+# ==============================================================================
 # This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
 # doesn't included in $PATH, I found this issue on WSL
 # ==============================================================================
