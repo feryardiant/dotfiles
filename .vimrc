@@ -216,12 +216,8 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.old,*~
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
 
-" NeoComplCache.VIM
-let g:neocomplcache_enable_at_startup = 1
-" Use smartcase.
-let g:neocomplcache_enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplcache_min_syntax_length = 3
+" Deoplete.VIM
+let g:deoplete#enable_at_startup = 1
 
 " Multiple-cursor.VIM
 let g:multi_cursor_use_default_mapping=0
@@ -230,7 +226,6 @@ let g:multi_cursor_next_key='<C-n>'
 let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
-
 
 let g:Powerline_symbols='unicode'
 
@@ -244,10 +239,10 @@ if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
   let g:airline#extensions#tabline#left_alt_sep = '|'
 
-  let g:airline_left_sep          = ''
-  let g:airline_left_alt_sep      = '»'
-  let g:airline_right_sep         = ''
-  let g:airline_right_alt_sep     = '«'
+  let g:airline_left_sep      = ''
+  let g:airline_left_alt_sep  = '»'
+  let g:airline_right_sep     = ''
+  let g:airline_right_alt_sep = '«'
 
   let g:airline#extensions#branch#prefix     = '∏' "➔, ➥, ⎇
   let g:airline#extensions#readonly#symbol   = '⊘'
@@ -256,7 +251,7 @@ if !exists('g:airline_powerline_fonts')
 
   let g:airline_symbols.linenr = '␊'
   let g:airline_symbols.branch = '∏'
-  let g:airline_symbols.paste = 'ρ'
+  let g:airline_symbols.paste  = 'ρ'
   let g:airline_symbols.whitespace = 'Ξ'
 else
   let g:airline#extensions#tabline#left_sep = ''
@@ -273,14 +268,6 @@ else
   let g:airline_symbols.linenr = ''
 endif
 
-" Linters Settings
-
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\}
-let g:ale_sign_column_always = 1
-let g:airline#extensions#ale#enabled = 1
-
 " Status Line
 set laststatus=2  " Always show status line
 "set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
@@ -288,6 +275,16 @@ set laststatus=2  " Always show status line
 set statusline=%#warningmsg#
 set statusline=%{SyntastycStatuslineFlag()}
 set statusline=%*
+
+" Linters Settings
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
 
 " Powerline.VIM (binding)
 "set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim

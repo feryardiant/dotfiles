@@ -19,6 +19,14 @@ my_pwd="$PWD"
 now=`date +'%Y-%m-%d_%H-%M-%S'`
 backup_dir=$my_pwd/dotfiles.old/$now
 
+_resque() {
+    if [ -f $1 ] && [ ! -L $1 ]; then
+        mv -f $1 $backup_dir/
+    elif [ -f $1 ] && [ -L $1 ]; then
+        rm -f $1
+    fi
+}
+
 requirements="git curl vim"
 for program in $requirements; do
     if ! command -v $program >/dev/null 2>&1; then
@@ -45,8 +53,8 @@ if command -v zsh >/dev/null 2>&1; then
     e $c_inf 'Setup oh-my-zsh'
 
     zsh_dir=~/.oh-my-zsh
-    [[ ! -d $zsh_dir ]] && git clone -q --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $zsh_dir
-    [[ -d $zsh_dir/themes ]] && ln -sf $my_pwd/zsh-themes/honukai.zsh-theme $zsh_dir/themes/
+    [ ! -d $zsh_dir ] && git clone -q --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $zsh_dir
+    [ -d $zsh_dir/themes ] && ln -sf $my_pwd/zsh-themes/honukai.zsh-theme $zsh_dir/themes/
     [ -f ~/.zshrc ] && mv -f ~/.zshrc $backup_dir/
     ln -s $my_pwd/.zshrc ~/.zshrc
 
@@ -62,7 +70,7 @@ cd $HOME
 
 dotfiles="aliases profile bash_prompt bashrc exports functions vimrc"
 for dotfile in $dotfiles; do
-    [ -f ~/.$dotfile ] && mv -f ~/.$dotfile $backup_dir/
+    _resque ~/.$dotfile
 
     ln -s $my_pwd/.$dotfile .
 
@@ -78,7 +86,7 @@ e $c_suc $' ✔ Done\n'
 if command -v tmux >/dev/null 2>&1; then
     e $c_inf 'Setup tmux config'
 
-    [ -f ~/.tmux.conf ] && mv -f ~/.tmux.conf $backup_dir/
+    _resque ~/.tmux.conf
     ln -s $my_pwd/.tmux.conf ~/.tmux.conf
 
     e $c_suc $' ✔ Done\n'
@@ -88,7 +96,7 @@ fi
 
 e $c_inf 'Setup git config'
 
-[ -f ~/.gitconfig ] && mv -f ~/.gitconfig $backup_dir/
+_resque ~/.gitconfig
 cp -f $my_pwd/.gitconfig ~/.gitconfig
 
 git config --global user.email "$git_email"
@@ -123,7 +131,7 @@ for vim_dir in $vim_dirs; do
 done
 unset vim_dir vim_dirs
 
-e rst '- Installing pathogen'
+e $c_rst '- Installing pathogen'
 
 mkdir -p autoload bundle && curl -LSso autoload/pathogen.vim https://tpo.pe/pathogen.vim && \
 git init -q && git a && git c "Initial commit && install autoload/pathogen" -q
@@ -142,7 +150,9 @@ plugins[Lokaltog/vim-easymotion]=easymotion
 plugins[godlygeek/tabular]=tabular
 plugins[ervandew/supertab]=supertab
 plugins[reedes/vim-pencil]=pencil
-plugins[Shougo/neocomplcache.vim]=neocomplcache
+plugins[roxma/nvim-yarp]=nvim-yarp
+plugins[roxma/vim-hug-neovim-rpc]=vim-hug-neovim-rpc
+plugins[Shougo/deoplete.nvim]=deoplete
 plugins[shawncplus/phpcomplete.vim]=phpcomplete
 plugins[terryma/vim-multiple-cursors]=multiple-cursors
 plugins[vim-airline/vim-airline]=airline
@@ -170,6 +180,11 @@ for repo in ${!plugins[@]}; do
     e $c_suc $' ✔ Done\n'
 done
 unset repo plugin
+
+e $c_inf "Finishing VIM setup"
+cd ~/.vim/ && git submodule update --init --recursive -q
+e $c_suc $' ✔ Done\n'
+# cd ~/.vim/bundle/completeme && python3 install.py --js-completer --clang-completer > /dev/null
 
 cd $my_pwd
 e $c_suc $'\nEverything is done ✔\n'
