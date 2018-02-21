@@ -151,6 +151,7 @@ plugins[joonty/vdebug]=vdebug
 plugins[Yggdroot/indentLine]=indent-lint
 plugins[ayu-theme/ayu-vim]=ayu-vim
 plugins[matze/vim-move]=vim-move
+plugins[posva/vim-vue]=vim-vue
 
 if [[ -f ~/wakatime.cfg ]]; then
     plugins[wakatime/vim-wakatime]=wakatime
