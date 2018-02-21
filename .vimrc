@@ -215,7 +215,7 @@ let g:NERDTreeShowBookmarks = 1
 let g:nerdtree_tabs_focus_on_files = 1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeMapOpenInTab = '<C-ENTER>'
-let g:NERDTreeWinSize = 50
+let g:NERDTreeWinSize = 36
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.old,*~
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
