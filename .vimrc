@@ -120,10 +120,6 @@ map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
 
-" Status Line
-set laststatus=2  " Always show status line
-"set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
-
 " Speed up viewport scrolling
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
@@ -276,6 +272,22 @@ else
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
 endif
+
+" Linters Settings
+
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\}
+let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+
+" Status Line
+set laststatus=2  " Always show status line
+"set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
+
+set statusline=%#warningmsg#
+set statusline=%{SyntastycStatuslineFlag()}
+set statusline=%*
 
 " Powerline.VIM (binding)
 "set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
