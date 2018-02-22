@@ -5,13 +5,48 @@ set nocompatible
 filetype plugin indent on
 
 " Pathogen
-execute pathogen#infect()
+call plug#begin()
+
+Plug 'wvffle/vimterm'
+Plug 'mattn/emmet-vim'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'tpope/vim-fugitive'
+Plug 'gregsexton/gitv'
+Plug 'tpope/vim-surround'
+Plug 'w0rp/ale'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'kien/ctrlp.vim'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'godlygeek/tabular'
+Plug 'ervandew/supertab'
+Plug 'reedes/vim-pencil'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'joonty/vdebug'
+Plug 'matze/vim-move'
+Plug 'posva/vim-vue', { 'for': 'vue' }
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'Yggdroot/indentLine'
+Plug 'ayu-theme/ayu-vim'
+
+Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+call plug#end()
 
 " Enable syntax highlighting
 syntax on
 
 " Set extra options when running in GUI mode
-if has("gui_running")
+if has('gui_running')
   set guifont=Menlo\ for\ Powerline
 
   set guioptions-=T
@@ -48,7 +83,6 @@ set undodir=~/.cache/vim/undo
 set autoindent smartindent copyindent                 " Auto/Smart/Copy indent from last line when starting new line.
 set backspace=indent,eol,start
 set encoding=utf-8 nobomb                             " BOM often causes trouble
-set esckeys                                           " Allow cursor keys in insert mode.
 set formatoptions=
 set formatoptions+=c                                  " Format comments
 set formatoptions+=r                                  " Continue comments by default
@@ -96,7 +130,6 @@ set showcmd                                           " Show us the command we'r
 set showfulltag                                       " show full completion tags
 set title                                             " Show the filename in the window titlebar.
 set ttyfast                                           " Send more characters at a given time.
-set ttymouse=xterm                                    " Set mouse type to xterm.
 set undofile                                          " Persistent Undo.
 set suffixes=.bak,~,.swp,.swo,.o,.d,.info,.aux,.log,.dvi,.pdf,.bin,.bbl,.blg,.brf,.cb,.dmg,.exe,.ind,.idx,.ilg,.inx,.out,.toc,.pyc,.pyd,.dll
 set wildchar=<TAB>                                    " Character for CLI TAB-completion.
@@ -106,6 +139,11 @@ set wildmenu                                          " Hitting TAB in command m
 set wildmode=list:longest                             " Complete only until point of ambiguity.
 set winminheight=0                                    " Allow splits to be reduced to a single line.
 set wrapscan                                          " Searches wrap around end of file
+
+if !has('nvim')
+  set esckeys                                         " Allow cursor keys in insert mode.
+  set ttymouse=xterm                                  " Set mouse type to xterm.
+endif
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnew<cr>
@@ -280,11 +318,20 @@ set statusline=%*
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \}
-let g:ale_sign_column_always = 1
+let g:ale_sign_error = '»'
+let g:ale_sign_warning = '›'
+
 let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_column_always = 1
+let g:ale_open_list = 1
+let g:ale_keep_list_window_open = 1
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
+
+" VimTerm Settings
+nnoremap <F12> :call vimterm#toggle() <CR>
+tnoremap <F12> <C-\><C-n> :call vimterm#toggle() <CR>
 
 " Powerline.VIM (binding)
 "set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
