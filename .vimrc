@@ -7,7 +7,6 @@ filetype plugin indent on
 " Pathogen
 call plug#begin()
 
-Plug 'wvffle/vimterm'
 Plug 'mattn/emmet-vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
@@ -15,7 +14,7 @@ Plug 'gregsexton/gitv'
 Plug 'tpope/vim-surround'
 Plug 'w0rp/ale'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'kien/ctrlp.vim'
+Plug 'kien/ctrlp.vim', { 'on': 'CtrlP' }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'godlygeek/tabular'
 Plug 'ervandew/supertab'
@@ -33,6 +32,7 @@ Plug 'ayu-theme/ayu-vim'
 Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
 
 if has('nvim')
+  Plug 'wvffle/vimterm'
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -60,7 +60,7 @@ endif
 
 " Vim color scheme http://vimcolors.com/
 set termguicolors
-set background=dark
+"set background=dark
 let ayucolor="dark"     " light, dark & mirage
 colorscheme ayu
 
@@ -197,8 +197,10 @@ endif
 " Sudo write (,W)
 noremap <leader>W :w !sudo tee %<CR>
 
-" Remap :W to :w
-command W w
+if !has('nvim')
+  " Remap :W to :w
+  command W w
+endif
 
 " Better mark jumping (line + col)
 nnoremap ' `
@@ -216,7 +218,7 @@ set lcs=eol:¬,tab:›\ ,trail:·,extends:>,precedes:<
 nnoremap ,c <Esc>:set list!<CR>
 
 " Clear last search (,qs)
-map ,qs <Esc>:noh<CR>
+map <Esc> :noh<CR>
 
 " Fix page up and down
 map <PageUp> <C-U>
@@ -226,10 +228,14 @@ imap <PageDown> <C-O><C-D>
 
 " Tab Navgations?
 set switchbuf=usetab
-"imap <C-PageUp> :tabprevious<CR>
-"imap <C-PageDown> :tabnext<CR>
-"nmap <C-PageUp> :tabprevious<CR>
-"nmap <C-PageDown> :tabnext<CR>
+map <C-PageUp>    :bprev!<CR>
+map <C-PageDown>  :bnext!<CR>
+map <C-t>         :tabnew<CR>
+map <C-w>         :tabclose<CR>
+inoremap <C-S-Tab>  <Esc>:tabprevious<CR>i
+inoremap <C-Tab>    <Esc>:tabnext<CR>i
+inoremap <C-t>      <Esc>:tabnew<CR>i
+inoremap <C-w>      <Esc>:tabclose<CR>i
 
 " Pencil.VIM
 let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
@@ -250,9 +256,12 @@ let g:nerdtree_tabs_focus_on_files = 1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeMapOpenInTab = '<C-ENTER>'
 let g:NERDTreeWinSize = 36
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite,*.old,*~
+
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 noremap <F3> :NERDTreeToggle<CR>
+
+" CtrlP Settings
+let g:ctrlp_custom_ignore='\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))'
 
 " Deoplete.VIM
 let g:deoplete#enable_at_startup = 1
@@ -260,8 +269,8 @@ let g:deoplete#enable_at_startup = 1
 " Multiple-cursor.VIM
 let g:multi_cursor_use_default_mapping=0
 " Default mapping
-let g:multi_cursor_next_key='<C-n>'
-let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_prev_key='<C-n>'
+let g:multi_cursor_next_key='<C-S-N>'
 let g:multi_cursor_skip_key='<C-x>'
 let g:multi_cursor_quit_key='<Esc>'
 
@@ -271,7 +280,8 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-let g:airline_theme = 'wombat'
+let g:airline_theme='wombat'
+let g:airline#extensions#tabline#enabled=1
 
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
@@ -306,12 +316,14 @@ else
   let g:airline_symbols.linenr = ''
 endif
 
+set colorcolumn=80,100
+"set ruler
+
 " Status Line
 set laststatus=2  " Always show status line
 "set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
 
 set statusline=%#warningmsg#
-set statusline=%{SyntastycStatuslineFlag()}
 set statusline=%*
 
 " Linters Settings
