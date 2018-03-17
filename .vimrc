@@ -221,21 +221,21 @@ nnoremap ,c <Esc>:set list!<CR>
 map <Esc> :noh<CR>
 
 " Fix page up and down
-map <PageUp> <C-U>
-map <PageDown> <C-D>
-imap <PageUp> <C-O><C-U>
-imap <PageDown> <C-O><C-D>
+"map <PageUp> <C-U>
+"map <PageDown> <C-D>
+"imap <PageUp> <C-O><C-U>
+"imap <PageDown> <C-O><C-D>
 
 " Tab Navgations?
 set switchbuf=usetab
-map <C-PageUp>    :bprev!<CR>
-map <C-PageDown>  :bnext!<CR>
+"map <C-PageUp>    :bprev!<CR>
+"map <C-PageDown>  :bnext!<CR>
 map <C-t>         :tabnew<CR>
 map <C-w>         :tabclose<CR>
-inoremap <C-S-Tab>  <Esc>:tabprevious<CR>i
-inoremap <C-Tab>    <Esc>:tabnext<CR>i
-inoremap <C-t>      <Esc>:tabnew<CR>i
-inoremap <C-w>      <Esc>:tabclose<CR>i
+"inoremap <C-PageUp>    <Esc>:tabprevious<CR>i
+"inoremap <C-PageDown>  <Esc>:tabnext<CR>i
+inoremap <C-t>         <Esc>:tabnew<CR>i
+" inoremap <C-w>         <Esc>:tabclose<CR>i
 
 " Pencil.VIM
 let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
