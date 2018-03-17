@@ -71,7 +71,7 @@ e $c_inf 'Setup dotfiles'
 
 cd $HOME
 
-dotfiles="aliases profile bash_prompt bashrc exports functions"
+dotfiles="aliases profile bash_prompt bashrc exports functions hyper.js"
 for dotfile in $dotfiles; do
     _resque ~/.$dotfile
 
