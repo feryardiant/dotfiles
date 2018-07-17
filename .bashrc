@@ -9,7 +9,7 @@ case $- in
 esac
 
 if [[ `basename $SHELL` = bash ]]; then
-	# append to the history file, don't overwrite it
+	# append to the history file, dont overwrite it
 	shopt -s histappend
 
 	# check the window size after each command and, if necessary,

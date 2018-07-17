@@ -1,6 +1,6 @@
 [user]
-	name = Fery Wardiyanto
-	email = ferywardiyanto@gmail.com
+    name = Fery Wardiyanto
+    email = ferywardiyanto@gmail.com
 
 [apply]
     # Detect whitespace errors when applying a patch
@@ -9,11 +9,11 @@
 [core]
     excludesfile = ~/.gitignore_global
     attributesfile = ~/.gitattributes_global
-	editor = nvim
-	trustctime = false
+    editor = nvim
+    trustctime = false
 
 [diff]
-	tool = vimdiff
+    tool = vimdiff
 
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
@@ -29,7 +29,13 @@
 
 [push]
     # Push to remote with same branch name as local
-	default = matching
+    default = matching
+
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 
 # [pull]
 #     rebase = true

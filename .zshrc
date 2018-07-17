@@ -45,11 +45,15 @@ ZSH_THEME="honukai"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# https://github.com/robbyrussell/oh-my-zsh/issues/6835
+export ZSH_DISABLE_COMPFIX=true
+
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git npm)
+# plugins=(sudo ubuntu tmux wp-cli git lol per-directory-history supervisor node npm npx nvm composer gulp laravel )
+plugins=(sudo ubuntu tmux wp-cli git lol supervisor node npm npx nvm composer gulp laravel)
 
 # User configuration
 
@@ -77,7 +81,4 @@ for file in ~/.{env,exports,aliases,functions}; do
     [[ -r $file && -f $file ]] && . $file
 done
 unset file
-
-# added by travis gem
-[ -f /home/feryardiant/.travis/travis.sh ] && source /home/feryardiant/.travis/travis.sh
 

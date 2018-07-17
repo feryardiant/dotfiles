@@ -112,15 +112,6 @@ fi
 shellname=`basename $SHELL`
 
 # ==============================================================================
-# Browserstack
-# ==============================================================================
-
-if command -v browserstack-local >/dev/null 2>&1; then
-	export BROWSERSTACK_USER=ferywardiyanto1
-	export BROWSERSTACK_ACCESS_KEY=cAWSXxPysHfbbU3h5mN2
-fi
-
-# ==============================================================================
 # This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
 # doesn't included in $PATH, I found this issue on WSL
 # ==============================================================================
@@ -129,6 +120,14 @@ for sbin_dir in {/sbin,/usr/sbin,/usr/local/sbin}; do
 	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$PATH:$sbin_dir
 done
 unset sbin_dir
+
+# ==============================================================================
+# Gem user bin
+# ==============================================================================
+
+if command -v ruby >/dev/null 2>&1 && command -v gem >/dev/null 2>&1; then
+    PATH=$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH
+fi
 
 # ==============================================================================
 # RBENV environments
@@ -251,5 +250,13 @@ fi
 # 	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
 # 	PATH="$ORACLE_HOME/bin:$PATH"
 # fi
+
+# ==============================================================================
+# Oh-My-ZSH permission fix
+# ==============================================================================
+
+export ZSH_DISABLE_COMPFIX=true
+
+# ==============================================================================
 
 unset shellname
