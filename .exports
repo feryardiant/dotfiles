@@ -165,6 +165,9 @@ if [ -d "$NVM_DIR" ]; then
 
 	. $NVM_DIR/nvm.sh
 	[[ -f $NVM_DIR/${shellname}_completion ]] && . $NVM_DIR/${shellname}_completion
+    
+    # If using WSL & Node.js Windows is installed
+    [[ -d $NVM_DIR/current/bin && -z "${PATH##*$NVM_DIR/versions/$(node -v)/bin*}" ]] && PATH=$NVM_DIR/current/bin:$PATH
 fi
 
 # ==============================================================================
@@ -174,8 +177,9 @@ fi
 if command -v composer >/dev/null 2>&1 && [[ $OSTYPE != 'cygwin' ]]; then
 	[[ -z $COMPOSER_HOME ]] && export COMPOSER_HOME=~/.composer
 
-	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$PATH:$COMPOSER_HOME/vendor/bin
-	[[ -f $PWD/composer.json ]] && PATH=$PATH:$PWD/vendor/bin
+	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$COMPOSER_HOME/vendor/bin:$PATH
+	
+	[[ -f $PWD/composer.json ]] && PATH=$PWD/vendor/bin:$PATH
 fi
 
 # ==============================================================================
