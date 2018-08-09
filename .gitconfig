@@ -1,6 +1,6 @@
 [user]
-    name = Fery Wardiyanto
-    email = ferywardiyanto@gmail.com
+	name = Fery Wardiyanto
+	email = ferywardiyanto@gmail.com
 
 [apply]
     # Detect whitespace errors when applying a patch
@@ -18,7 +18,7 @@
 [merge]
     # Include summaries of merged commits in newly created merge commit messages
     log = true
-    tool = vimdiff
+	tool = vimdiff
     conflictstyle = diff3
 
 [mergetool]
@@ -33,8 +33,8 @@
 
 [filter "lfs"]
     clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    process = git-lfs filter-process
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
     required = true
 
 # [pull]
@@ -101,3 +101,9 @@
 [url "git://gist.github.com/"]
     insteadOf = "gist:"
 
+[url "git@gitlab.com:"]
+    insteadOf = "gl:"
+    pushInsteadOf = "gitlab:"
+    pushInsteadOf = "git://gitlab.com/"
+[url "git://gitlab.com/"]
+    insteadOf = "gitlab:"
