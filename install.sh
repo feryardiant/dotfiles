@@ -133,7 +133,7 @@ unset vim_dir vim_dirs
 if command -v nvim >/dev/null 2>&1; then
     plug_path='.local/share/nvim/site/autoload'
     vimrc_path='.config/nvim/init.vim'
-    mkdir ~/.config/nvim
+    [[ -d ~/.config/nvim ]] || mkdir ~/.config/nvim
 else
     plug_path='.vim/autoload'
     vimrc_path='.vimrc'
