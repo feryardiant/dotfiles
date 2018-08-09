@@ -53,7 +53,8 @@ export ZSH_DISABLE_COMPFIX=true
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 # plugins=(sudo ubuntu tmux wp-cli git lol per-directory-history supervisor node npm npx nvm composer gulp laravel )
-plugins=(sudo ubuntu tmux wp-cli git lol supervisor node npm npx nvm composer gulp laravel)
+# plugins=(sudo ubuntu tmux wp-cli git lol supervisor node npm npx nvm composer gulp laravel)
+plugins=(sudo ubuntu lol supervisor)
 
 # User configuration
 
