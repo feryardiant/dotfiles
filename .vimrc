@@ -28,6 +28,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'Yggdroot/indentLine'
 Plug 'ayu-theme/ayu-vim'
+Plug 'ryanoasis/vim-devicons'
 
 Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
 
@@ -268,13 +269,15 @@ let g:deoplete#enable_at_startup = 1
 
 " Multiple-cursor.VIM
 let g:multi_cursor_use_default_mapping=0
-" Default mapping
-let g:multi_cursor_prev_key='<C-n>'
-let g:multi_cursor_next_key='<C-S-N>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<Esc>'
 
-let g:Powerline_symbols='unicode'
+" Default mapping
+let g:multi_cursor_prev_key = '<C-n>'
+let g:multi_cursor_next_key = '<C-S-N>'
+let g:multi_cursor_skip_key = '<C-x>'
+let g:multi_cursor_quit_key = '<Esc>'
+
+"let g:Powerline_symbols = 'unicode'
+let g:airline_powerline_fonts = 1
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -283,38 +286,11 @@ endif
 let g:airline_theme='wombat'
 let g:airline#extensions#tabline#enabled=1
 
-"if !exists('g:airline_powerline_fonts')
-"  let g:airline#extensions#tabline#left_sep = ' '
-"  let g:airline#extensions#tabline#left_alt_sep = '|'
-"
-"  let g:airline_left_sep      = ''
-"  let g:airline_left_alt_sep  = '»'
-"  let g:airline_right_sep     = ''
-"  let g:airline_right_alt_sep = '«'
-"
-"  let g:airline#extensions#branch#prefix     = '⎇' "➔, ➥, ⎇
-"  let g:airline#extensions#readonly#symbol   = '⊘'
-"  let g:airline#extensions#linecolumn#prefix = '¶'
-"  let g:airline#extensions#paste#symbol      = 'ρ'
-"
-"  let g:airline_symbols.linenr = '␊'
-"  let g:airline_symbols.branch = '∏'
-"  let g:airline_symbols.paste  = 'ρ'
-"  let g:airline_symbols.whitespace = 'Ξ'
-"else
-"  let g:airline#extensions#tabline#left_sep = ''
-"  let g:airline#extensions#tabline#left_alt_sep = ''
-"
-"  " powerline symbols
-"  let g:airline_left_sep = ''
-"  let g:airline_left_alt_sep = ''
-"  let g:airline_right_sep = ''
-"  let g:airline_right_alt_sep = ''
-"
-"  let g:airline_symbols.branch = ''
-"  let g:airline_symbols.readonly = ''
-"  let g:airline_symbols.linenr = ''
-"endif
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
 
 set colorcolumn=80,100
 "set ruler
@@ -329,17 +305,27 @@ set statusline=%*
 " Linters Settings
 let g:ale_linters = {
 \   'javascript': ['eslint'],
+\   'jsx': ['stylelint', 'eslint'],
+\   'vue': ['eslint'],
 \}
+let g:ale_pattern_options = {
+\   '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
+\   '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
+\}
+
+let g:ale_pattern_options_enabled = 1
 let g:ale_sign_error = '»'
 let g:ale_sign_warning = '›'
 
 let g:airline#extensions#ale#enabled = 1
 let g:ale_sign_column_always = 1
-let g:ale_open_list = 1
-let g:ale_keep_list_window_open = 1
+"let g:ale_open_list = 1
+"let g:ale_keep_list_window_open = 1
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
+
+let g:ale_javascript_eslint_suppress_missing_config = 1
 
 " VimTerm Settings
 nnoremap <F12> :call vimterm#toggle() <CR>
