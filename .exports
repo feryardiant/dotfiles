@@ -288,5 +288,21 @@ export ZSH_DISABLE_COMPFIX=true
 export NODEJS_CHECK_SIGNATURES=no
 
 # ==============================================================================
+# Puppeteer
+# ==============================================================================
+
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+export CHROMIUM_PATH=$HOME/.local/bin/chrome
+
+# ==============================================================================
+# PostgreSQL
+# See : https://www.postgresql.org/docs/10/libpq-envars.html
+# ==============================================================================
+
+export PGHOST='127.0.0.1'
+export PGUSER='postgres'
+export PGPASSWORD='secret'
+
+# ==============================================================================
 
 unset shellname
