@@ -83,3 +83,6 @@ for file in ~/.{env,exports,aliases,functions}; do
 done
 unset file
 
+
+# added by travis gem
+[ -f /home/fery/.travis/travis.sh ] && source /home/fery/.travis/travis.sh

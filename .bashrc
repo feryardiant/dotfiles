@@ -55,3 +55,6 @@ fi
 
 # added by travis gem
 [ -f /home/feryardiant/.travis/travis.sh ] && source /home/feryardiant/.travis/travis.sh
+
+# added by travis gem
+[ -f /home/fery/.travis/travis.sh ] && source /home/fery/.travis/travis.sh
