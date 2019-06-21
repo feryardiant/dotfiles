@@ -49,7 +49,7 @@ for file in ~/.{env,exports,aliases,functions,bash_prompt}; do
 done
 unset file
 
-if command -v zsh >/dev/null 2>&1; then
+if test -t 1; then
     exec "$SHELL" -l
 fi
 
