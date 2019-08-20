@@ -1,5 +1,5 @@
 # Import basic utilities
-. ~/.dotfiles/scripts/util.sh
+. $DOTFILES_DIR/scripts/util.sh
 
 # Create a new directory and enter it
 function md() {
