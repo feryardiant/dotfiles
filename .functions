@@ -1,13 +1,5 @@
-# usage:
-#   e [color] [string]
-#
-# Available Colour
-# 0 default, 1 strong, 4 underlined, 5 blink
-# fg: 31 red,  32 green, 33 yellow, 34 blue, 35 purple, 36 cyan, 37 white
-# bg: 40 black, 41 red, 44 blue, 45 purple
-e() {
-    printf '\e[%sm%s\e[0m' "$@"
-}
+# Import basic utilities
+. ~/.dotfiles/scripts/util.sh
 
 # Create a new directory and enter it
 function md() {
@@ -20,7 +12,7 @@ function f() {
 }
 
 # Copy w/ progress
-function cp_p() {
+function copy() {
 	rsync -WavP --human-readable --progress $1 $2
 }
 
@@ -99,7 +91,7 @@ function extract() {
 			*.tgz) tar xzf "$fullpath" ;;
 			*.txz) tar Jxvf "$fullpath" ;;
 			*.zip) unzip "$fullpath" ;;
-			*) echo "'$1' cannot be extracted via extract()" && cd .. && ! $didfolderexist && rm -r "$foldername" ;;
+			*) _err "'$1' cannot be extracted via extract()"$'\n' && cd .. && ! $didfolderexist && rm -r "$foldername" ;;
 		esac
 	else
 		echo "'$1' is not a valid file"
@@ -108,8 +100,8 @@ function extract() {
 
 # PHP Server
 function phpserv() {
-	if ! command -v php >/dev/null 2>&1; then
-		echo 'Your system does not have PHP binnary installed'
+	if ! _has_pkg 'php'; then
+		_err "Your system does not have PHP binnary installed"$'\n'
 		return 1;
 	fi
 
@@ -149,8 +141,8 @@ function evalssh() {
 function clipboard() {
 	case "$OSTYPE" in
 		linux-gnu)
-			if ! command -v xclip >/dev/null 2>&1; then
-				echo 'This command require xclip to be installed.'
+			if ! _has_pkg 'xclip'; then
+				_err "This command require xclip to be installed"$'\n'
 				return 1
 			fi
 
@@ -163,7 +155,7 @@ function clipboard() {
 
 function repo() {
 	if [[ $OSTYPE != 'linux-gnu' ]]; then
-		echo 'This command only work on Linux'
+		_err "This command only work on Linux"$'\n'
 		return 1
 	fi
 
@@ -205,7 +197,7 @@ function repo() {
 # BrowserStack Local
 function bslocal() {
 	if ! command -v browserstack-local >/dev/null 2>&1; then
-		echo 'Your system does not have Browserstack Local binnary installed'
+		_err "Your system does not have Browserstack Local binnary installed"$'\n'
 		return 1;
 	fi
 
