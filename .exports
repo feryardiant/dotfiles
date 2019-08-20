@@ -106,7 +106,7 @@ else
 fi
 
 if command -v zsh >/dev/null 2>&1; then
-    export SHELL=`which zsh`
+	export SHELL=`which zsh`
 fi
 
 shellname=`basename $SHELL`
@@ -127,20 +127,21 @@ unset sbin_dir
 # ==============================================================================
 
 if [ -d ~/.asdf ]; then
-    if [ -f ~/.asdf/asdf.sh ]; then
-        . ~/.asdf/asdf.sh
-    fi
+	if [ -f ~/.asdf/asdf.sh ]; then
+		. ~/.asdf/asdf.sh
+	fi
 
-    if [ -f ~/.asdf/completions/asdf.bash ]; then
-        . ~/.asdf/completions/asdf.bash
-    fi
+	if [ -f ~/.asdf/completions/asdf.bash ]; then
+		. ~/.asdf/completions/asdf.bash
+	fi
 else
+
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
 
 	if [[ -d ~/.rbenv ]]; then
-	    [[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
+		[[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
 
 		PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
 
@@ -154,7 +155,7 @@ else
 # ==============================================================================
 
 	if [[ -d ~/.phpenv ]]; then
-	    [[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
+		[[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
 
 	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
 		PATH=$PHPENV_ROOT/shims:$PHPENV_ROOT/bin:$PATH
@@ -172,8 +173,8 @@ else
 		. $NVM_DIR/nvm.sh
 		[[ -f $NVM_DIR/${shellname}_completion ]] && . $NVM_DIR/${shellname}_completion
 
-	    # If using WSL & Node.js Windows is installed
-	    [[ -d $NVM_DIR/current/bin && -z "${PATH##*$NVM_DIR/versions/$(node -v)/bin*}" ]] && PATH=$NVM_DIR/current/bin:$PATH
+		# If using WSL & Node.js Windows is installed
+		[[ -d $NVM_DIR/current/bin && -z "${PATH##*$NVM_DIR/versions/$(node -v)/bin*}" ]] && PATH=$NVM_DIR/current/bin:$PATH
 	fi
 fi
 
@@ -182,7 +183,7 @@ fi
 # ==============================================================================
 
 if command -v ruby >/dev/null 2>&1 && command -v gem >/dev/null 2>&1; then
-    PATH=$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH
+	PATH=$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH
 fi
 
 
@@ -242,15 +243,15 @@ fi
 # ==============================================================================
 
 if command -v go >/dev/null 2>&1; then
-    if [ -d ~/.local/share/go ]; then
-        export GOROOT=~/.local/share/go
-        PATH=$GOROOT/bin:$PATH
-    fi
+	if [ -d ~/.local/share/go ]; then
+		export GOROOT=~/.local/share/go
+		PATH=$GOROOT/bin:$PATH
+	fi
 
-    if [ -d ~/.local/share/go-packages ]; then
-        export GOPATH=~/.local/share/go-packages
-        PATH=$GOPATH/bin:$PATH
-    fi
+	if [ -d ~/.local/share/go-packages ]; then
+		export GOPATH=~/.local/share/go-packages
+		PATH=$GOPATH/bin:$PATH
+	fi
 fi
 
 # ==============================================================================
