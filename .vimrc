@@ -328,8 +328,11 @@ let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
 let g:ale_javascript_eslint_suppress_missing_config = 1
 
 " VimTerm Settings
-nnoremap <F12> :call vimterm#toggle() <CR>
-tnoremap <F12> <C-\><C-n> :call vimterm#toggle() <CR>
+if has('nvim')
+  tnoremap <F12> <C-\><C-n> :call vimterm#toggle() <CR>
+else
+  nnoremap <F12> :call vimterm#toggle() <CR>
+endif
 
 " Powerline.VIM (binding)
 "set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim

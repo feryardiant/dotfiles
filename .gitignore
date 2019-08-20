@@ -4,5 +4,6 @@
 *~
 _*
 .directory
+.vagrant
 .env
 *.sublime-*
