@@ -35,7 +35,7 @@ if ! shopt -oq posix; then
 	fi
 fi
 
-#[ -z "$TMUX" ] && { tmux attach || exec tmux new-session && exit; }
+# [ -z "$TMUX" ] && { tmux attach || exec tmux new-session && exit; }
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

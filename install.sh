@@ -23,7 +23,7 @@ _resque() {
 
 # Initialize
 e $c_inf 'Configure'
-. $my_pwd/scripts/init.sh > /dev/null 2>&1
+. $my_pwd/scripts/init.sh
 e $c_suc $' ✔ Done\n'
 
 cd $HOME
@@ -61,8 +61,6 @@ fi
 
 echo "$envContent" > ~/.env
 sed -i "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$my_pwd'@g" ~/.env
-
-# source ~/.bashrc
 
 e $c_suc $' ✔ Done\n'
 
@@ -110,7 +108,7 @@ ln -sf $my_pwd/.tmux.conf ~/.tmux.conf
 e $c_suc $' ✔ Done\n'
 
 # ------------------------------------------------------------------------------
-# ZSH
+# Shell Profile
 # ------------------------------------------------------------------------------
 
 if _has_pkg 'zsh'; then
@@ -175,10 +173,13 @@ e $c_suc $' ✔ Done\n'
 # DONE
 # ------------------------------------------------------------------------------
 
+# Reload shell
 cd $my_pwd
+
 e $c_suc $'\nEverything is done ✔\n'
 e $c_rst 'Your old files are backed up in '
 e $c_inf "=> $backup_dir"$'\n'
+
 e $c_rst 'Thank you'
 [[ ! -z $git_name ]] && e $c_inf ' $git_name'
 [[ ! -z $git_email ]] && e $c_inf ' <$git_email>'
