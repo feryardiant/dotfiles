@@ -53,6 +53,3 @@ unset dotfile
 
 # Bash Prompt
 PS1="\n\$ \[$blue\]\u \[$yellow\]\w\[\033[m\]\[$magenta\]\$(__git_ps1)\n\[$white\]→ "
-
-# added by travis gem
-[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
