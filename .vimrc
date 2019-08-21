@@ -62,8 +62,13 @@ endif
 " Vim color scheme http://vimcolors.com/
 set termguicolors
 "set background=dark
-let ayucolor="dark"     " light, dark & mirage
-colorscheme ayu
+
+try
+  let ayucolor="dark"     " light, dark & mirage
+  colorscheme ayu
+catch /^Vim\%((\a\+)\)\=:E185/
+  " deal with it
+endtry
 
 hi Normal guibg=#000000
 "hi NonText guibg=#000000 ctermbg=000
