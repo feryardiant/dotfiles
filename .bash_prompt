@@ -1,1 +1,0 @@
-PS1="\[$blue\]\u \[$yellow\]\w\[\033[m\]\[$magenta\]\$(__git_ps1)\n\[$green\][\t] \[$white\]\$ "

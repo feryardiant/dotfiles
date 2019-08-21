@@ -8,32 +8,30 @@ case $- in
 		*) return;;
 esac
 
-if [[ `basename $SHELL` = bash ]]; then
-	# append to the history file, dont overwrite it
-	shopt -s histappend
+# append to the history file, dont overwrite it
+shopt -s histappend
 
-	# check the window size after each command and, if necessary,
-	# update the values of LINES and COLUMNS.
-	shopt -s checkwinsize
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
 
-	# If set, the pattern "**" used in a pathname expansion context will
-	# match all files and zero or more directories and subdirectories.
-	shopt -s globstar
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+shopt -s globstar
 
-	# make less more friendly for non-text input files, see lesspipe(1)
-	[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-	# enable programmable completion features (you don't need to enable
-	# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-	# sources /etc/bash.bashrc).
-	if ! shopt -oq posix; then
-		if [ -f /usr/share/bash-completion/bash_completion ]; then
-			. /usr/share/bash-completion/bash_completion
-		elif [ -f /etc/bash_completion ]; then
-			. /etc/bash_completion
-		elif [ -f ~/.bash_completion ]; then
-			. ~/.bash_completion
-		fi
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		. /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		. /etc/bash_completion
+	elif [ -f ~/.bash_completion ]; then
+		. ~/.bash_completion
 	fi
 fi
 
@@ -44,17 +42,17 @@ if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
-for file in ~/.{env,exports,aliases,functions,bash_prompt}; do
-    [[ -r $file && -f $file ]] && . $file
+for dotfile in ~/.{env,exports,aliases,functions}; do
+	[[ -r $dotfile && -f $dotfile ]] && source $dotfile
 done
-unset file
+unset dotfile
 
-if test -t 1; then
-    exec "$SHELL" -l
-fi
+# if test -t 1; then
+#     exec "$SHELL" -l
+# fi
+
+# Bash Prompt
+PS1="\n\$ \[$blue\]\u \[$yellow\]\w\[\033[m\]\[$magenta\]\$(__git_ps1)\n\[$white\]→ "
 
 # added by travis gem
-[ -f /home/feryardiant/.travis/travis.sh ] && source /home/feryardiant/.travis/travis.sh
-
-# added by travis gem
-[ -f /home/fery/.travis/travis.sh ] && source /home/fery/.travis/travis.sh
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh
