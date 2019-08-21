@@ -23,7 +23,7 @@ _resque() {
 
 # Initialize
 e $c_inf 'Configure'
-# . $my_pwd/scripts/init.sh > /dev/null 2>&1
+. $my_pwd/scripts/init.sh > /dev/null 2>&1
 e $c_suc $' ✔ Done\n'
 
 cd $HOME
@@ -59,7 +59,8 @@ if [ -f ~/.env ]; then
 	envContent="$envContent"$'\n\n'"$(cat $backup_dir/.env)"
 fi
 
-echo "$envContent" | sed -i "s/export DOTFILES_DIR=/export DOTFILES_DIR=$my_pwd/g" > ~/.env
+echo "$envContent" > ~/.env
+sed -i "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$my_pwd'@g" ~/.env
 
 # source ~/.bashrc
 
@@ -72,7 +73,7 @@ e $c_suc $' ✔ Done\n'
 e $c_inf 'Setup git'
 
 # Installing
-# . $my_pwd/scripts/git.sh > /dev/null
+. $my_pwd/scripts/git.sh > /dev/null
 
 if [ -f ~/.gitconfig ]; then
 	git_email="`git config --global user.email`"
@@ -148,6 +149,8 @@ if _has_pkg 'nvim'; then
 	vim_bin=`which nvim`
 	plug_path='.local/share/nvim/site/autoload'
 	vimrc_path='.config/nvim/init.vim'
+
+	sudo update-alternatives --install /usr/bin/vim editor $vim_bin 60 > /dev/null
 else
 	. $my_pwd/scripts/vim.sh > /dev/null
 
