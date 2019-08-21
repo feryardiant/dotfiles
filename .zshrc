@@ -79,10 +79,9 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 for file in ~/.{env,exports,aliases,functions}; do
-    [[ -r $file && -f $file ]] && . $file
+    [[ -r $file && -f $file ]] && source $file
 done
 unset file
 
-
 # added by travis gem
-[ -f /home/fery/.travis/travis.sh ] && source /home/fery/.travis/travis.sh
+[ -f $HOME/.travis/travis.sh ] && source $HOME/.travis/travis.sh

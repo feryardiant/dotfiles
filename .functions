@@ -182,7 +182,7 @@ function repo() {
 				return 1
 			fi
 
-			sudo add-apt-repository -y ppa:$2 && sudo apt-get update
+			sudo add-apt-repository -y ppa:$2
 			;;
 		list)
 			for APT in `find /etc/apt/ -name \*.list`; do
@@ -196,7 +196,7 @@ function repo() {
 
 # BrowserStack Local
 function bslocal() {
-	if ! command -v browserstack-local >/dev/null 2>&1; then
+	if ! _has_pkg 'browserstack-local'; then
 		_err "Your system does not have Browserstack Local binnary installed"$'\n'
 		return 1;
 	fi
