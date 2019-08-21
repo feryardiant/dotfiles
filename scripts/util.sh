@@ -10,13 +10,17 @@ c_suc='32'
 c_rst='37'
 
 e() {
-    printf '\e[%sm%s\e[0m' "$@"
+	printf '\e[%sm%s\e[0m' "$@"
 }
 
 _err() {
-   e $c_err "$1" | cat - 1>&2
+	e $c_err "$1" | cat - 1>&2
 }
 
 _has_pkg() {
-    command -v $1 >/dev/null 2>&1
+	command -v $1 >/dev/null 2>&1
 }
+
+if [ "$LANG" != "en_US.UTF-8" ]; then
+	export LANG="en_US.UTF-8"
+fi
