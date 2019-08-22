@@ -21,10 +21,36 @@ _resque() {
 	fi
 }
 
+with_zsh='0'
+with_neovim='0'
+
+while [ $# -ne 0 ]; do
+	case $1 in
+		--with-zsh)
+			with_zsh='1'
+			shift
+		;;
+		--with-neovim)
+			with_neovim='1'
+			shift
+		;;
+		--)
+			shift
+			break
+		;;
+		-?*)
+			echo "Invalid argument: $1" 1>&2
+			exit 1
+		;;
+		*)
+			break
+		;;
+	esac
+done
+
 # Initialize
-e $c_inf 'Configure'
+e $c_inf $'Configure (this might take a while)...\n'
 . $my_pwd/scripts/init.sh
-e $c_suc $' ✔ Done\n'
 
 cd $HOME
 
@@ -35,7 +61,7 @@ cd $HOME
 e $c_inf 'Setup dotfiles'
 
 # Setup
-dotfiles="aliases profile bash_prompt bashrc exports functions"
+dotfiles="aliases profile bashrc exports functions"
 for dotfile in $dotfiles; do
 	_resque ~/.$dotfile
 	ln -sf $my_pwd/.$dotfile .
@@ -73,13 +99,13 @@ e $c_inf 'Setup git'
 # Installing
 . $my_pwd/scripts/git.sh > /dev/null
 
+# Backup
 if [ -f ~/.gitconfig ]; then
 	git_email="`git config --global user.email`"
 	git_name="`git config --global user.name`"
-fi
 
-# Backup
-_resque ~/.gitconfig
+	_resque ~/.gitconfig
+fi
 
 # Setup
 cp -f $my_pwd/.gitconfig ~/.gitconfig
@@ -111,6 +137,10 @@ e $c_suc $' ✔ Done\n'
 # Shell Profile
 # ------------------------------------------------------------------------------
 
+if [ "$with_zsh" = '1' ]; then
+	. $my_pwd/scripts/zsh.sh > /dev/null
+fi
+
 if _has_pkg 'zsh'; then
 	e $c_inf 'Setup oh-my-zsh'
 
@@ -119,8 +149,10 @@ if _has_pkg 'zsh'; then
 	[ -d $zsh_dir/themes ] && ln -sf $my_pwd/zsh-themes/honukai.zsh-theme $zsh_dir/themes/
 	_resque ~/.zshrc && ln -sf $my_pwd/.zshrc ~/.zshrc
 
-	cd $zsh_dir && git add themes && git commit -q -m "Add honukai.zsh-theme"
-	cd $HOME
+	if [[ ! -z $git_email ]]; then
+		cd $zsh_dir && git add themes && git commit -q -m "Add honukai.zsh-theme"
+		cd $HOME
+	fi
 
 	e $c_suc $' ✔ Done\n'
 else
@@ -141,14 +173,17 @@ for vim_dir in $vim_dirs; do
 	[ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
 done
 
-if _has_pkg 'nvim'; then
+if [ "$with_neovim" = '1' ]; then
+	. $my_pwd/scripts/neovim.sh > /dev/null
 	[ -d ~/.config/nvim ] || mkdir ~/.config/nvim
+fi
 
+if _has_pkg 'nvim'; then
 	vim_bin=`which nvim`
 	plug_path='.local/share/nvim/site/autoload'
 	vimrc_path='.config/nvim/init.vim'
 
-	sudo update-alternatives --install /usr/bin/vim editor $vim_bin 60 > /dev/null
+	# sudo update-alternatives --install /usr/bin/vim editor $vim_bin 60 > /dev/null
 else
 	. $my_pwd/scripts/vim.sh > /dev/null
 
