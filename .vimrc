@@ -12,7 +12,7 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
 Plug 'gregsexton/gitv'
 Plug 'tpope/vim-surround'
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'kien/ctrlp.vim', { 'on': 'CtrlP' }
 Plug 'Lokaltog/vim-easymotion'
@@ -317,6 +317,7 @@ set statusline=%#warningmsg#
 set statusline=%*
 
 " Linters Settings
+" See https://github.com/dense-analysis/ale
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'jsx': ['stylelint', 'eslint'],
@@ -328,17 +329,22 @@ let g:ale_pattern_options = {
 \}
 
 let g:ale_pattern_options_enabled = 1
+
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 1
+" let g:ale_lint_on_enter = 0
+
 let g:ale_sign_error = '»'
 let g:ale_sign_warning = '›'
 
-let g:airline#extensions#ale#enabled = 1
-let g:ale_sign_column_always = 1
 "let g:ale_open_list = 1
 "let g:ale_keep_list_window_open = 1
+let g:ale_sign_column_always = 1
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
 
+let g:airline#extensions#ale#enabled = 1
 let g:ale_javascript_eslint_suppress_missing_config = 1
 
 " VimTerm Settings
