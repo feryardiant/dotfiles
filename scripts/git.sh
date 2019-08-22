@@ -10,5 +10,8 @@
 	else
 		apt-get upgrade git -yqq
 	fi
+
+	curl -LSso ~/.local/tools/git-prompt.sh --create-dirs \
+	https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
 SCRIPT
 }
