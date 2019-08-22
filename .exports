@@ -1,25 +1,10 @@
 # ==============================================================================
 # Defaults
 # ==============================================================================
-# Make vim the default editor
-if subl -v > /dev/null 2>&1; then
-	export GEMEDITOR="subl"
-	export EDITOR="subl"
-else
-	export GEMEDITOR="vim"
-	export EDITOR="vim"
-fi
 
 # set PATH so it includes user's private bin if it exists
 if [ -d ~/.local/bin/ ]; then
 	PATH="$HOME/.local/bin/:$PATH"
-fi
-
-# Setup default BROWSER
-if google-chrome-stable --version > /dev/null 2>&1; then
-	export BROWSER="google-chrome-stable"
-elif chromium-browser --version > /dev/null 2>&1; then
-	export BROWSER="chromium-browser"
 fi
 
 # Don’t clear the screen after quitting a manual page
@@ -105,7 +90,7 @@ else
 	reset="\033[00m"
 fi
 
-if command -v zsh >/dev/null 2>&1; then
+if _has_pkg 'zsh'; then
 	export SHELL=`which zsh`
 fi
 
@@ -127,44 +112,40 @@ unset sbin_dir
 # ==============================================================================
 
 if [ -d ~/.asdf ]; then
-	if [ -f ~/.asdf/asdf.sh ]; then
-		. ~/.asdf/asdf.sh
-	fi
-
-	if [ -f ~/.asdf/completions/asdf.bash ]; then
-		. ~/.asdf/completions/asdf.bash
-	fi
+	[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
+	[ -f ~/.asdf/completions/asdf.bash ] && . ~/.asdf/completions/asdf.bash
 else
 
 # ==============================================================================
 # RBENV environments
 # ==============================================================================
 
-	if [[ -d ~/.rbenv ]]; then
-		[[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
+if [[ -d ~/.rbenv ]]; then
+	[[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
 
-		PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
+	PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
 
-		if [ -f "$RBENV_ROOT/completions/rbenv.$shellname" ]; then
-			. "$RBENV_ROOT/completions/rbenv.$shellname"
-		fi
+	if [ -f "$RBENV_ROOT/completions/rbenv.$shellname" ]; then
+		. "$RBENV_ROOT/completions/rbenv.$shellname"
 	fi
+fi
 
 # ==============================================================================
 # PHPENV environments
 # ==============================================================================
 
-	if [[ -d ~/.phpenv ]]; then
-		[[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
+if [[ -d ~/.phpenv ]]; then
+	[[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
 
-	# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
-		PATH=$PHPENV_ROOT/shims:$PHPENV_ROOT/bin:$PATH
-	fi
+# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
+	PATH=$PHPENV_ROOT/shims:$PHPENV_ROOT/bin:$PATH
+fi
 
 # ==============================================================================
 # NVM environments
 # ==============================================================================
 
+if [[ -d ~/.nvm ]]; then
 	[[ -z $NVM_DIR ]] && export NVM_DIR=~/.nvm
 
 	if [ -d "$NVM_DIR" ]; then
@@ -182,7 +163,7 @@ fi
 # Gem user bin
 # ==============================================================================
 
-if command -v ruby >/dev/null 2>&1 && command -v gem >/dev/null 2>&1; then
+if _has_pkg 'ruby' && _has_pkg 'gem'; then
 	PATH=$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH
 fi
 
@@ -191,7 +172,7 @@ fi
 # Composer
 # ==============================================================================
 
-if command -v composer >/dev/null 2>&1 && [[ $OSTYPE != 'cygwin' ]]; then
+if _has_pkg 'composer' && [[ $OSTYPE != 'cygwin' ]]; then
 	[[ -z $COMPOSER_HOME ]] && export COMPOSER_HOME=~/.composer
 
 	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$COMPOSER_HOME/vendor/bin:$PATH
@@ -205,7 +186,7 @@ fi
 # see: https://docs.npmjs.com/cli/completion
 # ==============================================================================
 
-if command -v npm >/dev/null 2>&1 && [[ $OSTYPE != 'cygwin' ]]; then
+if _has_pkg 'npm' && [[ $OSTYPE != 'cygwin' ]]; then
 	[[ $shellname = bash ]] && . <(npm completion)
 
 	if [[ -d $PWD/node_modules/.bin ]]; then
@@ -213,13 +194,13 @@ if command -v npm >/dev/null 2>&1 && [[ $OSTYPE != 'cygwin' ]]; then
 
 		# Enable bash completion for Grunt
 		# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
-		if [[ -f $PWD/Gruntfile.js ]] && command -v grunt >/dev/null 2>&1; then
+		if [[ -f $PWD/Gruntfile.js ]] && _has_pkg 'grunt'; then
 			eval `grunt --completion=$shellname`
 		fi
 
 		# Enable bash completion for Gulp
 		# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
-		if [[ -f $PWD/gulpfile.js ]] && command -v gulp >/dev/null 2>&1; then
+		if [[ -f $PWD/gulpfile.js ]] && _has_pkg 'gulp'; then
 			eval `gulp --completion=$shellname`
 		fi
 	fi
