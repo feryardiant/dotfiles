@@ -2,6 +2,10 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+if test -t 1; then
+    exec "$SHELL" -l
+fi
+
 # If not running interactively, don't do anything
 case $- in
 	*i*) ;;
@@ -42,14 +46,16 @@ if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
-for dotfile in ~/.{env,exports,aliases,functions}; do
+# Import basic utilities
+[[ -r ~/.env && -f ~/.env ]] && source ~/.env
+
+# Import basic utilities
+. $DOTFILES_DIR/scripts/util.sh
+
+for dotfile in ~/.{exports,aliases,functions}; do
 	[[ -r $dotfile && -f $dotfile ]] && source $dotfile
 done
 unset dotfile
-
-# if test -t 1; then
-#     exec "$SHELL" -l
-# fi
 
 # Bash Prompt
 PS1="\n\$ \[$blue\]\u \[$yellow\]\w\[\033[m\]\[$magenta\]\$(__git_ps1)\n\[$white\]→ "

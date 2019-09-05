@@ -114,7 +114,7 @@ unset sbin_dir
 if [ -d ~/.asdf ]; then
 	[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
 	[ -f ~/.asdf/completions/asdf.bash ] && . ~/.asdf/completions/asdf.bash
-else
+fi
 
 # ==============================================================================
 # RBENV environments
@@ -223,15 +223,13 @@ fi
 # Go
 # ==============================================================================
 
-if command -v go >/dev/null 2>&1; then
-	if [ -d ~/.local/share/go ]; then
-		export GOROOT=~/.local/share/go
-		PATH=$GOROOT/bin:$PATH
-	fi
+if _has_pkg 'go'; then
+	# if [ -d $(go env GOROOT)/bin ]; then
+	# 	PATH=$(go env GOROOT)/bin:$PATH
+	# fi
 
-	if [ -d ~/.local/share/go-packages ]; then
-		export GOPATH=~/.local/share/go-packages
-		PATH=$GOPATH/bin:$PATH
+	if [ -d $(go env GOPATH)/bin ]; then
+		PATH=$(go env GOPATH)/bin:$PATH
 	fi
 fi
 

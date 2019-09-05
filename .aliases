@@ -22,7 +22,10 @@ alias grep='grep ${colorflag}'
 alias fgrep='fgrep ${colorflag}'
 alias egrep='egrep ${colorflag}'
 
-if pygmentize -V > /dev/null 2>&1; then
+# Install Pygments package using python-pip
+# pip install Pygments [--user]
+# See: http://pygments.org/
+if _has_pkg 'pygmentize'; then
 	alias ccat='pygmentize -g'
 fi
 
@@ -76,7 +79,7 @@ alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date
 # 	unset composerbin
 # fi
 
-if command -v notify-send >/dev/null 2>&1; then
+if _has_pkg 'notify-send'; then
 	# Add an "alert" alias for long running commands.  Use like so:
 	#   sleep 10; alert
 	alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'

@@ -78,7 +78,13 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-for file in ~/.{env,exports,aliases,functions}; do
-    [[ -r $file && -f $file ]] && source $file
+# Import basic utilities
+[[ -r ~/.env && -f ~/.env ]] && source ~/.env
+
+# Import basic utilities
+. $DOTFILES_DIR/scripts/util.sh
+
+for dotfile in ~/.{exports,aliases,functions}; do
+    [[ -r $dotfile && -f $dotfile ]] && source $dotfile
 done
-unset file
+unset dotfile
