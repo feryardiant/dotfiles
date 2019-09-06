@@ -1,36 +1,41 @@
 #!/usr/bin/env bash
 {
-	# clear any previous sudo permission
-	sudo -k
+# clear any previous sudo permission
+sudo -k
 
-	# run inside sudo
-	sudo sh <<SCRIPT
-	printf ' - Localization...'
-	locale-gen $LANG > /dev/null 2>&1
-	update-locale LC_ALL="$LANG" LANG="$LANG"
-	dpkg-reconfigure --frontend noninteractive locales > /dev/null 2>&1
-	printf ' done\n'
+for userlocal in ~/.local/{bin,lib,share}; then
+	[ ! -d $userlocal ] && mkdir -p $userlocal
+fi
 
-	printf ' - Add repositories...'
-	# Latest GIT
-	add-apt-repository ppa:git-core/ppa -y > /dev/null 2>&1
+# run inside sudo
+sudo sh <<SCRIPT
+printf ' - Localization...'
+locale-gen $LANG > /dev/null 2>&1
+update-locale LC_ALL="$LANG" LANG="$LANG"
+dpkg-reconfigure --frontend noninteractive locales > /dev/null 2>&1
+printf ' done\n'
 
-	# Latest TMUX & VIM
-	add-apt-repository ppa:pi-rho/dev -y > /dev/null 2>&1
+printf ' - Add repositories...'
+# Latest GIT
+add-apt-repository ppa:git-core/ppa -y > /dev/null 2>&1
 
-	# Latest NeoVIM
-	add-apt-repository ppa:neovim-ppa/stable -y > /dev/null 2>&1
-	printf ' done\n'
+# Latest TMUX & VIM
+add-apt-repository ppa:pi-rho/dev -y > /dev/null 2>&1
 
-	# Apply changes
-	printf ' - Update repositories...'
-	apt-key update > /dev/null 2>&1
-	apt-get update -qq
-	printf ' done\n'
+# Latest NeoVIM
+add-apt-repository ppa:neovim-ppa/stable -y > /dev/null 2>&1
+printf ' done\n'
 
-	# Update
-	printf ' - Install dependencies...'
-	apt-get install python-pip python3-pip -y > /dev/null
-	printf ' done\n'
+# Apply changes
+printf ' - Update repositories...'
+apt-key update > /dev/null 2>&1
+apt-get update -qq
+printf ' done\n'
+
+# Update
+printf ' - Install dependencies...'
+apt-get install python-pip python3-pip -y > /dev/null
+
+printf ' done\n'
 SCRIPT
 }
