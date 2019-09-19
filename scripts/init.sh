@@ -3,9 +3,9 @@
 # clear any previous sudo permission
 sudo -k
 
-for userlocal in ~/.local/{bin,lib,share}; then
+for userlocal in ~/.local/{bin,lib,share}; do
 	[ ! -d $userlocal ] && mkdir -p $userlocal
-fi
+done
 
 # run inside sudo
 sudo sh <<SCRIPT
