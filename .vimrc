@@ -263,13 +263,14 @@ augroup pencil
 augroup END
 
 "" NERDTree configuration
+let g:NERDTreeShowHidden = 1
 let g:NERDTreeChDirMode = 2
 let g:NERDTreeIgnore = ['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks = 1
 let g:nerdtree_tabs_focus_on_files = 1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeMapOpenInTab = '<C-ENTER>'
+let g:NERDTreeMapOpenInTab = '<ENTER>'
 let g:NERDTreeWinSize = 36
 
 nnoremap <silent> <F2> :NERDTreeFind<CR>
