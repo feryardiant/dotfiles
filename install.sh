@@ -23,6 +23,7 @@ _resque() {
 
 with_zsh='0'
 with_neovim='0'
+export _LOG_FILE=$my_pwd/install.log
 
 while [ $# -ne 0 ]; do
 	case $1 in
@@ -97,7 +98,7 @@ e $c_suc $' ✔ Done\n'
 e $c_inf 'Setup git'
 
 # Installing
-. $my_pwd/scripts/git.sh > /dev/null
+. $my_pwd/scripts/git.sh > $_LOG_FILE
 
 # Backup
 if [ -f ~/.gitconfig ]; then
@@ -123,7 +124,7 @@ e $c_suc $' ✔ Done\n'
 e $c_inf 'Setup TMUX'
 
 # Installing
-. $my_pwd/scripts/tmux.sh > /dev/null
+. $my_pwd/scripts/tmux.sh > $_LOG_FILE
 
 # Backup
 _resque ~/.tmux.conf
@@ -138,7 +139,7 @@ e $c_suc $' ✔ Done\n'
 # ------------------------------------------------------------------------------
 
 if [ "$with_zsh" = '1' ]; then
-	. $my_pwd/scripts/zsh.sh > /dev/null
+	. $my_pwd/scripts/zsh.sh > $_LOG_FILE
 fi
 
 if _has_pkg 'zsh'; then
@@ -174,7 +175,7 @@ for vim_dir in $vim_dirs; do
 done
 
 if [ "$with_neovim" = '1' ]; then
-	. $my_pwd/scripts/neovim.sh > /dev/null
+	. $my_pwd/scripts/neovim.sh > $_LOG_FILE
 	[ -d ~/.config/nvim ] || mkdir ~/.config/nvim
 fi
 
@@ -183,16 +184,16 @@ if _has_pkg 'nvim'; then
 	plug_path='.local/share/nvim/site/autoload'
 	vimrc_path='.config/nvim/init.vim'
 
-	# sudo update-alternatives --install /usr/bin/vim editor $vim_bin 60 > /dev/null
+	# sudo update-alternatives --install /usr/bin/vim editor $vim_bin 60 > $_LOG_FILE
 else
-	. $my_pwd/scripts/vim.sh > /dev/null
+	. $my_pwd/scripts/vim.sh > $_LOG_FILE
 
 	vim_bin=`which vim`
 	plug_path='.vim/autoload'
 	vimrc_path='.vimrc'
 fi
 
-sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > /dev/null
+sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
 
 _resque ~/$vimrc_path && ln -sf $my_pwd/.vimrc ~/$vimrc_path
 _resque ~/$plug_path/plug.vim && \
