@@ -31,6 +31,7 @@ Plug 'ayu-theme/ayu-vim'
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+Plug 'wakatime/vim-wakatime'
 
 if has('nvim')
   Plug 'wvffle/vimterm'
