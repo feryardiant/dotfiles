@@ -19,7 +19,7 @@ printf ' - Add repositories...'
 # Latest GIT
 add-apt-repository ppa:git-core/ppa -y > /dev/null 2>&1
 
-# Latest TMUX & VIM
+# Latest TMUX & VIM 8
 add-apt-repository ppa:pi-rho/dev -y > /dev/null 2>&1
 
 # Latest NeoVIM
