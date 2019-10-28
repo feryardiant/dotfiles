@@ -14,7 +14,7 @@ Plug 'gregsexton/gitv', { 'on': ['Gitv'] }
 Plug 'tpope/vim-surround'
 Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'kien/ctrlp.vim', { 'on': 'CtrlP' }
+Plug 'kien/ctrlp.vim', { 'on': ['CtrlP'] }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'godlygeek/tabular'
 Plug 'ervandew/supertab'
@@ -51,7 +51,7 @@ syntax on
 
 " Set extra options when running in GUI mode
 if has('gui_running')
-  set guifont=Menlo\ for\ Powerline
+  set guifont=Fira\ Code
 
   set guioptions-=T
   set guioptions+=e
@@ -226,6 +226,12 @@ nnoremap ' `
 "imap VV ↓
 "imap aaa λ
 
+if !exists('g:vdebug_options')
+  let g:vdebug_options = {}
+endif
+
+let g:vdebug_options.port = 9000
+
 " Toggle show tabs and trailing spaces (,c)
 set lcs=eol:¬,tab:›\ ,trail:·,extends:>,precedes:<
 "set fcs=fold:-
@@ -237,9 +243,9 @@ map <Esc> :noh<CR>
 " Tab Navgations?
 set switchbuf=usetab
 
-" Create new tab with Ctrl+T
-nnoremap <C-t>  :tabnew<CR>
-inoremap <C-t>  <Esc>:tabnew<CR>i
+" Create new tab with Ctrl+T and open NerdTree
+nnoremap <C-t>  :tabnew +:NERDTreeCWD .<CR>
+inoremap <C-t>  <Esc>:tabnew +:NERDTreeCWD .<CR>i
 
 " Close tab with Alt+W
 nnoremap <A-w>  :tabclose<CR>
@@ -280,7 +286,7 @@ augroup END
 "" NERDTree configuration
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeChDirMode = 2
-let g:NERDTreeIgnore = ['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeIgnore = [ '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks = 1
 let g:nerdtree_tabs_focus_on_files = 1
@@ -293,6 +299,8 @@ nnoremap <F3> :NERDTreeToggle<CR>
 inoremap <F3> <Esc>:NERDTreeToggle<CR>
 
 " CtrlP Settings
+nnoremap <C-p> :CtrlP<CR>
+inoremap <C-p> <Esc>:CtrlP<CR>i
 let g:ctrlp_custom_ignore='\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))'
 
 " Deoplete.VIM
@@ -329,10 +337,10 @@ let g:airline_symbols.linenr = '␤'
 let g:airline_symbols.linenr = '¶'
 
 " powerline symbols
-let g:airline_left_sep = ''
-let g:airline_left_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
 
 set colorcolumn=80,100
 "set ruler
@@ -377,10 +385,8 @@ let g:ale_javascript_eslint_suppress_missing_config = 1
 
 " VimTerm Settings
 if has('nvim')
-  tnoremap <F12> <C-\><C-n> :call vimterm#toggle() <CR>
+  tnoremap <C-`> <C-\><C-n> :call vimterm#toggle() <CR>
 else
-  nnoremap <F12> :call vimterm#toggle() <CR>
+  nnoremap <C-`> :call vimterm#toggle() <CR>
 endif
 
-" Powerline.VIM (binding)
-"set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim
