@@ -151,6 +151,7 @@ set wildmenu                                          " Hitting TAB in command m
 set wildmode=list:longest                             " Complete only until point of ambiguity.
 set winminheight=0                                    " Allow splits to be reduced to a single line.
 set wrapscan                                          " Searches wrap around end of file
+set confirm                                           " Confirm before exit if file has changed
 
 if !has('nvim')
   set esckeys                                         " Allow cursor keys in insert mode.
