@@ -36,6 +36,7 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 "Plug 'ervandew/supertab'
 Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+Plug 'dsawardekar/wordpress.vim'
 
 "if has('nvim')
 "  Plug 'wvffle/vimterm'
@@ -307,7 +308,13 @@ inoremap <F3> <Esc>:NERDTreeToggle<CR>
 " CtrlP Settings
 nnoremap <C-p> :CtrlP<CR>
 inoremap <C-p> <Esc>:CtrlP<CR>i
-let g:ctrlp_custom_ignore='\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))'
+" Open file in current window/buffer
+let g:ctrlp_open_new_file = 'r'
+" Ignore some stuffs
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))$',
+  \ 'file': '\v\.(exe|so|dll|zip)$',
+  \ }
 
 " Deoplete.VIM
 "let g:deoplete#enable_at_startup = 1
@@ -321,9 +328,9 @@ endfunction
 
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
 
 " Close preview window when completion is done.
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
