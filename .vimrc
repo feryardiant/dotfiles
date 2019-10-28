@@ -10,7 +10,7 @@ call plug#begin()
 Plug 'mattn/emmet-vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
-Plug 'gregsexton/gitv'
+Plug 'gregsexton/gitv', { 'on': ['Gitv'] }
 Plug 'tpope/vim-surround'
 Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
@@ -22,6 +22,8 @@ Plug 'reedes/vim-pencil'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'joonty/vdebug'
 Plug 'matze/vim-move'
+Plug 'majutsushi/tagbar'
+"Plug 'neoclide/coc.nvim', { 'tag': '*', 'branch': 'release' }
 Plug 'posva/vim-vue', { 'for': 'vue' }
 
 Plug 'vim-airline/vim-airline'
@@ -161,15 +163,9 @@ if !has('nvim')
   inoremap <silent> <ESC>OD <LEFT>
 endif
 
-" Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
-map <leader>tm :tabmove
-
-" Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+" Use Ctrl+Z as it should be
+nnoremap <C-z> :undo<cr>
+inoremap <C-z> <esc>:undo<cr>i
 
 " Switch CWD to the directory of the open buffer
 map <leader>cd :cd %:p:h<cr>:pwd<cr>
@@ -178,17 +174,19 @@ map <leader>cd :cd %:p:h<cr>:pwd<cr>
 nnoremap <C-e> 3<C-e>
 nnoremap <C-y> 3<C-y>
 
-" Faster split resizing (+,-)
+" Faster split resizing [+,-] for height and Alt+[+,-] for width
 if bufwinnr(1)
-  map + <C-W>+
-  map - <C-W>-
+  noremap + <C-W>+
+  noremap - <C-W>-
+  noremap <A-+> <C-W><
+  noremap <A--> <C-W>>
 endif
 
 " Better split switching (Ctrl-j, Ctrl-k, Ctrl-h, Ctrl-l)
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-H> <C-W>h
-map <C-L> <C-W>l
+noremap <C-j> <C-W>j
+noremap <C-k> <C-W>k
+noremap <C-H> <C-W>h
+noremap <C-L> <C-W>l
 
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
@@ -236,22 +234,38 @@ nnoremap ,c <Esc>:set list!<CR>
 " Clear last search (,qs)
 map <Esc> :noh<CR>
 
-" Fix page up and down
-"map <PageUp> <C-U>
-"map <PageDown> <C-D>
-"imap <PageUp> <C-O><C-U>
-"imap <PageDown> <C-O><C-D>
-
 " Tab Navgations?
 set switchbuf=usetab
-"map <C-PageUp>    :bprev!<CR>
-"map <C-PageDown>  :bnext!<CR>
-map <C-t>         :tabnew<CR>
-map <C-w>         :tabclose<CR>
-"inoremap <C-PageUp>    <Esc>:tabprevious<CR>i
-"inoremap <C-PageDown>  <Esc>:tabnext<CR>i
-inoremap <C-t>         <Esc>:tabnew<CR>i
-" inoremap <C-w>         <Esc>:tabclose<CR>i
+
+" Create new tab with Ctrl+T
+nnoremap <C-t>  :tabnew<CR>
+inoremap <C-t>  <Esc>:tabnew<CR>i
+
+" Close tab with Alt+W
+nnoremap <A-w>  :tabclose<CR>
+inoremap <A-w>  <Esc>:tabclose<CR>i
+
+" Tabs navigation using Ctrl+PageUp Ctrl+PageDown
+nnoremap <C-PageUp>    :tabprevious<CR>
+nnoremap <C-PageDown>  :tabnext<CR>
+inoremap <C-PageUp>    <Esc>:tabprevious<CR>i
+inoremap <C-PageDown>  <Esc>:tabnext<CR>i
+
+" Buffer navigation: Alt+PageUp Alt+PageDown
+nnoremap <A-PageUp>    :bprev!<CR>
+inoremap <A-PageUp>    <Esc>:bprev!<CR>
+nnoremap <A-PageDown>  :bnext!<CR>
+nnoremap <A-PageDown>  <Esc>:bnext!<CR>
+
+" Useful mappings for managing tabs
+map <leader>tn :tabnew<cr>
+map <leader>to :tabonly<cr>
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove
+
+" Opens a new tab with the current buffer's path
+" Super useful when editing files in the same directory
+map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
 " Pencil.VIM
 let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
@@ -275,7 +289,8 @@ let g:NERDTreeMapOpenInTab = '<C-ENTER>'
 let g:NERDTreeWinSize = 36
 
 nnoremap <silent> <F2> :NERDTreeFind<CR>
-noremap <F3> :NERDTreeToggle<CR>
+nnoremap <F3> :NERDTreeToggle<CR>
+inoremap <F3> <Esc>:NERDTreeToggle<CR>
 
 " CtrlP Settings
 let g:ctrlp_custom_ignore='\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))'
@@ -299,14 +314,25 @@ if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
-let g:airline_theme='wombat'
-let g:airline#extensions#tabline#enabled=1
+let g:airline_theme = 'wombat'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#format = 2
 
 let g:airline_symbols.whitespace = 'Ξ'
-let g:airline_symbols.linenr = '¶'
-let g:airline_symbols.linenr = 'Ξ'
 let g:airline_symbols.branch = ''
 let g:airline_symbols.readonly = ''
+let g:airline_symbols.notexists = 'Ɇ'
+let g:airline_symbols.linenr = '☰'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+
+" powerline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
 
 set colorcolumn=80,100
 "set ruler
