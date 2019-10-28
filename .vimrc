@@ -8,7 +8,6 @@ filetype plugin indent on
 call plug#begin()
 
 Plug 'mattn/emmet-vim'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'tpope/vim-fugitive'
 Plug 'gregsexton/gitv', { 'on': ['Gitv'] }
 Plug 'tpope/vim-surround'
@@ -22,7 +21,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'joonty/vdebug'
 Plug 'matze/vim-move'
 Plug 'majutsushi/tagbar'
-Plug 'neoclide/coc.nvim', { 'tag': '*', 'branch': 'release' }
+Plug 'neoclide/coc.nvim', { 'tag': '*', 'branch': 'release', 'do': { -> coc#util#install() } }
 Plug 'posva/vim-vue', { 'for': 'vue' }
 Plug 'wakatime/vim-wakatime'
 
@@ -31,6 +30,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'Yggdroot/indentLine'
 Plug 'ayu-theme/ayu-vim'
 Plug 'ryanoasis/vim-devicons'
+
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 "Plug 'ervandew/supertab'
 Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
@@ -284,15 +286,19 @@ augroup pencil
 augroup END
 
 "" NERDTree configuration
-let g:NERDTreeShowHidden = 1
+let g:NERDTreeShowHidden = 1     " Show hidden files/directories
+let g:NERDTreeMinimalUI = 1      " Remove bookmarks and help text from NERDTree
 let g:NERDTreeChDirMode = 2
-let g:NERDTreeIgnore = [ '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+" Hide certain files and directories from NERDTree
+let g:NERDTreeIgnore = [ '^\.DS_Store$', '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
 let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let g:NERDTreeShowBookmarks = 1
 let g:nerdtree_tabs_focus_on_files = 1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 let g:NERDTreeMapOpenInTab = '<C-ENTER>'
 let g:NERDTreeWinSize = 36
+" Custom icons for expandable/expanded directories
+let g:NERDTreeDirArrowExpandable = '⬏'
+let g:NERDTreeDirArrowCollapsible = '⬎'
 
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 nnoremap <F3> :NERDTreeToggle<CR>
@@ -307,18 +313,20 @@ let g:ctrlp_custom_ignore='\v[\/](node_modules|bower_components|vendor)|(\.(git|
 "let g:deoplete#enable_at_startup = 1
 
 " COC.VIM
-" Use tab for trigger completion with characters ahead and navigate.
+" use <tab> for trigger completion and navigate to next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
-"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+" Close preview window when completion is done.
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " Use <c-space> to trigger completion.
 inoremap <silent><expr> <c-space> coc#refresh()
