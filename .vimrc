@@ -17,14 +17,14 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'kien/ctrlp.vim', { 'on': ['CtrlP'] }
 Plug 'Lokaltog/vim-easymotion'
 Plug 'godlygeek/tabular'
-Plug 'ervandew/supertab'
 Plug 'reedes/vim-pencil'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'joonty/vdebug'
 Plug 'matze/vim-move'
 Plug 'majutsushi/tagbar'
-"Plug 'neoclide/coc.nvim', { 'tag': '*', 'branch': 'release' }
+Plug 'neoclide/coc.nvim', { 'tag': '*', 'branch': 'release' }
 Plug 'posva/vim-vue', { 'for': 'vue' }
+Plug 'wakatime/vim-wakatime'
 
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -32,17 +32,17 @@ Plug 'Yggdroot/indentLine'
 Plug 'ayu-theme/ayu-vim'
 Plug 'ryanoasis/vim-devicons'
 
-Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
-Plug 'wakatime/vim-wakatime'
+"Plug 'ervandew/supertab'
+"Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
 
-if has('nvim')
-  Plug 'wvffle/vimterm'
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+"if has('nvim')
+"  Plug 'wvffle/vimterm'
+"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"else
+"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"  Plug 'roxma/nvim-yarp'
+"  Plug 'roxma/vim-hug-neovim-rpc'
+"endif
 
 call plug#end()
 
@@ -304,7 +304,28 @@ inoremap <C-p> <Esc>:CtrlP<CR>i
 let g:ctrlp_custom_ignore='\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))'
 
 " Deoplete.VIM
-let g:deoplete#enable_at_startup = 1
+"let g:deoplete#enable_at_startup = 1
+
+" COC.VIM
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Multiple-cursor.VIM
 let g:multi_cursor_use_default_mapping=0
