@@ -250,9 +250,12 @@ set switchbuf=usetab
 nnoremap <C-t>  :tabnew +:NERDTreeCWD .<CR>
 inoremap <C-t>  <Esc>:tabnew +:NERDTreeCWD .<CR>i
 
-" Close tab with Alt+W
-nnoremap <A-w>  :tabclose<CR>
-inoremap <A-w>  <Esc>:tabclose<CR>i
+" Close tab with Alt+W,Alt+T
+nnoremap <A-w><A-t>  :tabclose<CR>
+inoremap <A-w><A-t>  <Esc>:tabclose<CR>i
+" Close buffer with Alt+W,Alt+B
+nnoremap <A-w><A-b>  :bd<CR>
+inoremap <A-w><A-b>  <Esc>:bd<CR>i
 
 " Tabs navigation using Ctrl+PageUp Ctrl+PageDown
 nnoremap <C-PageUp>    :tabprevious<CR>
