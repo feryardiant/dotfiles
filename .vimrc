@@ -347,6 +347,14 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
+" https://github.com/neoclide/coc.nvim/issues/590
+autocmd! FileType php set iskeyword+=$
+autocmd! BufNewFile,BufRead *.blade.php set ft=blade
+
+let g:coc_filetype_map = {
+	\ 'blade': 'html'
+	\ }
+
 " Multiple-cursor.VIM
 let g:multi_cursor_use_default_mapping=0
 
