@@ -94,70 +94,165 @@ set directory=~/.cache/vim/swap
 set undodir=~/.cache/vim/undo
 
 " Set some junk
-set autoindent smartindent copyindent                 " Auto/Smart/Copy indent from last line when starting new line.
+
+" Auto/Smart/Copy indent from last line when starting new line.
+set autoindent smartindent copyindent
 set backspace=indent,eol,start
-set encoding=utf-8 nobomb                             " BOM often causes trouble
+
+" BOM often causes trouble
+set encoding=utf-8 nobomb
+
 set formatoptions=
-set formatoptions+=c                                  " Format comments
-set formatoptions+=r                                  " Continue comments by default
-set formatoptions+=o                                  " Make comment when using o or O from comment line
-set formatoptions+=q                                  " Format comments with gq
-set formatoptions+=n                                  " Recognize numbered lists
-set formatoptions+=2                                  " Use indent from 2nd line of a paragraph
-set formatoptions+=l                                  " Don't break lines that are already long
-set formatoptions+=1                                  " Break before 1-letter words
-set gdefault                                          " By default add g flag to search/replace. Add g to toggle.
-set hidden                                            " When a buffer is brought to foreground, remember undo history and marks.
-set history=500                                       " Increase history from 20 default to 500
-set hlsearch                                          " Highlight searches
-set ignorecase                                        " Ignore case of searches.
-set incsearch                                         " Highlight dynamically as pattern is typed.
-set smartcase                                         " Ignore 'ignorecase' if search patter contains uppercase characters.
-set lispwords+=defroutes                              " Compojure
-set lispwords+=defpartial,defpage                     " Noir core
-set lispwords+=defaction,deffilter,defview,defsection " Ciste core
-set lispwords+=describe,it                            " Speclj TDD/BDD
-set magic                                             " Enable extended regexes.
-set mouse=a                                           " Enable moouse in all in all modes.
-set noerrorbells                                      " Disable error bells.
-set visualbell                                        " Use visual bell instead of audible bell (annnnnoying)
-set nojoinspaces                                      " Only insert single space after a '.', '?' and '!' with a join command.
-set nostartofline                                     " Don't reset cursor to start of line when moving around.
-set nohidden                                          " close the buffer when I close a tab (I use tabs more than buffers)
-set nowrap                                            " Do not wrap lines.
-set nu                                                " Enable line numbers.
-set ofu=syntaxcomplete#Complete                       " Set omni-completion method.
-set report=0                                          " Show all changes.
-set shortmess=atI                                     " Don't show the intro message when starting vim.
-set showmode                                          " Show the current mode.
-set scrolloff=3                                       " Start scrolling three lines before horizontal border of window.
-set expandtab                                         " Use spaces instead of tabs
-set shiftwidth=4                                      " The # of spaces for indenting.
-set sidescrolloff=3                                   " Start scrolling three columns before vertical border of window.
-set sidescroll=2                                      " if wrap is off, this is fasster for horizontal scrolling
-set smarttab                                          " At start of line, <Tab> inserts shiftwidth spaces, <Bs> deletes shiftwidth spaces.
-set softtabstop=2                                     " Tab key results in 2 spaces
-set tabstop=4                                         " a tab is four spaces
-set splitbelow                                        " New window goes below
-set splitright                                        " New windows goes right
-set showcmd                                           " Show us the command we're typing
-set showfulltag                                       " show full completion tags
-set title                                             " Show the filename in the window titlebar.
-set ttyfast                                           " Send more characters at a given time.
-set undofile                                          " Persistent Undo.
+set formatoptions+=c  " Format comments
+set formatoptions+=r  " Continue comments by default
+set formatoptions+=o  " Make comment when using o or O from comment line
+set formatoptions+=q  " Format comments with gq
+set formatoptions+=n  " Recognize numbered lists
+set formatoptions+=2  " Use indent from 2nd line of a paragraph
+set formatoptions+=l  " Don't break lines that are already long
+set formatoptions+=1  " Break before 1-letter words
+
+" By default add g flag to search/replace. Add g to toggle.
+set gdefault
+
+" When a buffer is brought to foreground, remember undo history and marks.
+set hidden
+
+" Increase history from 20 default to 500
+set history=500
+
+" Highlight searches
+set hlsearch
+
+" Ignore case of searches.
+set ignorecase
+
+" Highlight dynamically as pattern is typed.
+set incsearch
+
+" Ignore 'ignorecase' if search patter contains uppercase characters.
+set smartcase
+
+" Compojure
+set lispwords+=defroutes
+
+" Noir core
+set lispwords+=defpartial,defpage
+
+" Ciste core
+set lispwords+=defaction,deffilter,defview,defsection
+
+" Speclj TDD/BDD
+set lispwords+=describe,it
+
+" Enable extended regexes.
+set magic
+
+" Enable moouse in all in all modes.
+set mouse=a
+
+" Disable error bells.
+set noerrorbells
+
+" Use visual bell instead of audible bell (annnnnoying)
+set visualbell
+
+" Only insert single space after a '.', '?' and '!' with a join command.
+set nojoinspaces
+
+" Don't reset cursor to start of line when moving around.
+set nostartofline
+
+" close the buffer when I close a tab (I use tabs more than buffers)
+set nohidden
+
+" Do not wrap lines.
+" set nowrap
+
+" Enable line numbers.
+set nu
+
+" Set omni-completion method.
+set ofu=syntaxcomplete#Complete
+
+" Show all changes.
+set report=0
+
+" Don't show the intro message when starting vim.
+set shortmess=atI
+
+" Show the current mode.
+set showmode
+
+" Start scrolling three lines before horizontal border of window.
+set scrolloff=3
+
+" Use spaces instead of tabs
+set expandtab
+
+" The # of spaces for indenting.
+set shiftwidth=4
+
+" Start scrolling three columns before vertical border of window.
+set sidescrolloff=3
+
+" if wrap is off, this is fasster for horizontal scrolling
+set sidescroll=2
+
+" At start of line, <Tab> inserts shiftwidth spaces, <Bs> deletes shiftwidth spaces.
+set smarttab
+
+" Tab key results in 2 spaces
+set softtabstop=2
+
+" a tab is four spaces
+set tabstop=4
+
+" New window goes below
+set splitbelow
+
+" New windows goes right
+set splitright
+
+" Show us the command we're typing
+set showcmd
+
+" show full completion tags
+set showfulltag
+
+" Show the filename in the window titlebar.
+set title
+
+" Send more characters at a given time.
+set ttyfast
+
+" Persistent Undo.
+set undofile
 set suffixes=.bak,~,.swp,.swo,.o,.d,.info,.aux,.log,.dvi,.pdf,.bin,.bbl,.blg,.brf,.cb,.dmg,.exe,.ind,.idx,.ilg,.inx,.out,.toc,.pyc,.pyd,.dll
-set wildchar=<TAB>                                    " Character for CLI TAB-completion.
+
+" Character for CLI TAB-completion.
+set wildchar=<TAB>
 set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.o,*.obj,*.min.js
 set wildignore+=*/smarty/*,*/vendor/*,*/node_modules/*,*/.git/*,*/.hg/*,*/.svn/*,*/.sass-cache/*,*/log/*,*/tmp/*,*/build/*,*/ckeditor/*
-set wildmenu                                          " Hitting TAB in command mode will show possible completions above command line.
-set wildmode=list:longest                             " Complete only until point of ambiguity.
-set winminheight=0                                    " Allow splits to be reduced to a single line.
-set wrapscan                                          " Searches wrap around end of file
-set confirm                                           " Confirm before exit if file has changed
+
+" Hitting TAB in command mode will show possible completions above command line.
+set wildmenu
+
+" Complete only until point of ambiguity.
+set wildmode=list:longest
+
+" Allow splits to be reduced to a single line.
+set winminheight=0
+
+" Searches wrap around end of file
+set wrapscan
+
+" Confirm before exit if file has changed
+set confirm
 
 if !has('nvim')
-  set esckeys                                         " Allow cursor keys in insert mode.
-  set ttymouse=xterm                                  " Set mouse type to xterm.
+  set esckeys          " Allow cursor keys in insert mode.
+  set ttymouse=xterm   " Set mouse type to xterm.
 
   nnoremap <silent> <ESC>OA <UP>
   nnoremap <silent> <ESC>OB <DOWN>
@@ -301,7 +396,6 @@ let g:NERDTreeIgnore = [ '^\.DS_Store$', '\.git$', '\.vscode$', 'node_modules', 
 let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:nerdtree_tabs_focus_on_files = 1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeMapOpenInTab = '<C-ENTER>'
 let g:NERDTreeWinSize = 36
 " Custom icons for expandable/expanded directories
 let g:NERDTreeDirArrowExpandable = '⬏'
@@ -393,7 +487,7 @@ let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
 
 set colorcolumn=80,100
-"set ruler
+set ruler
 
 " Status Line
 set laststatus=2  " Always show status line
@@ -422,8 +516,8 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
 " let g:ale_lint_on_enter = 0
 
-let g:ale_sign_error = '»'
-let g:ale_sign_warning = '›'
+let g:ale_sign_error = '⌧'
+let g:ale_sign_warning = '╳'
 
 "let g:ale_open_list = 1
 let g:ale_keep_list_window_open = 1
