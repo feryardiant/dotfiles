@@ -34,7 +34,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'jwalton512/vim-blade', { 'for': 'blade.php' }
 
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 "Plug 'ervandew/supertab'
 Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
@@ -486,15 +486,19 @@ let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
 
+" COC integration
+let g:airline#extensions#coc#enabled = 1
+" ALE integration
+let g:airline#extensions#ale#enabled = 1
+" Fugitive integration
+let g:airline#extensions#fugitiveline#enabled = 1
+" CSV file integration
+let g:airline#extensions#csv#enabled = 1
+" PO file integration
+let g:airline#extensions#po#enabled = 1
+
 set colorcolumn=80,100
 set ruler
-
-" Status Line
-set laststatus=2  " Always show status line
-"set statusline=\ %n\ \%1*\ %<%.99t%2*\ %h%w%m%r\ %*%y\ [%{&ff}\ →\ %{strlen(&fenc)?&fenc:'No\ Encoding'}]%=%-16(\ L%l,C%c\ %)%P
-
-set statusline=%#warningmsg#
-set statusline=%*
 
 " Linters Settings
 " See https://github.com/dense-analysis/ale
@@ -516,8 +520,8 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 1
 " let g:ale_lint_on_enter = 0
 
-let g:ale_sign_error = '⌧'
-let g:ale_sign_warning = '╳'
+"let g:ale_sign_error = '⌧'
+"let g:ale_sign_warning = '╳'
 
 "let g:ale_open_list = 1
 let g:ale_keep_list_window_open = 1
@@ -530,11 +534,3 @@ let g:ale_set_balloons = 1
 
 let g:airline#extensions#ale#enabled = 1
 let g:ale_javascript_eslint_suppress_missing_config = 1
-
-" VimTerm Settings
-if has('nvim')
-  tnoremap <C-`> <C-\><C-n> :call vimterm#toggle() <CR>
-else
-  nnoremap <C-`> :call vimterm#toggle() <CR>
-endif
-
