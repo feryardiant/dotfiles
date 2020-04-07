@@ -1,11 +1,11 @@
 # Create a new directory and enter it
-function md() {
-	mkdir -p $1 && cd $1
+function take() {
+	mkdir $1 && cd $_
 }
 
 # find shorthand
 function f() {
-	find . -name "$1"
+find . -name "$1"
 }
 
 # Copy w/ progress
