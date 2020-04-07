@@ -22,7 +22,7 @@ Plug 'tpope/vim-commentary'
 Plug 'joonty/vdebug'
 Plug 'matze/vim-move'
 Plug 'majutsushi/tagbar'
-Plug 'neoclide/coc.nvim', { 'tag': '*', 'branch': 'release', 'do': { -> coc#util#install() } }
+Plug 'neoclide/coc.nvim', { 'branch': 'release', 'do': { -> coc#util#install() } }
 Plug 'posva/vim-vue', { 'for': 'vue' }
 Plug 'wakatime/vim-wakatime'
 
@@ -442,13 +442,34 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
+" Use `[g` and `]g` to navigate diagnostics
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
 " https://github.com/neoclide/coc.nvim/issues/590
 autocmd! FileType php set iskeyword+=$
 autocmd! BufNewFile,BufRead *.blade.php set ft=blade
 
 let g:coc_filetype_map = {
-	\ 'blade': 'html'
-	\ }
+  \ 'blade': 'html'
+  \ }
 
 " Multiple-cursor.VIM
 let g:multi_cursor_use_default_mapping=0
