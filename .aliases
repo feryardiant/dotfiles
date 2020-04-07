@@ -84,3 +84,11 @@ if _has_pkg 'notify-send'; then
 	#   sleep 10; alert
 	alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 fi
+
+if _has_pkg 'phive'; then
+	# Manage PHIVE from anywhere
+	# In this case, my `phive.xml` file is located in home dir
+	# So it's basically just change dir to Home, run the phive command(s)
+	# and change directory back to previous one
+    alias phive='_phive() { cd ~; phive "$@"; cd - > /dev/null; }; _phive'
+fi
