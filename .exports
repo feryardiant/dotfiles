@@ -175,9 +175,7 @@ fi
 if _has_pkg 'composer' && [[ $OSTYPE != 'cygwin' ]]; then
 	[[ -z $COMPOSER_HOME ]] && export COMPOSER_HOME=~/.composer
 
-	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$COMPOSER_HOME/vendor/bin:$PATH
-
-	[[ -f $PWD/composer.json ]] && PATH=$PWD/vendor/bin:$PATH
+	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$PATH:$COMPOSER_HOME/vendor/bin
 fi
 
 # ==============================================================================
@@ -229,7 +227,7 @@ if _has_pkg 'go'; then
 	# fi
 
 	if [ -d $(go env GOPATH)/bin ]; then
-		PATH=$(go env GOPATH)/bin:$PATH
+		PATH=$PATH:$(go env GOPATH)/bin
 	fi
 fi
 
