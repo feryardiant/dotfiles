@@ -46,16 +46,7 @@ if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
-# Import basic utilities
-[[ -r ~/.env && -f ~/.env ]] && source ~/.env
-
-# Import basic utilities
-. $DOTFILES_DIR/scripts/util.sh
-
-for dotfile in ~/.{exports,aliases,functions}; do
-	[[ -r $dotfile && -f $dotfile ]] && source $dotfile
-done
-unset dotfile
+source ~/.profile
 
 # Bash Prompt
 PS1="\n\$ \[$blue\]\u \[$yellow\]\w\[\033[m\]\[$magenta\]\$(__git_ps1)\n\[$white\]→ "
