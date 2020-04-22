@@ -1,11 +1,13 @@
+
 # ==============================================================================
-# Defaults
+# This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
+# doesn't included in $PATH, I found this issue on WSL
 # ==============================================================================
 
-# set PATH so it includes user's private bin if it exists
-if [ -d ~/.local/bin/ ]; then
-	PATH="$HOME/.local/bin/:$PATH"
-fi
+for sbin_dir in {$HOME/.local/bin,/sbin,/usr/sbin,/usr/local/sbin}; do
+	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$sbin_dir:$PATH
+done
+unset sbin_dir
 
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
@@ -90,21 +92,7 @@ else
 	reset="\033[00m"
 fi
 
-if _has_pkg 'zsh'; then
-	export SHELL=`which zsh`
-fi
-
 shellname=`basename $SHELL`
-
-# ==============================================================================
-# This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
-# doesn't included in $PATH, I found this issue on WSL
-# ==============================================================================
-
-for sbin_dir in {/sbin,/usr/sbin,/usr/local/sbin}; do
-	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$PATH:$sbin_dir
-done
-unset sbin_dir
 
 # ==============================================================================
 # ASDF
@@ -117,170 +105,16 @@ if [ -d ~/.asdf ]; then
 fi
 
 # ==============================================================================
-# RBENV environments
-# ==============================================================================
-
-if [[ -d ~/.rbenv ]]; then
-	[[ -z $RBENV_ROOT ]] && export RBENV_ROOT=~/.rbenv
-
-	PATH=$RBENV_ROOT/shims:$RBENV_ROOT/bin:$PATH
-
-	if [ -f "$RBENV_ROOT/completions/rbenv.$shellname" ]; then
-		. "$RBENV_ROOT/completions/rbenv.$shellname"
-	fi
-fi
-
-# ==============================================================================
-# PHPENV environments
-# ==============================================================================
-
-if [[ -d ~/.phpenv ]]; then
-	[[ -z $PHPENV_ROOT ]] && export PHPENV_ROOT=~/.phpenv
-
-# PHP_BUILD_CONFIGURE_OPTS="--with-libdir=lib/x86_64-linux-gnu"
-	PATH=$PHPENV_ROOT/shims:$PHPENV_ROOT/bin:$PATH
-fi
-
-# ==============================================================================
-# NVM environments
-# ==============================================================================
-
-if [[ -d ~/.nvm ]]; then
-	[[ -z $NVM_DIR ]] && export NVM_DIR=~/.nvm
-
-	if [ -d "$NVM_DIR" ]; then
-		export NVM_SYMLINK_CURRENT=true
-
-		. $NVM_DIR/nvm.sh
-		[[ -f $NVM_DIR/${shellname}_completion ]] && . $NVM_DIR/${shellname}_completion
-
-		# If using WSL & Node.js Windows is installed
-		[[ -d $NVM_DIR/current/bin && -z "${PATH##*$NVM_DIR/versions/$(node -v)/bin*}" ]] && PATH=$NVM_DIR/current/bin:$PATH
-	fi
-fi
-
-# ==============================================================================
-# Gem user bin
-# ==============================================================================
-
-if _has_pkg 'ruby' && _has_pkg 'gem'; then
-	PATH=$(ruby -r rubygems -e 'puts Gem.user_dir')/bin:$PATH
-fi
-
-
-# ==============================================================================
-# Composer
-# ==============================================================================
-
-if _has_pkg 'composer' && [[ $OSTYPE != 'cygwin' ]]; then
-	[[ -z $COMPOSER_HOME ]] && export COMPOSER_HOME=~/.composer
-
-	[[ -d $COMPOSER_HOME && -z "${PATH##*$COMPOSER_HOME/vendor/bin*}" ]] || PATH=$PATH:$COMPOSER_HOME/vendor/bin
-fi
-
-# ==============================================================================
-# Node Package Manager
-# Enable bash completion for NPM
-# see: https://docs.npmjs.com/cli/completion
-# ==============================================================================
-
-if _has_pkg 'npm' && [[ $OSTYPE != 'cygwin' ]]; then
-	[[ $shellname = bash ]] && . <(npm completion)
-
-	if [[ -d $PWD/node_modules/.bin ]]; then
-		PATH=$PATH:$PWD/node_modules/.bin
-
-		# Enable bash completion for Grunt
-		# see: https://github.com/gruntjs/grunt-cli#shell-tab-auto-completion
-		if [[ -f $PWD/Gruntfile.js ]] && _has_pkg 'grunt'; then
-			eval `grunt --completion=$shellname`
-		fi
-
-		# Enable bash completion for Gulp
-		# see: https://github.com/gulpjs/gulp-cli/tree/master/completion#completion-for-gulp
-		if [[ -f $PWD/gulpfile.js ]] && _has_pkg 'gulp'; then
-			eval `gulp --completion=$shellname`
-		fi
-	fi
-fi
-
-# ==============================================================================
 # added by travis gem
 # ==============================================================================
 
-[ -f ~/.travis/travis.sh ] && . ~/.travis/travis.sh
+# [ -f ~/.travis/travis.sh ] && . ~/.travis/travis.sh
 
 # ==============================================================================
 # Git Prompt
 # see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 # ==============================================================================
 
-[ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
-
-# ==============================================================================
-# Go
-# ==============================================================================
-
-if _has_pkg 'go'; then
-	# if [ -d $(go env GOROOT)/bin ]; then
-	# 	PATH=$(go env GOROOT)/bin:$PATH
-	# fi
-
-	if [ -d $(go env GOPATH)/bin ]; then
-		PATH=$PATH:$(go env GOPATH)/bin
-	fi
-fi
-
-# ==============================================================================
-# Java environments
-# ==============================================================================
-
-if [[ $OSTYPE == 'linux-gnu' ]]; then
-	export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-fi
-
-# ==============================================================================
-# ORACLE DB Environtments
-# ==============================================================================
-
-# export ORACLE_HOME="/u01/app/oracle/product/11.2.0/xe"
-
-# if [ -d "$ORACLE_HOME" ]; then
-# 	export ORACLE_SID="XE"
-# 	export NLS_LANG=`$ORACLE_HOME/bin/nls_lang.sh`
-# 	export ORACLE_BASE="/u01/app/oracle"
-# 	export LD_LIBRARY_PATH="$ORACLE_HOME/lib:$LD_LIBRARY_PATH"
-# 	PATH="$ORACLE_HOME/bin:$PATH"
-# fi
-
-# ==============================================================================
-# Oh-My-ZSH permission fix
-# ==============================================================================
-
-export ZSH_DISABLE_COMPFIX=true
-
-# ==============================================================================
-# ASDF NodeJS skip signatures checking
-# ==============================================================================
-
-export NODEJS_CHECK_SIGNATURES=no
-
-# ==============================================================================
-# Puppeteer
-# ==============================================================================
-
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-export CHROMIUM_PATH=$HOME/.local/bin/chrome
-
-# ==============================================================================
-# PostgreSQL
-# See : https://www.postgresql.org/docs/10/libpq-envars.html
-# ==============================================================================
-
-export PGHOST='127.0.0.1'
-export PGUSER='postgres'
-export PGPASSWORD='secret'
-
-# ==============================================================================
+# [ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
 
 unset shellname
