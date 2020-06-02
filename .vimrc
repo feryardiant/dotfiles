@@ -54,6 +54,21 @@ call plug#end()
 " Enable syntax highlighting
 syntax on
 
+if has('unix')
+  " set backupdir=$HOME/.cache/vim/backup
+  set directory=$HOME/.cache/vim/swap
+  set undodir=$HOME/.cache/vim/undo
+else
+  set shell=powershell
+  set shellquote= shellpipe=\| shellxquote=
+  set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
+  set shellredir=\|\ Out-File\ -Encoding\ UTF8
+
+  " set backupdir=$HOME/AppData/nvim/backup
+  set directory=$LOCALAPPDATA/nvim/swap
+  set undodir=$LOCALAPPDATA/nvim/undo
+endif
+
 " Set extra options when running in GUI mode
 if has('gui_running')
   set guifont=Fira\ Code
@@ -69,17 +84,16 @@ endif
 
 " Vim color scheme http://vimcolors.com/
 set termguicolors
-"set background=dark
 
 try
-  let ayucolor="dark"     " light, dark & mirage
+  let ayucolor="mirage"     " light, dark & mirage
   colorscheme ayu
 catch /^Vim\%((\a\+)\)\=:E185/
   " deal with it
 endtry
 
-hi Normal guibg=#000000
-"hi NonText guibg=#000000 ctermbg=000
+" hi Normal guibg=#000000
+" hi NonText guibg=#000000 ctermbg=000
 
 " Change mapleader
 let mapleader = ","
@@ -87,11 +101,6 @@ let g:mapleader = ","
 
 " Use Unix as the standard file type
 set ffs=unix,dos,mac
-
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
-set backupdir=~/.cache/vim/backup
-set directory=~/.cache/vim/swap
-set undodir=~/.cache/vim/undo
 
 " Set some junk
 
