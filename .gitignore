@@ -1,9 +1,28 @@
-*.old
-*.bak
-*.log
-*~
-_*
+# Generic
+# --------------------------
+Thumbs.db
+Desktop.ini
 .directory
+*.bak
+*.cache
+*.old
+*.log
+*.zip
+._*
+*~
+
+# Developments
+# --------------------------
+nbproject
 .vagrant
-.env
+.idea
+.settings
+.vscode
+.project
 *.sublime-*
+.env
+
+# But Keep these
+# --------------------------
+!.gitkeep
+

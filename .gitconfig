@@ -7,10 +7,19 @@
 	whitespace = fix
 
 [core]
-	excludesfile = ~/.gitignore_global
-	attributesfile = ~/.gitattributes_global
+	excludesfile = ~/.gitignore
+	attributesfile = ~/.gitattributes
 	editor = nvim
 	trustctime = false
+	autocrlf = input
+
+[credential]
+	helper = manager
+[gpg]
+	program = gpg
+	# format = x509
+# [gpg "x509"]
+# 	program = smimesign
 
 [diff]
 	tool = vimdiff
@@ -31,14 +40,14 @@
 	# Push to remote with same branch name as local
 	default = matching
 
+# [pull]
+# 	rebase = true
+
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-
-# [pull]
-#     rebase = true
 
 [alias]
 	# View the current working tree status using the short format
