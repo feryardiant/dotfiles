@@ -411,8 +411,8 @@ let g:NERDTreeDirArrowExpandable = '⬏'
 let g:NERDTreeDirArrowCollapsible = '⬎'
 
 nnoremap <silent> <F2> :NERDTreeFind<CR>
-nnoremap <F3> :NERDTreeToggle<CR>
-inoremap <F3> <Esc>:NERDTreeToggle<CR>
+nnoremap <C-k><C-b> :NERDTreeToggle<CR>
+inoremap <C-k><C-b> <Esc>:NERDTreeToggle<CR>
 
 " CtrlP Settings
 nnoremap <C-p> :CtrlP<CR>
