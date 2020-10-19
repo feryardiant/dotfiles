@@ -6,6 +6,8 @@
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
 
+[init]
+	defaultBranch = master
 [core]
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
