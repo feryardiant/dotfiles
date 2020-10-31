@@ -4,17 +4,20 @@ set nocompatible
 " Enable filetype plugins
 filetype plugin indent on
 
-" Vim-Plug
-source $HOME/.config/nvim/vim-plug/plugins.vim
-
 " Enable syntax highlighting
 syntax on
 
 if has('unix')
+  " Vim-Plug
+  source $HOME/.config/nvim/vim-plug/plugins.vim
+
   " set backupdir=$HOME/.cache/vim/backup
   set directory=$HOME/.cache/vim/swap
   set undodir=$HOME/.cache/vim/undo
 else
+  " Vim-Plug
+  source $LOCALAPPDATA/nvim/vim-plug/plugins.vim
+
   set shell=powershell
   set shellquote= shellpipe=\| shellxquote=
   set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
@@ -42,7 +45,7 @@ endif
 set termguicolors
 
 try
-  let ayucolor="mirage"     " light, dark & mirage
+  let ayucolor="dark"     " light, dark & mirage
   colorscheme ayu
 catch /^Vim\%((\a\+)\)\=:E185/
   " deal with it
