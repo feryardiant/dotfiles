@@ -5,7 +5,7 @@ function take() {
 
 # find shorthand
 function f() {
-find . -name "$1"
+	find . -name "$1"
 }
 
 # Copy w/ progress

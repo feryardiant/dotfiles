@@ -1,14 +1,4 @@
 
-# ==============================================================================
-# This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
-# doesn't included in $PATH, I found this issue on WSL
-# ==============================================================================
-
-for sbin_dir in {$HOME/.local/bin,/sbin,/usr/sbin,/usr/local/sbin}; do
-	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$sbin_dir:$PATH
-done
-unset sbin_dir
-
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
 
@@ -95,26 +85,8 @@ fi
 shellname=`basename $SHELL`
 
 # ==============================================================================
-# ASDF
-# https://github.com/asdf-vm/asdf
+# GPG
 # ==============================================================================
-
-if [ -d ~/.asdf ]; then
-	[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
-	[ -f ~/.asdf/completions/asdf.bash ] && . ~/.asdf/completions/asdf.bash
-fi
-
-# ==============================================================================
-# added by travis gem
-# ==============================================================================
-
-# [ -f ~/.travis/travis.sh ] && . ~/.travis/travis.sh
-
-# ==============================================================================
-# Git Prompt
-# see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-# ==============================================================================
-
-# [ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
+export GPG_TTY=$(tty)
 
 unset shellname
