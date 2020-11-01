@@ -8,25 +8,82 @@ filetype plugin indent on
 syntax on
 
 if has('unix')
-  " Vim-Plug
-  source $HOME/.config/nvim/vim-plug/plugins.vim
-
   " set backupdir=$HOME/.cache/vim/backup
-  set directory=$HOME/.cache/vim/swap
-  set undodir=$HOME/.cache/vim/undo
-else
-  " Vim-Plug
-  source $LOCALAPPDATA/nvim/vim-plug/plugins.vim
+  set directory=$HOME/.vim/swap
+  set undodir=$HOME/.vim/undo
 
+  " auto-install vim-plug
+  if empty(glob($HOME . '/.vim/autoload/plug.vim'))
+    silent !curl -fLo $HOME/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    "autocmd VimEnter * PlugInstall
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+  endif
+
+  call plug#begin($HOME . '/.vim/autoload/plugged')
+else
   set shell=powershell
+
   set shellquote= shellpipe=\| shellxquote=
-  set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
+  set shellcmdflag=\ -ExecutionPolicy\ RemoteSigned\ -NoProfile\ -Nologo\ -NonInteractive\ -Command
   set shellredir=\|\ Out-File\ -Encoding\ UTF8
 
-  " set backupdir=$HOME/AppData/nvim/backup
-  set directory=$LOCALAPPDATA/nvim/swap
-  set undodir=$LOCALAPPDATA/nvim/undo
+  set directory=$LOCALAPPDATA/nvim-data/swap
+
+  " auto-install vim-plug
+  if empty(glob($LOCALAPPDATA . '/nvim/autoload/plug.vim'))
+    silent !curl -fLo $LOCALAPPDATA/nvim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    "autocmd VimEnter * PlugInstall
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+  endif
+
+  call plug#begin($LOCALAPPDATA . '/nvim/autoload/plugged')
 endif
+
+  Plug 'mattn/emmet-vim'
+  Plug 'tpope/vim-fugitive'
+  Plug 'gregsexton/gitv', { 'on': ['Gitv'] }
+  Plug 'tpope/vim-surround'
+  Plug 'dense-analysis/ale'
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'kien/ctrlp.vim', { 'on': ['CtrlP'] }
+  Plug 'Lokaltog/vim-easymotion'
+  Plug 'godlygeek/tabular'
+  Plug 'reedes/vim-pencil'
+  Plug 'terryma/vim-multiple-cursors'
+  Plug 'tpope/vim-commentary'
+  Plug 'joonty/vdebug'
+  Plug 'matze/vim-move'
+  Plug 'majutsushi/tagbar'
+  Plug 'neoclide/coc.nvim', { 'branch': 'release', 'do': { -> coc#util#install() } }
+  Plug 'posva/vim-vue', { 'for': 'vue' }
+  Plug 'wakatime/vim-wakatime'
+
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  Plug 'Yggdroot/indentLine'
+  Plug 'ayu-theme/ayu-vim'
+  Plug 'ryanoasis/vim-devicons'
+  Plug 'jwalton512/vim-blade', { 'for': 'blade.php' }
+
+  Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+  " Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+  "Plug 'ervandew/supertab'
+  Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+  Plug 'dsawardekar/wordpress.vim'
+
+  "if has('nvim')
+  "  Plug 'wvffle/vimterm'
+  "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  "else
+  "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  "  Plug 'roxma/nvim-yarp'
+  "  Plug 'roxma/vim-hug-neovim-rpc'
+  "endif
+
+call plug#end()
 
 " Set extra options when running in GUI mode
 if has('gui_running')
