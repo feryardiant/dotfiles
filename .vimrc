@@ -9,8 +9,8 @@ syntax on
 
 if has('unix')
   " set backupdir=$HOME/.cache/vim/backup
-  set directory=$HOME/.vim/swap
-  set undodir=$HOME/.vim/undo
+  set directory=$HOME/.cache/vim/swap
+  set undodir=$HOME/.cache/vim/undo
 
   " auto-install vim-plug
   if empty(glob($HOME . '/.vim/autoload/plug.vim'))
