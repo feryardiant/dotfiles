@@ -12,7 +12,7 @@ fi
 # ==============================================================================
 
 for sbin_dir in {$HOME/.local/bin,/sbin,/usr/sbin,/usr/local/sbin}; do
-	[[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$sbin_dir:$PATH
+    [[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] || PATH=$sbin_dir:$PATH
 done
 unset sbin_dir
 
@@ -22,8 +22,25 @@ unset sbin_dir
 # ==============================================================================
 
 if [ -d ~/.asdf ]; then
-	[ -f ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
-	[ -f ~/.asdf/completions/asdf.bash ] && . ~/.asdf/completions/asdf.bash
+    [ -s ~/.asdf/asdf.sh ] && . ~/.asdf/asdf.sh
+
+    if [[ $SHELL = `which zsh` ]]; then
+        fpath=(${ASDF_DIR}/completions $fpath)
+        autoload -Uz compinit && compinit
+    else
+        [ -s ~/.asdf/completions/asdf.bash ] && . ~/.asdf/completions/asdf.bash
+    fi
+fi
+
+# ==============================================================================
+# NVM
+# https://github.com/nvm-sh/nvm
+# ==============================================================================
+
+if [ -d ~/.nvm ]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
 
 # ==============================================================================
