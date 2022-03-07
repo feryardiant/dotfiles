@@ -5,12 +5,12 @@ set nocompatible
 filetype plugin indent on
 
 " Enable syntax highlighting
-syntax on
+syntax enable
 
 if has('unix')
   " set backupdir=$HOME/.cache/vim/backup
-  set directory=$HOME/.cache/vim/swap
-  set undodir=$HOME/.cache/vim/undo
+  " set directory=$HOME/.cache/vim/swap
+  " set undodir=$HOME/.cache/vim/undo
 
   " auto-install vim-plug
   if empty(glob($HOME . '/.vim/autoload/plug.vim'))
@@ -20,7 +20,7 @@ if has('unix')
     autocmd VimEnter * PlugInstall | source $MYVIMRC
   endif
 
-  call plug#begin($HOME . '/.vim/autoload/plugged')
+  call plug#begin($HOME . '/.vim/plugged')
 else
   set shell=powershell
 
@@ -38,50 +38,51 @@ else
     autocmd VimEnter * PlugInstall | source $MYVIMRC
   endif
 
-  call plug#begin($LOCALAPPDATA . '/nvim/autoload/plugged')
+  call plug#begin($LOCALAPPDATA . '/nvim/plugged')
 endif
 
   Plug 'mattn/emmet-vim'
-  Plug 'tpope/vim-fugitive'
-  Plug 'gregsexton/gitv', { 'on': ['Gitv'] }
-  Plug 'tpope/vim-surround'
-  Plug 'dense-analysis/ale'
   Plug 'editorconfig/editorconfig-vim'
-  Plug 'kien/ctrlp.vim', { 'on': ['CtrlP'] }
-  Plug 'Lokaltog/vim-easymotion'
-  Plug 'godlygeek/tabular'
-  Plug 'reedes/vim-pencil'
-  Plug 'terryma/vim-multiple-cursors'
-  Plug 'tpope/vim-commentary'
-  Plug 'joonty/vdebug'
-  Plug 'matze/vim-move'
-  Plug 'majutsushi/tagbar'
-  Plug 'neoclide/coc.nvim', { 'branch': 'release', 'do': { -> coc#util#install() } }
-  Plug 'posva/vim-vue', { 'for': 'vue' }
-  Plug 'wakatime/vim-wakatime'
+  Plug 'Yggdroot/indentLine'
+  " Plug 'tpope/vim-fugitive'
+  " Plug 'gregsexton/gitv', { 'on': ['Gitv'] }
+  " Plug 'tpope/vim-surround'
+  " Plug 'kien/ctrlp.vim', { 'on': ['CtrlP'] }
+  " Plug 'Lokaltog/vim-easymotion'
+  " Plug 'godlygeek/tabular'
+  " Plug 'reedes/vim-pencil'
+  " Plug 'terryma/vim-multiple-cursors'
+  " Plug 'tpope/vim-commentary'
+  " Plug 'matze/vim-move'
+  " Plug 'ervandew/supertab'
+  " Plug 'majutsushi/tagbar'
+  " Plug 'dense-analysis/ale'
+  " Plug 'neoclide/coc.nvim', { 'branch': 'release', 'do': { -> coc#util#install() } }
 
+  " Plug 'posva/vim-vue', { 'for': 'vue' }
+  " Plug 'joonty/vdebug'
+  " Plug 'jwalton512/vim-blade', { 'for': 'blade.php' }
+  " Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
+  " Plug 'dsawardekar/wordpress.vim'
+
+  Plug 'ayu-theme/ayu-vim'
+  Plug 'wakatime/vim-wakatime'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  Plug 'Yggdroot/indentLine'
-  Plug 'ayu-theme/ayu-vim'
   Plug 'ryanoasis/vim-devicons'
-  Plug 'jwalton512/vim-blade', { 'for': 'blade.php' }
 
   Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
   " Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
-  "Plug 'ervandew/supertab'
-  Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
-  Plug 'dsawardekar/wordpress.vim'
 
-  "if has('nvim')
+  " if has('nvim')
   "  Plug 'wvffle/vimterm'
   "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  "else
+  " else
   "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   "  Plug 'roxma/nvim-yarp'
   "  Plug 'roxma/vim-hug-neovim-rpc'
-  "endif
+  " endif
 
 call plug#end()
 
@@ -92,21 +93,16 @@ if has('gui_running')
   set guioptions-=T
   set guioptions+=e
   set guitablabel=%M\ %t
-
-  set t_Co=256
 else
   " highlight Comment ctermfg=Gray
 endif
 
+set t_Co=256
+
 " Vim color scheme http://vimcolors.com/
 set termguicolors
-
-try
-  let ayucolor="dark"     " light, dark & mirage
-  colorscheme ayu
-catch /^Vim\%((\a\+)\)\=:E185/
-  " deal with it
-endtry
+" let ayucolor="dark"     " light, dark & mirage
+colorscheme ayu
 
 " hi Normal guibg=#000000
 " hi NonText guibg=#000000 ctermbg=000
@@ -275,6 +271,9 @@ set wrapscan
 " Confirm before exit if file has changed
 set confirm
 
+set colorcolumn=80,100
+set ruler
+
 if !has('nvim')
   set esckeys          " Allow cursor keys in insert mode.
   set ttymouse=xterm   " Set mouse type to xterm.
@@ -402,109 +401,6 @@ map <leader>tm :tabmove
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
-" Pencil.VIM
-let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
-
-augroup pencil
-  autocmd!
-  autocmd FileType markdown,mkd,md call pencil#init()
-  autocmd FileType textile call pencil#init()
-  autocmd FileType text call pencil#init({'wrap': 'hard'})
-augroup END
-
-"" NERDTree configuration
-let g:NERDTreeShowHidden = 1     " Show hidden files/directories
-let g:NERDTreeMinimalUI = 1      " Remove bookmarks and help text from NERDTree
-let g:NERDTreeChDirMode = 2
-" Hide certain files and directories from NERDTree
-let g:NERDTreeIgnore = [ '^\.DS_Store$', '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
-let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
-let g:nerdtree_tabs_focus_on_files = 1
-let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeWinSize = 36
-" Custom icons for expandable/expanded directories
-let g:NERDTreeDirArrowExpandable = '⬏'
-let g:NERDTreeDirArrowCollapsible = '⬎'
-
-nnoremap <silent> <F2> :NERDTreeFind<CR>
-nnoremap <C-k><C-b> :NERDTreeToggle<CR>
-inoremap <C-k><C-b> <Esc>:NERDTreeToggle<CR>
-
-" CtrlP Settings
-nnoremap <C-p> :CtrlP<CR>
-inoremap <C-p> <Esc>:CtrlP<CR>i
-" Open file in current window/buffer
-let g:ctrlp_open_new_file = 'r'
-" Ignore some stuffs
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))$',
-  \ 'file': '\v\.(exe|so|dll|zip)$',
-  \ }
-
-" Deoplete.VIM
-"let g:deoplete#enable_at_startup = 1
-
-" COC.VIM
-" use <tab> for trigger completion and navigate to next complete item
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ coc#refresh()
-
-" Close preview window when completion is done.
-autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" https://github.com/neoclide/coc.nvim/issues/590
-autocmd! FileType php set iskeyword+=$
-autocmd! BufNewFile,BufRead *.blade.php set ft=blade
-
-let g:coc_filetype_map = {
-  \ 'blade': 'html'
-  \ }
-
-" Multiple-cursor.VIM
-let g:multi_cursor_use_default_mapping=0
-
-" Default mapping
-let g:multi_cursor_prev_key = '<C-n>'
-let g:multi_cursor_next_key = '<C-S-N>'
-let g:multi_cursor_skip_key = '<C-x>'
-let g:multi_cursor_quit_key = '<Esc>'
-
 "let g:Powerline_symbols = 'unicode'
 let g:airline_powerline_fonts = 1
 
@@ -517,14 +413,14 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#branch#format = 2
 
-let g:airline_symbols.whitespace = 'Ξ'
-let g:airline_symbols.branch = ''
-let g:airline_symbols.readonly = ''
-let g:airline_symbols.notexists = 'Ɇ'
-let g:airline_symbols.linenr = '☰'
-let g:airline_symbols.linenr = '␊'
-let g:airline_symbols.linenr = '␤'
-let g:airline_symbols.linenr = '¶'
+" let g:airline_symbols.whitespace = 'Ξ'
+" let g:airline_symbols.branch = ''
+" let g:airline_symbols.readonly = ''
+" let g:airline_symbols.notexists = 'Ɇ'
+" let g:airline_symbols.linenr = '☰'
+" let g:airline_symbols.linenr = '␊'
+" let g:airline_symbols.linenr = '␤'
+" let g:airline_symbols.linenr = '¶'
 
 " powerline symbols
 let g:airline_left_sep = ''
@@ -532,51 +428,151 @@ let g:airline_left_alt_sep = ''
 let g:airline_right_sep = ''
 let g:airline_right_alt_sep = ''
 
-" COC integration
-let g:airline#extensions#coc#enabled = 1
-" ALE integration
-let g:airline#extensions#ale#enabled = 1
-" Fugitive integration
-let g:airline#extensions#fugitiveline#enabled = 1
-" CSV file integration
-let g:airline#extensions#csv#enabled = 1
-" PO file integration
-let g:airline#extensions#po#enabled = 1
+" Pencil.VIM
+" let g:pencil#wrapModeDefault = 'hard'   " or 'soft'
 
-set colorcolumn=80,100
-set ruler
+" augroup pencil
+"   autocmd!
+"   autocmd FileType markdown,mkd,md call pencil#init()
+"   autocmd FileType textile call pencil#init()
+"   autocmd FileType text call pencil#init({'wrap': 'hard'})
+" augroup END
+
+"" NERDTree configuration
+" let g:NERDTreeShowHidden = 1     " Show hidden files/directories
+" let g:NERDTreeMinimalUI = 1      " Remove bookmarks and help text from NERDTree
+" let g:NERDTreeChDirMode = 2
+" Hide certain files and directories from NERDTree
+" let g:NERDTreeIgnore = [ '^\.DS_Store$', '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+" let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+" let g:nerdtree_tabs_focus_on_files = 1
+" let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
+" let g:NERDTreeWinSize = 36
+" Custom icons for expandable/expanded directories
+" let g:NERDTreeDirArrowExpandable = '⬏'
+" let g:NERDTreeDirArrowCollapsible = '⬎'
+
+" nnoremap <silent> <F2> :NERDTreeFind<CR>
+" nnoremap <C-k><C-b> :NERDTreeToggle<CR>
+" inoremap <C-k><C-b> <Esc>:NERDTreeToggle<CR>
+
+" CtrlP Settings
+" nnoremap <C-p> :CtrlP<CR>
+" inoremap <C-p> <Esc>:CtrlP<CR>i
+" Open file in current window/buffer
+" let g:ctrlp_open_new_file = 'r'
+" Ignore some stuffs
+" let g:ctrlp_custom_ignore = {
+"   \ 'dir':  '\v[\/](node_modules|bower_components|vendor)|(\.(git|hg|svn|vscode))$',
+"   \ 'file': '\v\.(exe|so|dll|zip)$',
+"   \ }
+
+" Deoplete.VIM
+"let g:deoplete#enable_at_startup = 1
+
+" COC.VIM
+" use <tab> for trigger completion and navigate to next complete item
+" function! s:check_back_space() abort
+"   let col = col('.') - 1
+"   return !col || getline('.')[col - 1]  =~# '\s'
+" endfunction
+
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+" inoremap <silent><expr> <TAB>
+"   \ pumvisible() ? "\<C-n>" :
+"   \ <SID>check_back_space() ? "\<TAB>" :
+"   \ coc#refresh()
+
+" Close preview window when completion is done.
+" autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+" Use <c-space> to trigger completion.
+" inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+" nmap <silent> [g <Plug>(coc-diagnostic-prev)
+" nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
+
+" https://github.com/neoclide/coc.nvim/issues/590
+" autocmd! FileType php set iskeyword+=$
+" autocmd! BufNewFile,BufRead *.blade.php set ft=blade
+
+" let g:coc_filetype_map = {
+"   \ 'blade': 'html'
+"   \ }
+
+" Multiple-cursor.VIM
+" let g:multi_cursor_use_default_mapping=0
+
+" Default mapping
+" let g:multi_cursor_prev_key = '<C-n>'
+" let g:multi_cursor_next_key = '<C-S-N>'
+" let g:multi_cursor_skip_key = '<C-x>'
+" let g:multi_cursor_quit_key = '<Esc>'
+
+" COC integration
+" let g:airline#extensions#coc#enabled = 1
+" ALE integration
+" let g:airline#extensions#ale#enabled = 1
+" Fugitive integration
+" let g:airline#extensions#fugitiveline#enabled = 1
+" CSV file integration
+" let g:airline#extensions#csv#enabled = 1
+" PO file integration
+" let g:airline#extensions#po#enabled = 1
 
 " Linters Settings
 " See https://github.com/dense-analysis/ale
-let g:ale_linters = {
-\   'javascript': ['eslint'],
-\   'jsx': ['stylelint', 'eslint'],
-\   'vue': ['prettier', 'eslint'],
-\   'html': ['prettier', 'stylelint'],
-\   'php': ['langserver', 'phpcs', 'php-cs-fixer', 'phpmd', 'phpstan', 'php'],
-\}
-let g:ale_pattern_options = {
-\   '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
-\   '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
-\}
+" let g:ale_linters = {
+" \   'javascript': ['eslint'],
+" \   'jsx': ['stylelint', 'eslint'],
+" \   'vue': ['prettier', 'eslint'],
+" \   'html': ['prettier', 'stylelint'],
+" \   'php': ['langserver', 'phpcs', 'php-cs-fixer', 'phpmd', 'phpstan', 'php'],
+" \}
+" let g:ale_pattern_options = {
+" \   '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
+" \   '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
+" \}
 
-let g:ale_pattern_options_enabled = 1
+" let g:ale_pattern_options_enabled = 1
 
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 1
+" let g:ale_lint_on_text_changed = 'never'
+" let g:ale_lint_on_insert_leave = 1
 " let g:ale_lint_on_enter = 0
 
 "let g:ale_sign_error = '⌧'
 "let g:ale_sign_warning = '╳'
 
 "let g:ale_open_list = 1
-let g:ale_keep_list_window_open = 1
-let g:ale_sign_column_always = 1
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
-let g:ale_set_balloons = 1
+" let g:ale_keep_list_window_open = 1
+" let g:ale_sign_column_always = 1
+" let g:ale_echo_msg_error_str = 'E'
+" let g:ale_echo_msg_warning_str = 'W'
+" let g:ale_echo_msg_format = '[%severity%:%linter%] %s'
+" let g:ale_set_balloons = 1
 " let g:ale_cursor_detail = 1
 
-let g:airline#extensions#ale#enabled = 1
-let g:ale_javascript_eslint_suppress_missing_config = 1
+" let g:airline#extensions#ale#enabled = 1
+" let g:ale_javascript_eslint_suppress_missing_config = 1
