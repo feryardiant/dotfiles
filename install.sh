@@ -2,8 +2,11 @@
 
 set -e
 
+sudo -k
+
 . ./scripts/util.sh
 
+my_user="$USER"
 my_pwd="$PWD"
 now=`date +'%Y-%m-%d_%H-%M-%S'`
 backup_dir=$my_pwd/dotfiles.old/$now
@@ -50,8 +53,13 @@ while [ $# -ne 0 ]; do
 done
 
 # Initialize
-e $c_inf $'Configure (this might take a while)...\n'
-. $my_pwd/scripts/init.sh
+for userlocal in ~/.local/{bin,lib,share}; do
+	[ ! -d $userlocal ] && mkdir -p $userlocal
+done
+unset userlocal
+
+# e $c_inf $'Configure (this might take a while)...\n'
+# . $my_pwd/scripts/init.sh
 
 cd $HOME
 
@@ -62,14 +70,14 @@ cd $HOME
 e $c_inf 'Setup dotfiles'
 
 # Setup
-dotfiles="aliases profile bashrc exports functions"
+dotfiles="aliases profile exports functions"
 for dotfile in $dotfiles; do
 	_resque ~/.$dotfile
 	ln -sf $my_pwd/.$dotfile .
 done
 
 # Cleanup
-unset dotfile dorfiles
+unset dotfile dotfiles
 
 e $c_suc $' ✔ Done\n'
 
@@ -77,7 +85,7 @@ e $c_suc $' ✔ Done\n'
 # ENV
 # ------------------------------------------------------------------------------
 
-e $c_inf 'Setup .env'
+e $c_inf 'Setup dotenv'
 
 envContent="`cat $my_pwd/.env.sample`"
 
@@ -138,27 +146,23 @@ e $c_suc $' ✔ Done\n'
 # Shell Profile
 # ------------------------------------------------------------------------------
 
-if [ "$with_zsh" = '1' ]; then
-	. $my_pwd/scripts/zsh.sh > $_LOG_FILE
-fi
+# if [ "$with_zsh" = '1' ]; then
+# 	. $my_pwd/scripts/zsh.sh > $_LOG_FILE
+# fi
 
 if _has_pkg 'zsh'; then
 	e $c_inf 'Setup oh-my-zsh'
 
 	zsh_dir=~/.oh-my-zsh
-	[ ! -d $zsh_dir ] && git clone -q --depth=1 https://github.com/robbyrussell/oh-my-zsh.git $zsh_dir
-	[ -d $zsh_dir/themes ] && ln -sf $my_pwd/zsh-themes/honukai.zsh-theme $zsh_dir/themes/
+	[ ! -d $zsh_dir ] && git clone -q --depth=1 https://github.com/ohmyzsh/ohmyzsh.git $zsh_dir
+	[ -d $zsh_dir/themes ] && ln -sf $my_pwd/prompt-themes/honukai.zsh-theme $zsh_dir/themes/
 	_resque ~/.zshrc && ln -sf $my_pwd/.zshrc ~/.zshrc
 
-	if [[ ! -z $git_email ]]; then
-		cd $zsh_dir && git add themes && git commit -q -m "Add honukai.zsh-theme"
-		cd $HOME
-	fi
+	# if [[ ! -z $git_email ]]; then
+	# 	cd $zsh_dir && git add themes && git commit -q -m "Add honukai.zsh-theme"
+	# 	cd $HOME
+	# fi
 
-	e $c_suc $' ✔ Done\n'
-else
-	e $c_inf 'Setup bash_profile'
-	_resque ~/.bash_profile && ln -sf .profile .bash_profile
 	e $c_suc $' ✔ Done\n'
 fi
 
@@ -169,39 +173,37 @@ fi
 e $c_inf 'Setup VIM'
 
 # Setup
-vim_dirs="swap undo backup"
-for vim_dir in $vim_dirs; do
-	[ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
-done
+# vim_dirs="swap undo backup"
+# for vim_dir in $vim_dirs; do
+# 	[ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
+# done
 
-if [ "$with_neovim" = '1' ]; then
-	. $my_pwd/scripts/neovim.sh > $_LOG_FILE
-	[ -d ~/.config/nvim ] || mkdir ~/.config/nvim
-fi
+# if [ "$with_neovim" = '1' ]; then
+# 	. $my_pwd/scripts/neovim.sh > $_LOG_FILE
+# fi
 
-if _has_pkg 'nvim'; then
-	vim_bin=`which nvim`
-	plug_path='.local/share/nvim/site/autoload'
-	vimrc_path='.config/nvim/init.vim'
+# if _has_pkg 'nvim'; then
+# 	[ -d ~/.config/nvim ] || mkdir ~/.config/nvim
+# 	vim_bin=`which nvim`
+# 	plug_path='.local/share/nvim/site/autoload'
+# 	vimrc_path='.config/nvim/init.vim'
+# else
+# 	. $my_pwd/scripts/vim.sh > $_LOG_FILE
 
-	# sudo update-alternatives --install /usr/bin/vim editor $vim_bin 60 > $_LOG_FILE
-else
-	. $my_pwd/scripts/vim.sh > $_LOG_FILE
+# 	vim_bin=`which vim`
+# 	plug_path='.vim/autoload'
+# 	vimrc_path='.vimrc'
+# fi
 
-	vim_bin=`which vim`
-	plug_path='.vim/autoload'
-	vimrc_path='.vimrc'
-fi
+# sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
 
-sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
-
-_resque ~/$vimrc_path && ln -sf $my_pwd/.vimrc ~/$vimrc_path
-_resque ~/$plug_path/plug.vim && \
-curl -LSso ~/$plug_path/plug.vim --create-dirs \
-https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# _resque ~/$vimrc_path && ln -sf $my_pwd/.vimrc ~/$vimrc_path
+# _resque ~/$plug_path/plug.vim && \
+# curl -LSso ~/$plug_path/plug.vim --create-dirs \
+# https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # Clean up
-unset plug_path vimrc_path vim_bin vim_dir vim_dirs
+# unset plug_path vimrc_path vim_bin vim_dir vim_dirs
 
 e $c_suc $' ✔ Done\n'
 

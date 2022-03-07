@@ -1,6 +1,11 @@
 
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
 # Don’t clear the screen after quitting a manual page
 export MANPAGER="less -X"
+
+# export MANPATH="/usr/local/man:$MANPATH"
 
 # Larger bash history (allow 32³ entries; default is 500)
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
@@ -19,7 +24,7 @@ export HISTIGNORE="&:h:history:pwd:exit:clear:[ \t]*"
 export HISTCONTROL=ignoreboth
 
 # Limit path length in promt (e.g. ~/.../current/path/name)
-export PROMPT_DIRTRIM=3
+# export PROMPT_DIRTRIM=3
 
 [[ -z $SSL_CERT_DIR && -d /etc/ssl/certs ]] && export SSL_CERT_DIR=/etc/ssl/certs
 
@@ -55,43 +60,38 @@ fi
 # 32  42  green     36  46  cyan
 # 33  43  yellow    37  47  white
 
-if tput setaf 1 &> /dev/null; then
-	tput sgr0
-	black=$(tput setaf 0)
-	red=$(tput setaf 1)
-	green=$(tput setaf 2)
-	yellow=$(tput setaf 3)
-	blue=$(tput setaf 4)
-	magenta=$(tput setaf 5)
-	cyan=$(tput setaf 6)
-	white=$(tput setaf 7)
+# if tput setaf 1 &> /dev/null; then
+# 	tput sgr0
+# 	black=$(tput setaf 0)
+# 	red=$(tput setaf 1)
+# 	green=$(tput setaf 2)
+# 	yellow=$(tput setaf 3)
+# 	blue=$(tput setaf 4)
+# 	magenta=$(tput setaf 5)
+# 	cyan=$(tput setaf 6)
+# 	white=$(tput setaf 7)
 
-	bold=$(tput bold)
-	reset=$(tput sgr0)
-else
-	black="\033[01;30m"
-	red="\033[01;31m"
-	green="\033[01;32m"
-	yellow="\033[01;33m"
-	blue="\033[01;34m"
-	magenta="\033[01;35m"
-	cyan="\033[01;36m"
-	white="\033[01;37m"
+# 	bold=$(tput bold)
+# 	reset=$(tput sgr0)
+# else
+# 	black="\033[01;30m"
+# 	red="\033[01;31m"
+# 	green="\033[01;32m"
+# 	yellow="\033[01;33m"
+# 	blue="\033[01;34m"
+# 	magenta="\033[01;35m"
+# 	cyan="\033[01;36m"
+# 	white="\033[01;37m"
 
-	bold=""
-	reset="\033[00m"
-fi
+# 	bold=""
+# 	reset="\033[00m"
+# fi
 
-shellname=`basename $SHELL`
-
-# ==============================================================================
-# GPG
-# ==============================================================================
+# Preferred editor for local and remote sessions
 export GPG_TTY=$(tty)
+# export EDITOR='vim'
 
 # ==============================================================================
 # Vagrant
 # ==============================================================================
-export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
-
-unset shellname
+# export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"

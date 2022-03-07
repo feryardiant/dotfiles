@@ -26,6 +26,18 @@ _usage() {
 USAGE
 }
 
+# versions 7.0,7.1,7.2,7.3,7.4,8.0,8.1
+# extensions cli,phpdbg,dev,redis,sqlite3,pgsql,mysqlnd,memcache,memcached,intl,bz2,igbinary,imagick,gd,bcmath,xdebug,xml,xmlrpc,zip
+# dependencies
+# - redis: redis-server
+# - sqlite3: sqlite3
+# - memcached: memcahced
+# - gd: libgd-tools
+# - mysqlnd: mysql-server
+# - pgsql: postgresql
+# - imagick: libmagickcore-6.q16-6-extra
+# - swoole: libevent-dev
+
 _OPTS=''
 while [ $# -ne 0 ]; do
 	case $1 in
