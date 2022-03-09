@@ -191,7 +191,7 @@ set nohidden
 " set nowrap
 
 " Enable line numbers.
-set nu
+set nu relativenumber
 
 " Set omni-completion method.
 set ofu=syntaxcomplete#Complete
@@ -402,16 +402,16 @@ map <leader>tm :tabmove
 map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
 
 "let g:Powerline_symbols = 'unicode'
+let g:airline_theme = 'wombat'
 let g:airline_powerline_fonts = 1
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#branch#format = 2
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
-
-let g:airline_theme = 'wombat'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#branch#enabled = 1
-let g:airline#extensions#branch#format = 2
 
 " let g:airline_symbols.whitespace = 'Ξ'
 " let g:airline_symbols.branch = ''
