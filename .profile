@@ -1,8 +1,6 @@
 # Import basic utilities
 [[ -s $HOME/.env ]] && source $HOME/.env
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
 # Import basic utilities
 if [ -d $DOTFILES_DIR ]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
@@ -22,7 +20,13 @@ fi
 # done
 # unset sbin_dir
 
-export PATH="$HOME/.local/bin:$HOME/Library/Python/3.9/bin:$PATH"
+if [[ -x /opt/homebrew/bin/brew ]]; then
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+PATH="$HOME/.local/bin:$PATH"
+
+export PATH
 
 # ==============================================================================
 # Git Prompt
@@ -35,3 +39,5 @@ for dotfile in ~/.{exports,aliases,functions}; do
     [[ -r $dotfile && -f $dotfile ]] && source $dotfile
 done
 unset dotfile
+
+export PATH="$(consolidate_path $PATH)"
