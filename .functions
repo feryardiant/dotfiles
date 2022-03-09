@@ -233,3 +233,15 @@ Available commands:
 	esac
 }
 
+# credit https://github.com/mislav/dotfiles/blob/master/bin/consolidate-path
+function consolidate_path() {
+	result=":"
+
+	IFS=:
+	for p in $1; do
+		[[ "$result" == *:"$p":* || -z "${result##*:$p:*}" ]] || result="${result}${p}:"
+	done
+
+	result="${result#:}"
+	echo "${result%:}"
+}
