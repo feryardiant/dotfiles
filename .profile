@@ -20,13 +20,40 @@ fi
 # done
 # unset sbin_dir
 
-if [[ -x /opt/homebrew/bin/brew ]]; then
+# ==============================================================================
+# HomeBrew
+# ==============================================================================
+if [[ -z $HOMEBREW_PREFIX && -x /opt/homebrew/bin/brew ]]; then
 	eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-PATH="$HOME/.local/bin:$PATH"
+if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
+    PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
+    PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
+fi
 
-export PATH
+# ==============================================================================
+# Android SDK
+# ==============================================================================
+if [[ -z $ANDROID_SDK_ROOT && -d ~/.local/share/android ]]; then
+    export ANDROID_SDK_ROOT="$HOME/.local/share/android"
+
+    # for sdk_path in {tools,platform-tools,emulator}; do
+    #     [[ -d $ANDROID_SDK_ROOT/$sdk_path ]] && PATH="$ANDROID_SDK_ROOT/$sdk_path:$PATH"
+    # done
+    # unset sdk_path
+fi
+
+# ==============================================================================
+# User Local
+# ==============================================================================
+if [[ -d $HOME/.local/bin ]]; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# Prevent Duplicate Path
+# Credit: https://askubuntu.com/a/1349910/10706
+export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
 
 # ==============================================================================
 # Git Prompt
