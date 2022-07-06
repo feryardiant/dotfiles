@@ -8,19 +8,33 @@ filetype plugin indent on
 syntax enable
 
 if has('unix')
-  " set backupdir=$HOME/.cache/vim/backup
-  " set directory=$HOME/.cache/vim/swap
-  " set undodir=$HOME/.cache/vim/undo
-
   " auto-install vim-plug
-  if empty(glob($HOME . '/.vim/autoload/plug.vim'))
-    silent !curl -fLo $HOME/.vim/autoload/plug.vim --create-dirs
+  if empty(glob($HOME . '/.local/share/vim-plug/plug.vim'))
+    silent !curl -fLo $HOME/.local/share/vim-plug/plug.vim --create-dirs
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    "autocmd VimEnter * PlugInstall
-    autocmd VimEnter * PlugInstall | source $MYVIMRC
   endif
 
-  call plug#begin($HOME . '/.vim/plugged')
+  if has('nvim')
+    set directory=$HOME/.cache/nvim
+
+    if empty(glob($HOME . '/.config/nvim/autoload/plug.vim'))
+      silent !mkdir -p $HOME/.config/nvim/autoload
+      silent !ln -s $HOME/.local/share/vim-plug/plug.vim $HOME/.config/nvim/autoload/plug.vim
+
+      autocmd VimEnter * PlugInstall | source $MYVIMRC
+    endif
+  else
+    set directory=$HOME/.cache/vim
+
+    if empty(glob($HOME . '/.vim/autoload/plug.vim'))
+      silent !mkdir -p $HOME/.vim/autoload
+      silent !ln -s $HOME/.local/share/vim-plug/plug.vim $HOME/.vim/autoload/plug.vim
+
+      autocmd VimEnter * PlugInstall | source $MYVIMRC
+    endif
+  endif
+
+  call plug#begin($HOME . '/.local/share/vim-plug')
 else
   set shell=powershell
 
@@ -274,6 +288,23 @@ set confirm
 set colorcolumn=80,100
 set ruler
 
+" Sudo write (,W)
+noremap <leader>W :w !sudo tee %<CR>
+
+" Better mark jumping (line + col)
+nnoremap ' `
+
+if !exists('g:vdebug_options')
+  let g:vdebug_options = {}
+endif
+
+let g:vdebug_options.port = 9000
+
+" Toggle show tabs and trailing spaces (,c)
+set lcs=eol:¬,tab:›\ ,trail:·,extends:>,precedes:<
+"set fcs=fold:-
+nnoremap ,c <ESC>:set list!<CR>
+
 if !has('nvim')
   set esckeys          " Allow cursor keys in insert mode.
   set ttymouse=xterm   " Set mouse type to xterm.
@@ -286,18 +317,26 @@ if !has('nvim')
   inoremap <silent> <ESC>OB <DOWN>
   inoremap <silent> <ESC>OC <RIGHT>
   inoremap <silent> <ESC>OD <LEFT>
+
+  " Remap :W to :w
+  command W w
 endif
 
-" Use Ctrl+Z as it should be
-nnoremap <C-z> :undo<cr>
-inoremap <C-z> <esc>:undo<cr>i
+" Clear last search (,qs)
+map <ESC> :noh<CR>
+
+" Use Ctrl+Z to Undo and Ctrl+Y to Redo
+nnoremap <C-z> :undo<CR>
+nnoremap <C-y> :redo<CR>
+inoremap <C-z> <ESC>:undo<CR>i
+inoremap <C-y> <ESC>:redo<CR>i
 
 " Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
+map <leader>cd :cd %:p:h<CR>:pwd<CR>
 
 " Speed up viewport scrolling
-nnoremap <C-e> 3<C-e>
-nnoremap <C-y> 3<C-y>
+"nnoremap <C-e> 3<C-e>
+"nnoremap <C-y> 3<C-y>
 
 " Faster split resizing [+,-] for height and Alt+[+,-] for width
 if bufwinnr(1)
@@ -307,101 +346,87 @@ if bufwinnr(1)
   noremap <A--> <C-W>>
 endif
 
-" Better split switching (Ctrl-j, Ctrl-k, Ctrl-h, Ctrl-l)
-noremap <C-j> <C-W>j
-noremap <C-k> <C-W>k
-noremap <C-H> <C-W>h
-noremap <C-L> <C-W>l
+" Better split switching using Alt-[hjkl]
+nmap <A-j> <C-W>j
+nmap <A-k> <C-W>k
+nmap <A-h> <C-W>h
+nmap <A-l> <C-W>l
+imap <A-j> <ESC><C-W>j<CR>i
+imap <A-k> <ESC><C-W>k<CR>i
+imap <A-h> <ESC><C-W>h<CR>i
+imap <A-l> <ESC><C-W>l<CR>i
 
-" Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
-
-nnoremap <A-j> :m .+1<CR>==
-nnoremap <A-k> :m .-2<CR>==
-inoremap <A-j> <Esc>:m .+1<CR>==gi
-inoremap <A-k> <Esc>:m .-2<CR>==gi
-vnoremap <A-j> :m '>+1<CR>gv=gv
-vnoremap <A-k> :m '<-2<CR>gv=gv
-
-if has("mac") || has("macunix")
-  nmap <D-j> <M-j>
-  nmap <D-k> <M-k>
-  vmap <D-j> <M-j>
-  vmap <D-k> <M-k>
+" Move a line of text using ALT+[Up/Down]
+if has('nvim')
+  nmap <A-Down> mz:m+<CR>`z
+  nmap <A-Up>   mz:m-2<CR>`z
+  imap <A-Down> <ESC>:m'>+<CR>`<my`>mzgv`yo`zi
+  imap <A-Up>   <ESC>:m'<-2<CR>`>my`<mzgv`yo`zi
+  vmap <A-Down> :m'>+<CR>`<my`>mzgv`yo`z
+  vmap <A-Up>   :m'<-2<CR>`>my`<mzgv`yo`z
+"else
+  "nmap <A-Down> :m .+1<CR>==
+  "nmap <A-Up>   :m .-2<CR>==
+  "imap <A-Down> <ESC>:m .+1<CR>==gi
+  "imap <A-Up>   <ESC>:m .-2<CR>==gi
+  "vmap <A-Down> :m '>+1<CR>gv=gv
+  "vmap <A-Up>   :m '<-2<CR>gv=gv
 endif
 
-" Sudo write (,W)
-noremap <leader>W :w !sudo tee %<CR>
-
-if !has('nvim')
-  " Remap :W to :w
-  command W w
-endif
-
-" Better mark jumping (line + col)
-nnoremap ' `
-
-" Hard to type things
-"imap >> →
-"imap << ←
-"imap ^^ ↑
-"imap VV ↓
-"imap aaa λ
-
-if !exists('g:vdebug_options')
-  let g:vdebug_options = {}
-endif
-
-let g:vdebug_options.port = 9000
-
-" Toggle show tabs and trailing spaces (,c)
-set lcs=eol:¬,tab:›\ ,trail:·,extends:>,precedes:<
-"set fcs=fold:-
-nnoremap ,c <Esc>:set list!<CR>
-
-" Clear last search (,qs)
-map <Esc> :noh<CR>
+"if has("mac") || has("macunix")
+"  nmap <D-j> <M-j>
+"  nmap <D-k> <M-k>
+"  vmap <D-j> <M-j>
+"  vmap <D-k> <M-k>
+"endif
 
 " Tab Navgations?
 set switchbuf=usetab
 
-" Create new tab with Ctrl+T and open NerdTree
-nnoremap <C-t>  :tabnew +:NERDTreeCWD .<CR>
-inoremap <C-t>  <Esc>:tabnew +:NERDTreeCWD .<CR>i
-
-" Close tab with Alt+W,Alt+T
-nnoremap <A-w><A-t>  :tabclose<CR>
-inoremap <A-w><A-t>  <Esc>:tabclose<CR>i
-" Close buffer with Alt+W,Alt+B
-nnoremap <A-w><A-b>  :bd<CR>
-inoremap <A-w><A-b>  <Esc>:bd<CR>i
-
-" Tabs navigation using Ctrl+PageUp Ctrl+PageDown
-nnoremap <C-PageUp>    :tabprevious<CR>
-nnoremap <C-PageDown>  :tabnext<CR>
-inoremap <C-PageUp>    <Esc>:tabprevious<CR>i
-inoremap <C-PageDown>  <Esc>:tabnext<CR>i
-
-" Buffer navigation: Alt+PageUp Alt+PageDown
-nnoremap <A-PageUp>    :bprev!<CR>
-inoremap <A-PageUp>    <Esc>:bprev!<CR>
-nnoremap <A-PageDown>  :bnext!<CR>
-nnoremap <A-PageDown>  <Esc>:bnext!<CR>
-
 " Useful mappings for managing tabs
-map <leader>tn :tabnew<cr>
-map <leader>to :tabonly<cr>
-map <leader>tc :tabclose<cr>
+map <leader>tn :tabnew<CR>
+map <leader>to :tabonly<CR>
+map <leader>tc :tabclose<CR>
 map <leader>tm :tabmove
 
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
-map <leader>te :tabedit <c-r>=expand("%:p:h")<cr>/
+map <leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
-"let g:Powerline_symbols = 'unicode'
+" Create new tab with Ctrl+T and open NerdTree
+nnoremap <C-t>  :tabnew +:NERDTreeCWD .<CR>
+inoremap <C-t>  <ESC>:tabnew +:NERDTreeCWD .<CR>i
+
+" Tabs navigation using Ctrl+[Left/Right]
+nnoremap <A-Left>   :tabprevious<CR>
+nnoremap <A-Right>  :tabnext<CR>
+inoremap <A-Left>   <ESC>:tabprevious<CR>i
+inoremap <A-Right>  <ESC>:tabnext<CR>i
+
+if has('nvim')
+  " Close tab with Alt+W,Alt+T
+  nnoremap <A-t><A-w>  :tabclose<CR>
+  inoremap <A-t><A-w>  <ESC>:tabclose<CR>i
+
+  " Buffer navigation: Alt+PageUp Alt+PageDown
+  "nnoremap <A-b><A-Left>   :bprevious<CR>
+  "nnoremap <A-b><A-Right>  :bnext<CR>
+  "inoremap <A-b><A-Left>   <ESC>:bprevious<CR>i
+  "inoremap <A-b><A-Right>  <ESC>:bnext<CR>i
+
+  " Close buffer with Alt+W,Alt+B
+  nnoremap <A-b><A-w>  :bdelete!<CR>
+  inoremap <A-b><A-w>  <ESC>:bdelete!<CR>i
+endif
+
+"if has("mac") || has("macunix")
+  "nmap <D-Left>  <M-Left>
+  "nmap <D-Right> <M-Right>
+  "imap <D-Left>  <M-Left>
+  "imap <D-Right> <M-Right>
+"endif
+
+" let g:Powerline_symbols = 'unicode'
 let g:airline_theme = 'wombat'
 let g:airline_powerline_fonts = 1
 
@@ -439,12 +464,12 @@ let g:airline_right_alt_sep = ''
 " augroup END
 
 "" NERDTree configuration
-" let g:NERDTreeShowHidden = 1     " Show hidden files/directories
-" let g:NERDTreeMinimalUI = 1      " Remove bookmarks and help text from NERDTree
-" let g:NERDTreeChDirMode = 2
+let g:NERDTreeShowHidden = 1     " Show hidden files/directories
+let g:NERDTreeMinimalUI = 1      " Remove bookmarks and help text from NERDTree
+let g:NERDTreeChDirMode = 2
 " Hide certain files and directories from NERDTree
-" let g:NERDTreeIgnore = [ '^\.DS_Store$', '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
-" let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let g:NERDTreeIgnore = [ '^\.DS_Store$', '\.git$', '\.vscode$', 'node_modules', '\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeSortOrder = ['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 " let g:nerdtree_tabs_focus_on_files = 1
 " let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
 " let g:NERDTreeWinSize = 36
@@ -454,11 +479,11 @@ let g:airline_right_alt_sep = ''
 
 " nnoremap <silent> <F2> :NERDTreeFind<CR>
 " nnoremap <C-k><C-b> :NERDTreeToggle<CR>
-" inoremap <C-k><C-b> <Esc>:NERDTreeToggle<CR>
+" inoremap <C-k><C-b> <ESC>:NERDTreeToggle<CR>
 
 " CtrlP Settings
 " nnoremap <C-p> :CtrlP<CR>
-" inoremap <C-p> <Esc>:CtrlP<CR>i
+" inoremap <C-p> <ESC>:CtrlP<CR>i
 " Open file in current window/buffer
 " let g:ctrlp_open_new_file = 'r'
 " Ignore some stuffs
@@ -489,9 +514,9 @@ let g:airline_right_alt_sep = ''
 " Use <c-space> to trigger completion.
 " inoremap <silent><expr> <c-space> coc#refresh()
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Use <CR> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[g` and `]g` to navigate diagnostics
 " nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -529,7 +554,7 @@ let g:airline_right_alt_sep = ''
 " let g:multi_cursor_prev_key = '<C-n>'
 " let g:multi_cursor_next_key = '<C-S-N>'
 " let g:multi_cursor_skip_key = '<C-x>'
-" let g:multi_cursor_quit_key = '<Esc>'
+" let g:multi_cursor_quit_key = '<ESC>'
 
 " COC integration
 " let g:airline#extensions#coc#enabled = 1
@@ -562,10 +587,10 @@ let g:airline_right_alt_sep = ''
 " let g:ale_lint_on_insert_leave = 1
 " let g:ale_lint_on_enter = 0
 
-"let g:ale_sign_error = '⌧'
-"let g:ale_sign_warning = '╳'
+" let g:ale_sign_error = '⌧'
+" let g:ale_sign_warning = '╳'
 
-"let g:ale_open_list = 1
+" let g:ale_open_list = 1
 " let g:ale_keep_list_window_open = 1
 " let g:ale_sign_column_always = 1
 " let g:ale_echo_msg_error_str = 'E'
