@@ -346,16 +346,6 @@ if bufwinnr(1)
   noremap <A--> <C-W>>
 endif
 
-" Better split switching using Alt-[hjkl]
-nmap <A-j> <C-W>j
-nmap <A-k> <C-W>k
-nmap <A-h> <C-W>h
-nmap <A-l> <C-W>l
-imap <A-j> <ESC><C-W>j<CR>i
-imap <A-k> <ESC><C-W>k<CR>i
-imap <A-h> <ESC><C-W>h<CR>i
-imap <A-l> <ESC><C-W>l<CR>i
-
 " Move a line of text using ALT+[Up/Down]
 if has('nvim')
   nmap <A-Down> mz:m+<CR>`z
@@ -398,25 +388,25 @@ nnoremap <C-t>  :tabnew +:NERDTreeCWD .<CR>
 inoremap <C-t>  <ESC>:tabnew +:NERDTreeCWD .<CR>i
 
 " Tabs navigation using Ctrl+[Left/Right]
-nnoremap <A-Left>   :tabprevious<CR>
-nnoremap <A-Right>  :tabnext<CR>
-inoremap <A-Left>   <ESC>:tabprevious<CR>i
-inoremap <A-Right>  <ESC>:tabnext<CR>i
+"nnoremap <M-Left>   :tabprevious<CR>
+"nnoremap <M-Right>  :tabnext<CR>
+"inoremap <M-Left>   <ESC>:tabprevious<CR>i
+"inoremap <M-Right>  <ESC>:tabnext<CR>i
 
 if has('nvim')
   " Close tab with Alt+W,Alt+T
-  nnoremap <A-t><A-w>  :tabclose<CR>
-  inoremap <A-t><A-w>  <ESC>:tabclose<CR>i
+  "nnoremap <M-t><M-w>  :tabclose<CR>
+  "inoremap <M-t><M-w>  <ESC>:tabclose<CR>i
 
   " Buffer navigation: Alt+PageUp Alt+PageDown
-  "nnoremap <A-b><A-Left>   :bprevious<CR>
-  "nnoremap <A-b><A-Right>  :bnext<CR>
-  "inoremap <A-b><A-Left>   <ESC>:bprevious<CR>i
-  "inoremap <A-b><A-Right>  <ESC>:bnext<CR>i
+  "nnoremap <M-b><M-Left>   :bprevious<CR>
+  "nnoremap <M-b><M-Right>  :bnext<CR>
+  "inoremap <M-b><M-Left>   <ESC>:bprevious<CR>i
+  "inoremap <M-b><M-Right>  <ESC>:bnext<CR>i
 
   " Close buffer with Alt+W,Alt+B
-  nnoremap <A-b><A-w>  :bdelete!<CR>
-  inoremap <A-b><A-w>  <ESC>:bdelete!<CR>i
+  "nnoremap <M-b><M-w>  :bdelete!<CR>
+  "inoremap <M-b><M-w>  <ESC>:bdelete!<CR>i
 endif
 
 "if has("mac") || has("macunix")
