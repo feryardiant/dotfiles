@@ -167,45 +167,53 @@ if _has_pkg 'zsh'; then
 fi
 
 # ------------------------------------------------------------------------------
-# VIM
+# VIM & NeoVIM
 # ------------------------------------------------------------------------------
 
-e $c_inf 'Setup VIM'
+plug_dir=~/.local/share/vim-plug
 
-# Setup
-# vim_dirs="swap undo backup"
-# for vim_dir in $vim_dirs; do
-# 	[ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
-# done
+if [[ ! -d $plug_dir ]]; then
+	curl -LSso $plug_dir/plug.vim --create-dirs \
+		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	[ ! -d $plug_dir/plugged ] && mkdir $plug_dir/plugged
+fi
 
-# if [ "$with_neovim" = '1' ]; then
-# 	. $my_pwd/scripts/neovim.sh > $_LOG_FILE
-# fi
+if _has_pkg 'vim'; then
+	e $c_inf 'Setup VIM'
 
-# if _has_pkg 'nvim'; then
-# 	[ -d ~/.config/nvim ] || mkdir ~/.config/nvim
-# 	vim_bin=`which nvim`
-# 	plug_path='.local/share/nvim/site/autoload'
-# 	vimrc_path='.config/nvim/init.vim'
-# else
-# 	. $my_pwd/scripts/vim.sh > $_LOG_FILE
+	# Setup
+	for vim_dir in {swap,undo,backup}; do
+		[ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
+	done
+	unset vim_dir
 
-# 	vim_bin=`which vim`
-# 	plug_path='.vim/autoload'
-# 	vimrc_path='.vimrc'
-# fi
+	[ -d ~/.vim ] || mkdir -p ~/.vim/autoload
+	ln -sf $my_pwd/.vimrc ~/.vimrc
+	ln -sf $plug_dir/plug.vim ~/.vim/autoload/plug.vim
 
-# sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
+	e $c_suc $' ✔ Done\n'
+fi
 
-# _resque ~/$vimrc_path && ln -sf $my_pwd/.vimrc ~/$vimrc_path
-# _resque ~/$plug_path/plug.vim && \
-# curl -LSso ~/$plug_path/plug.vim --create-dirs \
-# https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if _has_pkg 'nvim'; then
+	e $c_inf 'Setup NeoVIM'
+
+	# Setup
+	for vim_dir in {swap,undo,backup}; do
+		[ -d ~/.cache/nvim/$vim_dir ] || mkdir -p ~/.cache/nvim/$vim_dir
+	done
+	unset vim_dir
+
+	[ -d ~/.config/nvim ] || mkdir -p ~/.config/nvim/autoload
+	ln -sf $my_pwd/.vimrc ~/.config/nvim/init.vim
+	ln -sf $plug_dir/plug.vim ~/.config/nvim/autoload/plug.vim
+
+	# sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
+
+	e $c_suc $' ✔ Done\n'
+fi
 
 # Clean up
-# unset plug_path vimrc_path vim_bin vim_dir vim_dirs
-
-e $c_suc $' ✔ Done\n'
+unset plug_dir
 
 # ------------------------------------------------------------------------------
 # DONE
