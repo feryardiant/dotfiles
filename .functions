@@ -193,8 +193,13 @@ function repo() {
 
 # BrowserStack Local
 function bslocal() {
-	if ! _has_pkg 'browserstack-local'; then
-		_err "Your system does not have Browserstack Local binnary installed"$'\n'
+	if ! (command -v BrowserStackLocal >/dev/null 2>&1); then
+		echo "Your system does not have Browserstack Local binnary installed"$'\n'
+		return 1;
+	fi
+
+	if [[ ! -d $PWD/.git ]]; then
+		echo "This command can only run inside git repository"$'\n';
 		return 1;
 	fi
 
@@ -214,14 +219,14 @@ Available commands:
 		start)
 			export BROWSERSTACK_LOCAL=true BROWSERSTACK_LOCAL_IDENTIFIER=${PWD##*/}-`git rev-parse --short HEAD`
 
-			browserstack-local --key ${BROWSERSTACK_ACCESS_KEY} \
+			BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
 			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
-			--force-local --daemon start ${@:2}
+			--daemon start ${@:2}
 			;;
 		stop)
-			browserstack-local --key ${BROWSERSTACK_ACCESS_KEY} \
+			BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
 			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
-			--force-local --daemon stop ${@:2}
+			--daemon stop ${@:2}
 
 			unset BROWSERSTACK_LOCAL BROWSERSTACK_LOCAL_IDENTIFIER
 			;;
