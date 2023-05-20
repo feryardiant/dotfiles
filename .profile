@@ -23,14 +23,14 @@ fi
 # ==============================================================================
 # HomeBrew
 # ==============================================================================
-if [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
+#if [[ -x /opt/homebrew/bin/brew ]]; then
+#    eval "$(/opt/homebrew/bin/brew shellenv)"
+#fi
 
-if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
-    PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
-    PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
-fi
+#if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
+#    PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
+#    PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
+#fi
 
 # ==============================================================================
 # Android SDK
