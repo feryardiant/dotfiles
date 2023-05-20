@@ -222,11 +222,11 @@ Available commands:
 			BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
 			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
 			--daemon start ${@:2}
+
+			echo "identifier: ${BROWSERSTACK_LOCAL_IDENTIFIER}"
 			;;
 		stop)
-			BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
-			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
-			--daemon stop ${@:2}
+			BrowserStackLocal --daemon stop
 
 			unset BROWSERSTACK_LOCAL BROWSERSTACK_LOCAL_IDENTIFIER
 			;;
