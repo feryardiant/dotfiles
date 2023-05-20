@@ -7,11 +7,6 @@ if [ -d $DOTFILES_DIR ]; then
 fi
 
 # ==============================================================================
-# ASDF-VM
-# ==============================================================================
-# soruce /opt/homebrew/opt/asdf/asdf.sh
-
-# ==============================================================================
 # This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
 # doesn't included in $PATH, I found this issue on WSL
 # ==============================================================================
@@ -23,14 +18,22 @@ fi
 # ==============================================================================
 # HomeBrew
 # ==============================================================================
-#if [[ -x /opt/homebrew/bin/brew ]]; then
-#    eval "$(/opt/homebrew/bin/brew shellenv)"
-#fi
+if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 
-#if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
-#    PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
-#    PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
-#fi
+    # ==============================================================================
+    # ASDF-VM
+    # ==============================================================================
+    [[ -f "`brew --prefix asdf`/libexec/asdf.sh" ]] && source "`brew --prefix asdf`/libexec/asdf.sh"
+
+    # ==============================================================================
+    # Ruby
+    # ==============================================================================
+    if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
+       PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
+       PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
+    fi
+fi
 
 # ==============================================================================
 # Android SDK
@@ -67,4 +70,4 @@ for dotfile in ~/.{exports,aliases,functions}; do
 done
 unset dotfile
 
-export PATH="$(consolidate_path $PATH)"
+# export PATH="$(consolidate_path $PATH)"
