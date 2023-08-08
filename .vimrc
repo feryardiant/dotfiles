@@ -79,7 +79,8 @@ endif
   " Plug 'shawncplus/phpcomplete.vim', { 'for': 'php' }
   " Plug 'dsawardekar/wordpress.vim'
 
-  Plug 'ayu-theme/ayu-vim'
+  Plug 'Luxed/ayu-vim'
+  "Plug 'ayu-theme/ayu-vim'
   Plug 'wakatime/vim-wakatime'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
