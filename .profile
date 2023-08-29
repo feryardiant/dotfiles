@@ -70,4 +70,6 @@ for dotfile in ~/.{exports,aliases,functions}; do
 done
 unset dotfile
 
+eval "$(starship init `basename $SHELL`)"
+
 # export PATH="$(consolidate_path $PATH)"
