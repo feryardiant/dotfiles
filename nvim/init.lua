@@ -175,6 +175,12 @@ vim.keymap.set('i', '<C-z>', '<C-o>u', { noremap = true, desc = 'Undo' })
 vim.keymap.set('i', '<S-Left>', '<Esc>vb', { noremap = true, desc = 'Select character left' })
 vim.keymap.set('i', '<S-Right>', '<Esc>ve', { noremap = true, desc = 'Select character right' })
 
+-- Buffer controls
+vim.keymap.set('n', '<leader>{', vim.cmd.bfirst, { noremap = true, desc = 'First Buffer' })
+vim.keymap.set('n', '<leader>}', vim.cmd.blast, { noremap = true, desc = 'Last Buffer' })
+vim.keymap.set('n', '<leader>[', vim.cmd.bprevious, { noremap = true, desc = 'Previous Buffer' })
+vim.keymap.set('n', '<leader>]', vim.cmd.bnext, { noremap = true, desc = 'Next Buffer' })
+
 -- Tab controls
 vim.keymap.set('', '<A-h>', vim.cmd.tabprevious, { noremap = true, desc = 'Previous Tab' })
 vim.keymap.set('', '<A-l>', vim.cmd.tabnext, { noremap = true, desc = 'Next Tab' })
