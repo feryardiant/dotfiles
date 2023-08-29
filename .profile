@@ -21,6 +21,12 @@ fi
 if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 
+    # add auto completions
+    # See https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
+    FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
+    autoload -Uz compinit
+    compinit
+
     # ==============================================================================
     # Ruby
     # ==============================================================================
