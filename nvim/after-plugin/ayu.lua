@@ -15,8 +15,9 @@ ayu.setup({
             CursorLine = { bg = '#1c1c1c' },
             CursorLineNr = { bg = '#1c1c1c', fg = colors.accent },
             ColorColumn = { bg = '#262626' },
-            Pmenu = { bg = '#303030' },
-            PmenuSel = { bg = '#3a3a3a' }
+            Pmenu = { bg = colors.selection_inactive },
+            PmenuSel = { bg = colors.selection_bg },
+            Visual = { bg = colors.selection_bg }
         }
     end
 })
