@@ -76,6 +76,9 @@ for dotfile in ~/.{exports,aliases,functions}; do
 done
 unset dotfile
 
-eval "$(starship init `basename $SHELL`)"
+# See https://github.com/starship/starship
+if type starship &>/dev/null then
+    eval "$(starship init `basename $SHELL`)"
+fi
 
 # export PATH="$(consolidate_path $PATH)"
