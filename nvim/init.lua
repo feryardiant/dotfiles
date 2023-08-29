@@ -142,18 +142,18 @@ vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, desc = 'Move 
 vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { noremap = true, desc = 'Move lines up' })
 
 -- Split navigation
-vim.keymap.set('t', '<leader>h', '<C-\\><C-n><C-w>h', { noremap = true, desc = 'Go to left window' })
-vim.keymap.set('t', '<leader>j', '<C-\\><C-n><C-w>j', { noremap = true, desc = 'Go to window below' })
-vim.keymap.set('t', '<leader>k', '<C-\\><C-n><C-w>k', { noremap = true, desc = 'Go to window above' })
-vim.keymap.set('t', '<leader>l', '<C-\\><C-n><C-w>l', { noremap = true, desc = 'Go to right window' })
 vim.keymap.set('n', '<leader>h', '<C-w>h', { noremap = true, desc = 'Go to left window' })
 vim.keymap.set('n', '<leader>j', '<C-w>j', { noremap = true, desc = 'Go to window below' })
 vim.keymap.set('n', '<leader>k', '<C-w>k', { noremap = true, desc = 'Go to window above' })
 vim.keymap.set('n', '<leader>l', '<C-w>l', { noremap = true, desc = 'Go to right window' })
-vim.keymap.set('i', '<leader>h', '<C-o><C-w>h', { noremap = true, desc = 'Go to left window' })
-vim.keymap.set('i', '<leader>j', '<C-o><C-w>j', { noremap = true, desc = 'Go to window below' })
-vim.keymap.set('i', '<leader>k', '<C-o><C-w>k', { noremap = true, desc = 'Go to window above' })
-vim.keymap.set('i', '<leader>l', '<C-o><C-w>l', { noremap = true, desc = 'Go to right window' })
+vim.keymap.set('t', '<leader>h', '<C-\\><C-n><C-w>h', { noremap = true, desc = 'Go to left window' })
+vim.keymap.set('t', '<leader>j', '<C-\\><C-n><C-w>j', { noremap = true, desc = 'Go to window below' })
+vim.keymap.set('t', '<leader>k', '<C-\\><C-n><C-w>k', { noremap = true, desc = 'Go to window above' })
+vim.keymap.set('t', '<leader>l', '<C-\\><C-n><C-w>l', { noremap = true, desc = 'Go to right window' })
+--vim.keymap.set('i', '<leader>h', '<C-o><C-w>h', { noremap = true, desc = 'Go to left window' })
+--vim.keymap.set('i', '<leader>j', '<C-o><C-w>j', { noremap = true, desc = 'Go to window below' })
+--vim.keymap.set('i', '<leader>k', '<C-o><C-w>k', { noremap = true, desc = 'Go to window above' })
+--vim.keymap.set('i', '<leader>l', '<C-o><C-w>l', { noremap = true, desc = 'Go to right window' })
 
 -- Keep cursor in the middle while in search results
 vim.keymap.set('n', 'n', "nzzzv", { noremap = true })

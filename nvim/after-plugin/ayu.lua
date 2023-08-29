@@ -17,7 +17,7 @@ ayu.setup({
             ColorColumn = { bg = '#262626' },
             Pmenu = { bg = colors.selection_inactive },
             PmenuSel = { bg = colors.selection_bg },
-            Visual = { bg = colors.selection_bg }
+            Visual = { bg = colors.selection_bg },
         }
     end
 })
