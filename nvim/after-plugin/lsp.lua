@@ -26,9 +26,9 @@ lsp.on_attach(function(_, bufnr)
     nmap('<C-h>', vim.lsp.buf.signature_help, 'Get [H]elp')
 
     nmap('K', vim.lsp.buf.hover, '')
-    --nmap('<leader>vws', vim.lsp.buf.workspace_symbol)
+    -- nmap('<leader>vws', vim.lsp.buf.workspace_symbol)
 
-    --mmap('<leader>vd', vim.diagnostic.open_float)
+    -- mmap('<leader>vd', vim.diagnostic.open_float)
 
     vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
         vim.lsp.buf.format({ async = true })
@@ -63,8 +63,22 @@ lsp_config.lua_ls.setup(lsp.nvim_lua_ls())
 
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
+local lspkind = require('lspkind')
 
 cmp.setup({
+    formatting = {
+        fields = { 'kind', 'abbr', 'menu' },
+        format = lspkind.cmp_format({
+            mode = 'symbol',
+            maxwidth = 50,
+        }),
+    },
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'luasnip' },
+        { name = 'buffer' },
+        { name = 'path' },
+    }),
     mapping = {
         ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
         ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),

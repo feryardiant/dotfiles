@@ -52,6 +52,10 @@ require('packer').startup(function(use)
     }
 
     use {
+        'onsails/lspkind.nvim',
+    }
+
+    use {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
         requires = {
