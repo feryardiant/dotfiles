@@ -36,7 +36,12 @@ lsp.on_attach(function(_, bufnr)
     end, { desc = 'Format current buffer with LSP' })
 end)
 
-local util = require('lspconfig.util')
+lsp.setup()
+
+vim.diagnostic.config({
+    virtual_text = true
+})
+
 local mason_lspconfig = require('mason-lspconfig')
 
 local servers = {
@@ -90,4 +95,3 @@ cmp.setup({
     }),
 })
 
-lsp.setup()
