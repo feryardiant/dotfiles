@@ -3,6 +3,8 @@ local lsp_config = require('lspconfig')
 
 lsp.preset('recommended')
 
+lsp.nvim_workspace()
+
 lsp.on_attach(function(_, bufnr)
     -- see :help lsp-zero-keybindings
     -- to learn the available actions
