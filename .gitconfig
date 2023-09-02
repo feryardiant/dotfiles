@@ -8,15 +8,28 @@
 
 [init]
 	defaultBranch = main
+
 [core]
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
 	editor = nvim
+    pager = delta
 	trustctime = false
 	autocrlf = input
 
-[credential]
-	helper = manager
+# [credential]
+# 	helper = manager
+
+[interactive]
+    diffFilter = delta --color-only --features=interative
+
+[delta]
+    features = decorations
+    line-numbers = true
+    navigate = true
+[delta "decorations"]
+    hunk-header-style = file line-number syntax
+
 [gpg]
 	program = gpg
 	# format = x509
@@ -24,7 +37,8 @@
 # 	program = smimesign
 
 [diff]
-	tool = nvim
+    colorMoved = default
+    tool = nvim
 
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
@@ -64,7 +78,7 @@
 	get = "!git pull origin `git rev-parse --abbrev-ref HEAD`"
 	zip = "!f() { fmt=`date +'%Y-%m-%d'`; git archive --format=zip -9 -o "${fmt}.zip" HEAD; }; f"
 	release = "!f() { if [ -z \"$2\" ]; then msg=\"$1 released\"; else msg=$2; fi; git tag -s \"$1\" -m \"$msg\"; }; f"
-	df = diff --color --color-words --abbrev
+	df = diff
 	# View abbreviated SHA, description, and history graph
 	lg = log --graph --abbrev-commit --pretty=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%n%C(reset)%s %C(yellow)by %cn'
 	# Update all submodules
