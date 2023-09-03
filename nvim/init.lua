@@ -133,6 +133,10 @@ vim.opt.colorcolumn = '80,100,120'
 
 vim.opt.updatetime = 50
 
+-- Speed up viewport scrolling
+vim.keymap.set('n', '<C-y>', '3<C-y>', { noremap = true }) -- scroll 3 lines up
+vim.keymap.set('n', '<C-e>', '3<C-e>', { noremap = true }) -- scroll 3 lines down
+
 -- Diagnostics
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Goto previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Goto next diagnostic message' })
