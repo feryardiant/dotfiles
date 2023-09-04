@@ -138,8 +138,10 @@ vim.opt.colorcolumn = '80,100,120'
 vim.opt.updatetime = 50
 
 -- Speed up viewport scrolling
-vim.keymap.set('n', '<C-y>', '3<C-y>', { noremap = true }) -- scroll 3 lines up
-vim.keymap.set('n', '<C-e>', '3<C-e>', { noremap = true }) -- scroll 3 lines down
+vim.keymap.set('n', '<C-y>', '5<C-y>', { noremap = true, desc = 'scroll 5 lines up' })
+vim.keymap.set('n', '<C-e>', '5<C-e>', { noremap = true, desc = 'scroll 5 lines down' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true, desc = 'jump half-page up' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true, desc = 'jump half-page down' })
 
 -- Diagnostics
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Goto previous diagnostic message' })
