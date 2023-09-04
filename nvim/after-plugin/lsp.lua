@@ -57,11 +57,11 @@ mason_lspconfig.setup({
     ensure_installed = vim.tbl_keys(servers)
 })
 
---lsp_config.eslint.setup({
+-- lsp_config.eslint.setup({
 --    root_dir = function(fname)
 --        util.root_pattern('package.json', 'tsconfig.json')(fname)
 --    end,
---})
+-- })
 
 --lsp_config.intelephense.setup({})
 
@@ -80,18 +80,28 @@ cmp.setup({
             })(entry, item)
         end,
     },
+    snippet = {
+        expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+        end
+    },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
+        { name = 'nvim_lsp_signature_help' },
         { name = 'luasnip' },
-        { name = 'path' },
-    }, {
         { name = 'buffer' },
+        { name = 'path' },
     }),
     mapping = cmp.mapping.preset.insert({
         ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
         ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
+        ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ['<CR>'] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true,
+        }),
     }),
 })
 

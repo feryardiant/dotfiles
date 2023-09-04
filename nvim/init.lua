@@ -43,8 +43,13 @@ require('packer').startup(function(use)
         requires = { 'Luxed/ayu-vim' },
     }
 
-    use ('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
-    use 'nvim-treesitter/playground'
+    use {
+        'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' },
+        requires = {
+            { 'nvim-treesitter/playground' },
+            { 'windwp/nvim-ts-autotag' },
+        }
+    }
 
     use {
         'numToStr/Comment.nvim',
@@ -54,22 +59,21 @@ require('packer').startup(function(use)
     }
 
     use {
-        'onsails/lspkind.nvim',
-    }
-
-    use {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v2.x',
         requires = {
             -- LSP Support
-            {'neovim/nvim-lspconfig'},             -- Required
-            {'williamboman/mason.nvim'},           -- Optional
-            {'williamboman/mason-lspconfig.nvim'}, -- Optional
+            {'neovim/nvim-lspconfig'},                  -- Required
+            {'williamboman/mason.nvim'},                -- Optional
+            {'williamboman/mason-lspconfig.nvim'},      -- Optional
+            {'onsails/lspkind.nvim'},                   -- Optional
 
             -- Autocompletion
-            {'hrsh7th/nvim-cmp'},     -- Required
-            {'hrsh7th/cmp-nvim-lsp'}, -- Required
-            {'L3MON4D3/LuaSnip'},     -- Required
+            {'hrsh7th/nvim-cmp'},                       -- Required
+            {'hrsh7th/cmp-nvim-lsp'},                   -- Required
+            {'hrsh7th/cmp-nvim-lsp-signature-help'},    -- Optional
+            {'hrsh7th/cmp-path'},                       -- Optional
+            {'L3MON4D3/LuaSnip'},                       -- Required
         }
     }
 

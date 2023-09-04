@@ -1,4 +1,9 @@
 require('nvim-treesitter.configs').setup({
+    -- https://github.com/windwp/nvim-ts-autotag
+    autotag = {
+        enable = true,
+    },
+
     -- A list of parser names, or "all" (the five listed parsers should always be installed)
     ensure_installed = {
         "bash",
