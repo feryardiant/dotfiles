@@ -145,7 +145,7 @@ function clipboard() {
 
 			xclip -selection clipboard -i
 			;;
-		darwin) pbcopy ;;
+		darwin*) pbcopy ;;
 		cygwin) clip ;;
 	esac
 }
