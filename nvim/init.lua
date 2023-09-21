@@ -20,6 +20,8 @@ require('packer').startup(function(use)
 
     use 'lukas-reineke/indent-blankline.nvim'
 
+    use 'tpope/vim-dotenv'
+
     use 'tpope/vim-fugitive'
 
     use 'lewis6991/gitsigns.nvim'
@@ -29,6 +31,8 @@ require('packer').startup(function(use)
     use 'nvim-tree/nvim-web-devicons'
 
     use 'nvim-tree/nvim-tree.lua'
+
+    use 'jwalton512/vim-blade'
 
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.2',
