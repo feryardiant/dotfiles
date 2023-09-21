@@ -63,7 +63,26 @@ mason_lspconfig.setup({
 --    end,
 -- })
 
---lsp_config.intelephense.setup({})
+lsp_config.intelephense.setup({})
+
+lsp_config.phpactor.setup({
+    init_options = {
+        ['language_server_phpstan.enabled'] = false,
+        ['language_server_psalm.enabled'] = false,
+    }
+})
+
+-- https://github.com/haringsrob/laravel-dev-tools/tree/main#neovim
+lsp_config.blade = {
+    default_config = {
+        cmd = { "laravel-dev-generators", "lsp" },
+        filetypes = {'blade'},
+        root_dir = function(fname)
+            return lsp_config.util.find_git_ancestor(fname)
+        end,
+        settings = {}
+    }
+}
 
 lsp_config.lua_ls.setup(lsp.nvim_lua_ls())
 
