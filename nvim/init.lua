@@ -13,7 +13,6 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 require('packer').startup(function(use)
-    -- Packer can manage itself
     use 'wbthomason/packer.nvim'
 
     use 'wakatime/vim-wakatime'
@@ -32,7 +31,7 @@ require('packer').startup(function(use)
 
     use 'nvim-tree/nvim-tree.lua'
 
-    use 'jwalton512/vim-blade'
+    -- use 'jwalton512/vim-blade'
 
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.2',
@@ -55,6 +54,15 @@ require('packer').startup(function(use)
             { 'nvim-treesitter/playground' },
             { 'windwp/nvim-ts-autotag' },
         }
+    }
+
+    use {
+        'nvim-treesitter/nvim-treesitter-context',
+        config = function ()
+            require('treesitter-context').setup({
+                enable = true
+            })
+        end
     }
 
     use {
