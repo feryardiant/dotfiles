@@ -63,7 +63,26 @@ mason_lspconfig.setup({
 --    end,
 -- })
 
-lsp_config.intelephense.setup({})
+lsp_config.intelephense.setup({
+    settings = {
+        intelephense = {
+            files = {
+                exclude = {
+                    "**/.git/**",
+                    "**/.svn/**",
+                    "**/.hg/**",
+                    "**/CVS/**",
+                    "**/.DS_Store/**",
+                    "**/node_modules/**",
+                    "**/bower_components/**",
+                    "**/vendor/**/{Tests,tests}/**",
+                    "**/.history/**",
+                    "**/vendor/**/vendor/**"
+                }
+            }
+        }
+    }
+})
 
 lsp_config.phpactor.setup({
     init_options = {
