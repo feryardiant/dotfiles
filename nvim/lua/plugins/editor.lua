@@ -31,14 +31,6 @@ return {
   },
 
   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.4',
-    dependencies = {
-      'nvim-lua/plenary.nvim'
-    },
-    opts = {}
-  },
-
-  {
     'nvim-lualine/lualine.nvim',
     config = function ()
       require('lualine').setup({
