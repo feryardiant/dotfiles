@@ -69,3 +69,5 @@ vim.keymap.set('', '<A-w>', vim.cmd.tabclose, { noremap = true, desc = 'Close Ta
 -- vim.keymap.set({ 'i', 't' }, '<A-w>', '<Esc><Cmd>tabclose<CR>', { noremap = true, desc = 'Close Tab' })
 vim.keymap.set('n', '<leader>qq', '<Cmd>qa<CR>', { desc = 'Quit all' })
 
+-- Clear search with <ESC>
+vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Cmd>noh<CR><Esc>', { desc = 'Clear search highlight' })
