@@ -39,16 +39,6 @@ return {
   },
 
   {
-    'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      { 'nvim-treesitter/playground' },
-      { 'windwp/nvim-ts-autotag' },
-      { 'nvim-treesitter/nvim-treesitter-context', opts = { enable = true } }
-    },
-    opts = {}
-  },
-
-  {
     'nvim-lualine/lualine.nvim',
     config = function ()
       require('lualine').setup({
