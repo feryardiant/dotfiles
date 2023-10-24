@@ -1,6 +1,4 @@
 return {
-  { 'folke/lazy.nvim', version = 'stable' },
-
   {
     'Shatur/neovim-ayu', name = 'ayu',
     lazy = false,
