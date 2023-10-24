@@ -57,12 +57,6 @@ mason_lspconfig.setup({
     ensure_installed = vim.tbl_keys(servers)
 })
 
--- lsp_config.eslint.setup({
---    root_dir = function(fname)
---        util.root_pattern('package.json', 'tsconfig.json')(fname)
---    end,
--- })
-
 lsp_config.intelephense.setup({
     settings = {
         intelephense = {
@@ -81,13 +75,6 @@ lsp_config.intelephense.setup({
                 }
             }
         }
-    }
-})
-
-lsp_config.phpactor.setup({
-    init_options = {
-        ['language_server_phpstan.enabled'] = false,
-        ['language_server_psalm.enabled'] = false,
     }
 })
 
