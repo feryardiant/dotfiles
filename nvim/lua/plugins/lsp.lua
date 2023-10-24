@@ -8,22 +8,39 @@ return {
       { 'hrsh7th/cmp-nvim-lsp-signature-help' },
       { 'hrsh7th/cmp-path' },
       { 'L3MON4D3/LuaSnip' },
+      { 'onsails/lspkind.nvim' },
     },
     config = function ()
-      local lsp_zero = require('lsp-zero')
       local cmp = require('cmp')
+      local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
       cmp.setup({
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
           { name = 'nvim_lsp_signature_help' },
         }),
-        formatting = lsp_zero.cmp_format(),
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function (entry, item)
+            return require('lspkind').cmp_format({
+              mode = 'symbol',
+            })(entry, item)
+          end
+        },
         snippet = {
           expand = function(args)
             require('luasnip').lsp_expand(args.body)
           end
         },
+        mapping = cmp.mapping.preset.insert({
+          ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
+          ['<C-soace>'] = cmp.mapping.complete(),
+          ['<CR>'] = cmp.mapping.confirm({
+            behavior = cmp.ConfirmBehavior.Replace,
+            select = true
+          })
+        })
       })
     end
   },
@@ -54,7 +71,6 @@ return {
     dependencies = {
       { 'neovim/nvim-lspconfig' },
       { 'mason.nvim' },
-      { 'onsails/lspkind.nvim' },
       { 'nvim-cmp' },
     },
     config = function ()
