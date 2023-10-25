@@ -5,6 +5,7 @@ Desktop.ini
 .DS_Store
 .directory
 *.bak
+*.swp
 *.cache
 *.old
 *.log
