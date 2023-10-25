@@ -115,6 +115,11 @@ function phpserv() {
 	fi
 }
 
+# credit https://askubuntu.com/a/1044728
+function test_colours() {
+	curl -s https://gist.githubusercontent.com/WoLpH/8b6f697ecc06318004728b8c0127d9b3/raw/colortest.py | python3
+}
+
 function print_colours() {
 	if [ -z $1 ]; then
 		BREAK=1
