@@ -32,7 +32,7 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
     # ==============================================================================
     if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
        PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
-       PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
+       PATH="$(gem env home)/bin:$PATH"
     fi
 
     # ==============================================================================
