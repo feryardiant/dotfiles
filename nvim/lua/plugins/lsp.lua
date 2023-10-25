@@ -1,4 +1,26 @@
 return {
+
+  {
+    'L3MON4D3/LuaSnip',
+    opts = {
+      history = true,
+      delete_check_events = 'TextChanged',
+    },
+    keys = {
+      {
+        '<Tab>',
+        function()
+          return require('luasnip').jumpable(1) and '<Plug>luasnip-jump-next' or '<Tab>'
+        end,
+        expr = true,
+        silent = true,
+        mode = 'i',
+      },
+      { '<Tab>',   function() require('luasnip').jump(1) end,  mode = 's' },
+      { '<S-Tab>', function() require('luasnip').jump(-1) end, mode = { 'i', 's' } },
+    },
+  },
+
   {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -7,21 +29,23 @@ return {
       { 'hrsh7th/cmp-nvim-lsp' },
       { 'hrsh7th/cmp-nvim-lsp-signature-help' },
       { 'hrsh7th/cmp-path' },
-      { 'L3MON4D3/LuaSnip' },
       { 'onsails/lspkind.nvim' },
     },
-    config = function ()
+    config = function()
       local cmp = require('cmp')
-      local cmp_select = { behavior = cmp.SelectBehavior.Select }
+      local cmp_select = { behavior = cmp.SelectBehavior.Insert }
 
       cmp.setup({
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
-          { name = 'nvim_lsp_signature_help' },
+          { name = 'luasnip' },
+          { name = 'path' },
+        }, {
+          { name = 'buffer' }
         }),
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
-          format = function (entry, item)
+          format = function(entry, item)
             return require('lspkind').cmp_format({
               mode = 'symbol',
             })(entry, item)
@@ -35,7 +59,8 @@ return {
         mapping = cmp.mapping.preset.insert({
           ['<Tab>'] = cmp.mapping.select_next_item(cmp_select),
           ['<S-Tab>'] = cmp.mapping.select_prev_item(cmp_select),
-          ['<C-soace>'] = cmp.mapping.complete(),
+          ['<C-space>'] = cmp.mapping.complete(),
+          ['<Esc>'] = cmp.mapping.abort(),
           ['<CR>'] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
             select = true
@@ -50,12 +75,12 @@ return {
     dependencies = {
       { 'williamboman/mason-lspconfig.nvim' },
     },
-    config = function ()
+    config = function()
       local lsp_zero = require('lsp-zero')
 
       require('mason').setup({})
       require('mason-lspconfig').setup({
-        ensure_installed = {'jsonls', 'lua_ls', 'tsserver'},
+        ensure_installed = { 'jsonls', 'lua_ls', 'tsserver' },
         handlers = {
           lsp_zero.default_setup,
           lua_ls = function()
@@ -67,13 +92,14 @@ return {
   },
 
   {
-    'VonHeikemen/lsp-zero.nvim', branch = 'v3.x',
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v3.x',
     dependencies = {
       { 'neovim/nvim-lspconfig' },
       { 'mason.nvim' },
       { 'nvim-cmp' },
     },
-    config = function ()
+    config = function()
       local lsp_zero = require('lsp-zero')
 
       lsp_zero.on_attach(function(_, buffer)
