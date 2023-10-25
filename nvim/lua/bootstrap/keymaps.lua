@@ -1,3 +1,9 @@
+-- Quiting
+-- vim.keymap.set('n', '<leader>qq', '<Cmd>qa<CR>', { desc = 'Quit all' })
+
+-- Clear search with <ESC>
+vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Cmd>noh<CR><Esc>', { desc = 'Clear search highlight' })
+
 -- Diagnostics
 local diagnostic_goto = function(next, severity)
   local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
@@ -18,12 +24,12 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open float
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- Move lines - use ALT+J/K to move line up and down
-vim.keymap.set('n', '<A-j>', "<Cmd>move+1<CR>==", { noremap = true, desc = 'Move lines down' })
-vim.keymap.set('n', '<A-k>', "<Cmd>move-2<CR>==", { noremap = true, desc = 'Move lines up' })
-vim.keymap.set('i', '<A-j>', "<Esc><Cmd>move+1<CR>==gi", { noremap = true, desc = 'Move lines down' })
-vim.keymap.set('i', '<A-k>', "<Esc><Cmd>move-2<CR>==gi", { noremap = true, desc = 'Move lines up' })
-vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, desc = 'Move lines down' })
-vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { noremap = true, desc = 'Move lines up' })
+vim.keymap.set('n', '<A-j>', '<Cmd>move+1<CR>==', { noremap = true, desc = 'Move lines down' })
+vim.keymap.set('n', '<A-k>', '<Cmd>move-2<CR>==', { noremap = true, desc = 'Move lines up' })
+vim.keymap.set('i', '<A-j>', '<Esc><Cmd>move+1<CR>==gi', { noremap = true, desc = 'Move lines down' })
+vim.keymap.set('i', '<A-k>', '<Esc><Cmd>move-2<CR>==gi', { noremap = true, desc = 'Move lines up' })
+vim.keymap.set('v', '<A-j>', ":move'>+1<CR>gv=gv", { noremap = true, desc = 'Move lines down' })
+vim.keymap.set('v', '<A-k>', ":move'<-2<CR>gv=gv", { noremap = true, desc = 'Move lines up' })
 
 -- Split navigation - use <leader>H/J/K/L instead of CTRL+H/J/K/L to navigate window
 vim.keymap.set('n', '<leader>h', '<C-w>h', { noremap = true, desc = 'Go to left window' })
@@ -32,25 +38,25 @@ vim.keymap.set('n', '<leader>k', '<C-w>k', { noremap = true, desc = 'Go to windo
 vim.keymap.set('n', '<leader>l', '<C-w>l', { noremap = true, desc = 'Go to right window' })
 
 -- Resize window - Use CTRL + arrow keys
-vim.keymap.set("n", "<A-Up>", "<Cmd>resize +2<CR>", { desc = "Increase window height" })
-vim.keymap.set("n", "<A-Down>", "<Cmd>resize -2<CR>", { desc = "Decrease window height" })
-vim.keymap.set("n", "<A-Left>", "<Cmd>vertical resize -2<CR>", { desc = "Decrease window width" })
-vim.keymap.set("n", "<A-Right>", "<Cmd>vertical resize +2<CR>", { desc = "Increase window width" })
+vim.keymap.set('n', '<A-Up>', '<Cmd>resize+2<CR>', { desc = 'Increase window height' })
+vim.keymap.set('n', '<A-Down>', '<Cmd>resize-2<CR>', { desc = 'Decrease window height' })
+vim.keymap.set('n', '<A-Left>', '<Cmd>vertical resize-2<CR>', { desc = 'Decrease window width' })
+vim.keymap.set('n', '<A-Right>', '<Cmd>vertical resize+2<CR>', { desc = 'Increase window width' })
 
 -- Keep cursor in the middle while in search results
-vim.keymap.set('n', 'n', "nzzzv", { noremap = true })
-vim.keymap.set('n', 'N', "Nzzzv", { noremap = true })
+vim.keymap.set('n', 'n', 'nzzzv', { noremap = true })
+vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true })
 
 -- better indenting
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
+vim.keymap.set('v', '<', '<gv')
+vim.keymap.set('v', '>', '>gv')
 
 -- Copy to system clipboard
-vim.keymap.set({ 'n', 'v' }, '<leader>y', "\"+y", { noremap = true })
-vim.keymap.set({ 'n', 'v' }, '<leader>Y', "\"+Y", { noremap = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>y', '\"+y', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>Y', '\"+Y', { noremap = true })
 
 -- actual delete word
-vim.keymap.set({ 'n', 'v' }, '<leader>d', "\"_d", { noremap = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>d', '\"_d', { noremap = true })
 
 -- Make behavior more like common editors
 vim.keymap.set('i', '<S-Left>', '<Esc>vb', { noremap = true, desc = 'Select character left' })
@@ -64,10 +70,3 @@ vim.keymap.set('n', '<leader>]', vim.cmd.bnext, { noremap = true, desc = 'Next B
 vim.keymap.set('', '<leader>{', vim.cmd.tabprevious, { noremap = true, desc = 'Previous Tab' })
 vim.keymap.set('', '<leader>}', vim.cmd.tabnext, { noremap = true, desc = 'Next Tab' })
 vim.keymap.set('', '<A-w>', vim.cmd.tabclose, { noremap = true, desc = 'Close Tab' })
-
--- Quiting
--- vim.keymap.set({ 'i', 't' }, '<A-w>', '<Esc><Cmd>tabclose<CR>', { noremap = true, desc = 'Close Tab' })
-vim.keymap.set('n', '<leader>qq', '<Cmd>qa<CR>', { desc = 'Quit all' })
-
--- Clear search with <ESC>
-vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Cmd>noh<CR><Esc>', { desc = 'Clear search highlight' })
