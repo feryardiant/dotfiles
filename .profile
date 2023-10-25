@@ -82,3 +82,4 @@ if type starship &>/dev/null; then
 fi
 
 # export PATH="$(consolidate_path $PATH)"
+. "$HOME/.cargo/env"
