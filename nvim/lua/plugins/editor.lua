@@ -1,22 +1,16 @@
 return {
-  {
-    'tpope/vim-dotenv'
-  },
-
-  {
-    'tpope/vim-fugitive',
-  },
-
-  {
-    'nvim-tree/nvim-web-devicons'
-  },
 
   {
     'lewis6991/gitsigns.nvim',
     dependencies = {
       'vim-fugitive',
     },
-    opts = {}
+    opts = {
+      current_line_blame = true,
+      signs = {
+        untracked = { text = "│" },
+      }
+    }
   },
 
   {

@@ -1,4 +1,5 @@
 return {
+
   {
     'Shatur/neovim-ayu', name = 'ayu',
     lazy = false,
@@ -26,5 +27,17 @@ return {
 
       ayu.colorscheme()
     end
-  }
+  },
+
+  {
+    'tpope/vim-dotenv'
+  },
+
+  {
+    'tpope/vim-fugitive',
+  },
+
+  {
+    'nvim-tree/nvim-web-devicons'
+  },
 }
