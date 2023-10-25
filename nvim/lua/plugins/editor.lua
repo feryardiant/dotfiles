@@ -25,18 +25,6 @@ return {
   },
 
   {
-    'nvim-lualine/lualine.nvim',
-    config = function ()
-      require('lualine').setup({
-        options = {
-          componnet_separators = '',
-          section_separators = '',
-        },
-      })
-    end
-  },
-
-  {
     'folke/trouble.nvim',
     dependencies = {
       { 'nvim-web-devicons' },
