@@ -44,7 +44,7 @@ return {
   -- Show context of the current function
   {
     'nvim-treesitter/nvim-treesitter-context',
-    enable = true,
+    enabled = true,
     opts = { mode = 'cursor', max_line = 3 }
   },
 
