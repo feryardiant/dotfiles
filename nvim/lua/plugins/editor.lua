@@ -34,5 +34,15 @@ return {
         },
       })
     end
+  },
+
+  {
+    'folke/trouble.nvim',
+    dependencies = {
+      { 'nvim-web-devicons' },
+    },
+    opts = {
+      use_diagnostic_signs = true
+    }
   }
 }
