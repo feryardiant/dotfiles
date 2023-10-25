@@ -14,7 +14,7 @@ return {
   },
 
   {
-    'm4xshen/autoclose.nvim',
+    'echasnovski/mini.pairs',
     opts = {}
   },
 
