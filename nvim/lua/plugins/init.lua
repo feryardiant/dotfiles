@@ -4,6 +4,9 @@ return {
     'Shatur/neovim-ayu', name = 'ayu',
     lazy = false,
     priority = 1000,
+    init = function ()
+      vim.cmd.colorscheme('ayu')
+    end,
     config = function ()
       local colors = require('ayu.colors')
       local ayu = require('ayu')
@@ -32,10 +35,6 @@ return {
   {
     'wakatime/vim-wakatime',
     lazy = false,
-  },
-
-  {
-    'tpope/vim-dotenv'
   },
 
   {
