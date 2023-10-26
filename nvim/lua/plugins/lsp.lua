@@ -75,10 +75,11 @@ return {
     dependencies = {
       { 'williamboman/mason-lspconfig.nvim' },
     },
-    config = function()
+    opts = {},
+    config = function(_, opts)
       local lsp_zero = require('lsp-zero')
 
-      require('mason').setup({})
+      require('mason').setup(opts)
       require('mason-lspconfig').setup({
         ensure_installed = { 'jsonls', 'lua_ls', 'tsserver' },
         handlers = {
@@ -99,7 +100,12 @@ return {
       { 'mason.nvim' },
       { 'nvim-cmp' },
     },
-    config = function()
+    init = function()
+      vim.diagnostic.config({
+        virtual_text = true
+      })
+    end,
+    config = function(_, opts)
       local lsp_zero = require('lsp-zero')
 
       lsp_zero.on_attach(function(_, buffer)
@@ -116,10 +122,6 @@ return {
       end)
 
       lsp_zero.setup_servers({})
-
-      vim.diagnostic.config({
-        virtual_text = true
-      })
     end
   },
 

@@ -43,30 +43,25 @@ vim.keymap.set('n', '<A-Down>', '<Cmd>resize-2<CR>', { desc = 'Decrease window h
 vim.keymap.set('n', '<A-Left>', '<Cmd>vertical resize-2<CR>', { desc = 'Decrease window width' })
 vim.keymap.set('n', '<A-Right>', '<Cmd>vertical resize+2<CR>', { desc = 'Increase window width' })
 
--- Keep cursor in the middle while in search results
-vim.keymap.set('n', 'n', 'nzzzv', { noremap = true })
-vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true })
+-- Speed up viewport scrolling
+vim.keymap.set('n', '<C-e>', '4<C-e>', { desc = 'Scroll 4 lines down' })
+vim.keymap.set('n', '<C-y>', '4<C-y>', { desc = 'Scroll 4 lines up' })
 
--- better indenting
-vim.keymap.set('v', '<', '<gv')
-vim.keymap.set('v', '>', '>gv')
+-- Buffers navigation
+vim.keymap.set('n', '[b', vim.cmd.bprevious, { noremap = true, desc = 'Previous Buffer' })
+vim.keymap.set('n', ']b', vim.cmd.bnext, { noremap = true, desc = 'Next Buffer' })
+
+-- Keep cursor in the middle while in search results
+vim.keymap.set('n', 'n', 'nzzzv', { noremap = true, desc = 'Previeous search result' })
+vim.keymap.set('n', 'N', 'Nzzzv', { noremap = true, desc = 'Next search result' })
+
+-- Better indenting
+vim.keymap.set('v', '<', '<gv', { desc = 'Dedent line' })
+vim.keymap.set('v', '>', '>gv', { desc = 'Indent line' })
 
 -- Copy to system clipboard
-vim.keymap.set({ 'n', 'v' }, '<leader>y', '\"+y', { noremap = true })
-vim.keymap.set({ 'n', 'v' }, '<leader>Y', '\"+Y', { noremap = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>y', '\"+y', { noremap = true, desc = 'Copy to system clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Y', '\"+Y', { noremap = true, desc = 'Copy to system clipboard' })
 
--- actual delete word
-vim.keymap.set({ 'n', 'v' }, '<leader>d', '\"_d', { noremap = true })
-
--- Make behavior more like common editors
-vim.keymap.set('i', '<S-Left>', '<Esc>vb', { noremap = true, desc = 'Select character left' })
-vim.keymap.set('i', '<S-Right>', '<Esc>ve', { noremap = true, desc = 'Select character right' })
-
--- Buffer controls - Use <leader>[/] to navigate between buffers
-vim.keymap.set('n', '<leader>[', vim.cmd.bprevious, { noremap = true, desc = 'Previous Buffer' })
-vim.keymap.set('n', '<leader>]', vim.cmd.bnext, { noremap = true, desc = 'Next Buffer' })
-
--- Tab controls - Use <leader>{/} to navigate between tabs
-vim.keymap.set('', '<leader>{', vim.cmd.tabprevious, { noremap = true, desc = 'Previous Tab' })
-vim.keymap.set('', '<leader>}', vim.cmd.tabnext, { noremap = true, desc = 'Next Tab' })
-vim.keymap.set('', '<A-w>', vim.cmd.tabclose, { noremap = true, desc = 'Close Tab' })
+-- Delete word
+vim.keymap.set({ 'n', 'v' }, '<leader>d', '\"_d', { noremap = true, desc = 'Delete word' })

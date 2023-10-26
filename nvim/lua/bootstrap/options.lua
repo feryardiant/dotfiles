@@ -62,13 +62,19 @@ vim.opt.wrapscan = true    -- Searches wrap around end of file
 vim.opt.splitbelow = true  -- New window goes below
 vim.opt.splitright = true  -- New windows goes right
 
+-- Folding
+vim.opt.foldenable = false
+vim.opt.foldmethod = 'expr'
+vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+
+-- Whitespace characters
 vim.opt.list = true
 vim.opt.listchars = 'tab:→ ,trail:·,extends:…,precedes:…'
 vim.opt.fillchars = {
   foldopen = '',
   foldclose = '',
-  -- fold = '⸱',
-  fold = ' ',
+  fold = '⸱',
+  -- fold = ' ',
   foldsep = ' ',
   diff = '╱',
   eob = ' ',
@@ -77,12 +83,10 @@ vim.opt.fillchars = {
 vim.opt.suffixes = '.bak,~,.cache,.swp,.swo,.o,.d,.info,.aux,.dvi,.bin,.cb,.dmg,.exe,.ind,.idx,.inx,.out,.toc,.pyc,.pyd,.dll'
 vim.opt.wildignore = {
   '*.jpg','*.jpeg','*.gif','*.png','*.gif','*.psd','*.pdf','*.o','*.obj','*.min.js',
-  '*/smarty/*','*/vendor/*','*/node_modules/*','*/.git/*','*/.sass-cache/*''
+  '*/smarty/*','*/vendor/*','*/node_modules/*','*/.git/*','*/.sass-cache/*'
 }
 
 if vim.fn.has('nvim-0.10') == 1 then
   vim.opt.smoothscroll = true
-  vim.opt.foldmethod = 'expr'
-  vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 end
 
