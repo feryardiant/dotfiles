@@ -11,6 +11,47 @@ syntax enable
 let mapleader = " "
 let g:mapleader = " "
 
+function s:plug_download_dir()
+  if !empty($LOCALAPPDATA)
+    return $LOCALAPPDATA.'/vim-plug'
+  endif
+
+  if !empty($XDG_DATA_HOME)
+    return $XDG_DATA_HOME.'/vim-plug'
+  endif
+
+  return $HOME.'/.local/share/vim-plug'
+endfunction
+
+let s:plug_home_dir = s:plug_download_dir()
+let s:vim_home_dir = $HOME . '/.vim'
+
+if !filereadable(s:plug_home_dir.'/plug.vim')
+  let s:plug_download_url = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  call system('curl -fLo '.s:plug_home_dir.'/plug.vim --create-dirs '.s:plug_download_url)
+
+  if !isdirectory(s:plug_home_dir.'/plugged')
+    call mkdir(s:plug_home_dir.'/plugged', 'p')
+  endif
+endif
+
+if !isdirectory(s:vim_home_dir.'/autoload')
+  call mkdir(s:vim_home_dir.'/autoload', 'p')
+
+  if !filereadable(s:vim_home_dir.'/autoload/plug.vim')
+    call system('ln -s '.s:plug_home_dir.'/plug.vim '.s:vim_home_dir.'/autoload/plug.vim')
+  endif
+
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
+
+call plug#begin(s:plug_home_dir.'/plugged')
+
+Plug 'editorconfig/editorconfig-vim'
+Plug 'wakatime/vim-wakatime'
+
+call plug#end()
+
 " Vim color scheme http://vimcolors.com/
 set termguicolors
 set encoding=utf-8 nobomb  " BOM often causes trouble
