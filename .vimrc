@@ -8,8 +8,8 @@ filetype plugin indent on
 syntax enable
 
 " Change mapleader
-let mapleader = " "
-let g:mapleader = " "
+let mapleader=" "
+let g:mapleader=" "
 
 function s:plug_download_dir()
   if !empty($LOCALAPPDATA)
@@ -23,11 +23,11 @@ function s:plug_download_dir()
   return $HOME.'/.local/share/vim-plug'
 endfunction
 
-let s:plug_home_dir = s:plug_download_dir()
-let s:vim_home_dir = $HOME . '/.vim'
+let s:plug_home_dir=s:plug_download_dir()
+let s:vim_home_dir=$HOME . '/.vim'
 
 if !filereadable(s:plug_home_dir.'/plug.vim')
-  let s:plug_download_url = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  let s:plug_download_url='https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   call system('curl -fLo '.s:plug_home_dir.'/plug.vim --create-dirs '.s:plug_download_url)
 
   if !isdirectory(s:plug_home_dir.'/plugged')
@@ -48,15 +48,46 @@ endif
 call plug#begin(s:plug_home_dir.'/plugged')
 
 Plug 'editorconfig/editorconfig-vim'
+Plug 'tpope/vim-fugitive'
 Plug 'wakatime/vim-wakatime'
 
 call plug#end()
 
-" Vim color scheme http://vimcolors.com/
-set termguicolors
-set encoding=utf-8 nobomb  " BOM often causes trouble
+try
+  " let ayucolor="dark"     " light, dark & mirage
+  colorscheme ayu
 
-set mouse=a   " Enable moouse in all in all modes
+" Vim color scheme http://vimcolors.com/
+  set termguicolors
+  set t_Co=256
+  catch
+    hi! Comment ctermfg=240
+    hi! CursorLine ctermbg=None
+    hi! CursorLineNr cterm=None ctermbg=None
+    hi! ColorColumn ctermbg=237
+    hi! LineNr cterm=None ctermfg=240
+    hi! Visual ctermbg=238
+    hi! TabLineSel ctermbg=240
+    hi! StatusLine ctermbg=238
+    hi! StatusLineNC ctermbg=None
+endtry
+
+if !has('nvim')
+  " set esckeys          " Allow cursor keys in insert mode.
+  " set ttymouse=xterm   " Set mouse type to xterm.
+
+  " let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+  " let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+
+  set encoding=utf-8 nobomb  " BOM often causes trouble
+  set mouse=a   " Enable moouse in all in all modes
+
+  " if has("mac") || has("macunix")
+  "   set <A-j>=∆
+  "   set <A-k>=˚
+  " endif
+endif
+
 set clipboard=unnamedplus
 set conceallevel=3
 
@@ -143,16 +174,6 @@ set fillchars=foldopen:,foldclose:,vert:│,fold:·,foldsep:\ ,diff:-
 set suffixes=.bak,~,.cache,.swp,.swo,.o,.d,.info,.aux,.dvi,.bin,.cb,.dmg,.exe,.ind,.idx,.inx,.out,.toc,.pyc,.pyd,.dll
 set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.pdf,*.o,*.obj,*.min.js
 set wildignore+=*/smarty/*,*/vendor/*,*/node_modules/*,*/.git/*,*/.hg/*,*/.svn/*,*/.sass-cache/*
-
-" if !has('nvim')
-"   set esckeys          " Allow cursor keys in insert mode.
-"   set ttymouse=xterm   " Set mouse type to xterm.
-" endif
-
-" if has("mac") || has("macunix")
-"   set <A-j>=∆
-"   set <A-k>=˚
-" endif
 
 nmap <Esc> :noh<CR> " Clear search highlight
 imap <Esc> :noh<CR><Esc> " Clear search highlight
