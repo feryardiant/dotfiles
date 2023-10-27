@@ -15,20 +15,19 @@ return {
 
       ayu.setup({
         overrides = {
-          Normal = { bg = 'none' },
-          NormalFloat = { bg = '#3a3a3a' },
-          SignColumn = { bg = 'none' },
+          -- Normal = { bg = 'none' },
+          -- NormalFloat = { bg = '#3a3a3a' },
+          -- SignColumn = { fg = colors.comment },
+          -- LineNr = { fg = colors.comment },
           Comment = { fg = colors.comment },
-          CursorLine = { bg = '#1c1c1c' },
-          CursorLineNr = { bg = '#1c1c1c', fg = colors.accent },
-          ColorColumn = { bg = '#262626' },
-          Pmenu = { bg = colors.selection_inactive },
-          PmenuSel = { bg = colors.selection_bg },
-          Visual = { bg = colors.selection_bg },
+          -- CursorLine = { bg = '#1c1c1c' },
+          -- CursorLineNr = { fg = colors.accent },
+          -- ColorColumn = { bg = '#262626' },
+          -- Pmenu = { bg = colors.selection_inactive },
+          -- PmenuSel = { bg = colors.selection_bg },
+          -- Visual = { bg = colors.selection_bg },
         }
       })
-
-      ayu.colorscheme()
     end
   },
 
