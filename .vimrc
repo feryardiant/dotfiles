@@ -49,7 +49,11 @@ call plug#begin(s:plug_home_dir.'/plugged')
 
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-fugitive'
-Plug 'wakatime/vim-wakatime'
+Plug 'ryanoasis/vim-devicons'
+
+if filereadable($HOME.'/.wakatime.cfg')
+  Plug 'wakatime/vim-wakatime'
+endif
 
 call plug#end()
 
