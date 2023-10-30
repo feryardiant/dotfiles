@@ -4,8 +4,10 @@ set nocompatible
 " Enable filetype plugins
 filetype plugin indent on
 
-" Enable syntax highlighting
-syntax enable
+" Enable syntax highlighting if available
+if has('syntax')
+  syntax enable
+endif
 
 " Change mapleader
 let mapleader=" "
@@ -92,7 +94,10 @@ if !has('nvim')
   " endif
 endif
 
-set clipboard=unnamedplus
+if has('clipboard')
+  set clipboard=unnamedplus
+endif
+
 set conceallevel=3
 
 set noerrorbells   " Disable error bells
@@ -132,7 +137,10 @@ set report=0     " Show all command reports
 set updatetime=50
 
 " Completion
-set wildmenu
+if has('wildmenu')
+  set wildmenu
+endif
+
 set wildmode=longest:full,full
 set wildchar=<TAB>
 set completeopt=menu,menuone,noselect
