@@ -6,6 +6,11 @@ sudo -k
 
 LANG="id_ID.UTF-8"
 
+clear
+
+printf 'Initializing your lxc container...\n'
+printf 'This might take a while, sit back and relax\n'
+
 # run inside sudo
 sudo sh <<SCRIPT
 printf ' - Configuring locale settings...'
