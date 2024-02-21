@@ -8,32 +8,28 @@ LANG="id_ID.UTF-8"
 
 # run inside sudo
 sudo sh <<SCRIPT
-printf ' - '
+printf ' - Configuring locale settings...'
 locale-gen $LANG > /dev/null 2>&1
-update-locale LC_ALL="$LANG" LANG="$LANG"
-dpkg-reconfigure --frontend noninteractive locales
+update-locale LC_ALL="$LANG" LANG="$LANG" > /dev/null 2>&1
+dpkg-reconfigure --frontend noninteractive locales > /dev/null 2>&1
 ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-dpkg-reconfigure --frontend noninteractive tzdata
+dpkg-reconfigure --frontend noninteractive tzdata > /dev/null 2>&1
 printf ' done\n'
 
-printf ' - Check for updates...'
+printf ' - Checking for updates...'
 apt update -qq > /dev/null 2>&1
 printf ' done\n'
 
-printf ' - Update packages...'
+printf ' - Updating packages...'
 apt dist-upgrade -qqy > /dev/null 2>&1
 printf ' done\n'
 
-printf ' - Install basic tools...'
+printf ' - Installing basic tools...'
 apt install -qqy --no-install-recommends vim htop tree curl net-tools git unzip zip > /dev/null 2>&1
 printf ' done\n'
 
-printf ' - '
-update-alternatives --set editor /usr/bin/vim.basic
-printf ' done\n'
-
-printf ' - '
-adduser --disabled-password --gecos "" admin
+printf ' - Adding user admin...'
+adduser --disabled-password --gecos "" admin > /dev/null 2>&1
 echo "admin:password" | chpasswd
 usermod -aG adm,root,sudo,www-data admin
 echo "admin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/90-admin-users
@@ -44,7 +40,7 @@ chmod 700 /home/admin/.ssh
 chmod 600 /home/admin/.ssh/*
 printf ' done\n'
 
-printf ' - Update default SSH configs...'
+printf ' - Updating SSH configs...'
 sed -iE "s~#PermitRootLogin .*~PermitRootLogin prohibit-password~" /etc/ssh/sshd_config
 sed -iE "s~#PubkeyAuthentication .*~PubkeyAuthentication yes~" /etc/ssh/sshd_config
 sed -iE "s~#PasswordAuthentication .*~PasswordAuthentication no~" /etc/ssh/sshd_config
@@ -54,7 +50,8 @@ sed -iE "s~#PermitTTY .*~PermitTTY yes~" /etc/ssh/sshd_config
 systemctl start sshd
 printf ' done\n'
 
-printf ' - Update default VIM configs...'
+printf ' - Updating VIM configs...'
+update-alternatives --set editor /usr/bin/vim.basic > /dev/null 2>&1
 cat >> /etc/vim/vimrc.local<< VIMRC
 set nocompatible
 filetype plugin indent on
