@@ -30,7 +30,7 @@ apt dist-upgrade -qqy > /dev/null 2>&1
 printf ' done\n'
 
 printf ' - Installing basic tools...'
-apt install -qqy --no-install-recommends vim htop tree curl net-tools git unzip zip > /dev/null 2>&1
+apt install -qqy --no-install-recommends gpg vim htop tree curl net-tools git unzip zip > /dev/null 2>&1
 printf ' done\n'
 
 printf ' - Adding user admin...'
