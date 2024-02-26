@@ -85,8 +85,8 @@ if !has('nvim')
   " let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
   " let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 
-  set encoding=utf-8 nobomb  " BOM often causes trouble
-  set mouse=a   " Enable moouse in all in all modes
+set encoding=utf-8 nobomb  " BOM often causes trouble
+set mouse=a   " Enable moouse in all in all modes
 
   " if has("mac") || has("macunix")
   "   set <A-j>=∆
@@ -185,7 +185,7 @@ set fillchars=foldopen:,foldclose:,vert:│,fold:·,foldsep:\ ,diff:-
 
 set suffixes=.bak,~,.cache,.swp,.swo,.o,.d,.info,.aux,.dvi,.bin,.cb,.dmg,.exe,.ind,.idx,.inx,.out,.toc,.pyc,.pyd,.dll
 set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.pdf,*.o,*.obj,*.min.js
-set wildignore+=*/smarty/*,*/vendor/*,*/node_modules/*,*/.git/*,*/.hg/*,*/.svn/*,*/.sass-cache/*
+set wildignore+=*/vendor/*,*/node_modules/*,*/.git/*,*/DS_Store
 
 nmap <Esc> :noh<CR> " Clear search highlight
 imap <Esc> :noh<CR><Esc> " Clear search highlight
