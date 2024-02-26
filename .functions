@@ -115,6 +115,11 @@ function phpserv() {
 	fi
 }
 
+# credit https://askubuntu.com/a/1044728
+function test_colours() {
+	curl -s https://gist.githubusercontent.com/WoLpH/8b6f697ecc06318004728b8c0127d9b3/raw/colortest.py | python3
+}
+
 function print_colours() {
 	if [ -z $1 ]; then
 		BREAK=1
@@ -195,6 +200,7 @@ function repo() {
 function bslocal() {
 	if ! (command -v BrowserStackLocal >/dev/null 2>&1); then
 		echo "Your system does not have Browserstack Local binnary installed"$'\n'
+		echo "https://www.browserstack.com/docs/local-testing/releases-and-downloads"$'\n'
 		return 1;
 	fi
 
@@ -217,18 +223,19 @@ Available commands:
 
 	case $1 in
 		start)
-			export BROWSERSTACK_LOCAL=true BROWSERSTACK_LOCAL_IDENTIFIER=${PWD##*/}-`git rev-parse --short HEAD`
+			export BROWSERSTACK_LOCAL_IDENTIFIER=${PWD##*/}-`git rev-parse --short HEAD`
 
 			BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
 			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
-			--daemon start ${@:2}
+			--use-ca-certificate ${HOME}/Workspace/localhost.pem \
+			--force-local --daemon start --log-file ${PWD}/browserstack.log ${@:2}
 
 			echo "identifier: ${BROWSERSTACK_LOCAL_IDENTIFIER}"
 			;;
 		stop)
 			BrowserStackLocal --daemon stop
 
-			unset BROWSERSTACK_LOCAL BROWSERSTACK_LOCAL_IDENTIFIER
+			unset BROWSERSTACK_LOCAL_IDENTIFIER
 			;;
 		*)
 			echo "command ${1} is invalid"

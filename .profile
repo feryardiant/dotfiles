@@ -1,3 +1,40 @@
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+export GPG_TTY=$(tty)
+export EDITOR='nvim'
+
+# Don’t clear the screen after quitting a manual page
+export MANPAGER="less -X"
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# Larger bash history (allow 32³ entries; default is 500)
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+export HISTSIZE=2048
+export HISTFILESIZE=61440
+
+# timestamps for bash history. www.debian-administration.org/users/rossen/weblog/1
+# saved for later analysis
+export HISTTIMEFORMAT='%F %T → '
+
+# Make some commands not show up in history
+export HISTIGNORE="&:h:history:pwd:exit:clear:[ \t]*"
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+export HISTCONTROL=ignoreboth
+
+# Limit path length in promt (e.g. ~/.../current/path/name)
+# export PROMPT_DIRTRIM=3
+
+#[[ -z $SSL_CERT_DIR && -d /etc/ssl/certs ]] && export SSL_CERT_DIR=/etc/ssl/certs
+
+# export LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
+
+# export TERM=screen-256color
+# [ -z "$TMUX" ] && export TERM=tmux-256color
+
 # Import basic utilities
 [[ -s $HOME/.env ]] && source $HOME/.env
 
@@ -5,71 +42,6 @@
 if [ -d $DOTFILES_DIR ]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
 fi
-
-# ==============================================================================
-# This litle helper when /sbin, /usr/sbin & /usr/local/sbin dir
-# doesn't included in $PATH, I found this issue on WSL
-# ==============================================================================
-# for sbin_dir in {/sbin,/usr/sbin,/usr/local/sbin,$HOME/.local/bin}; do
-#     [[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] && PATH=$sbin_dir:$PATH
-# done
-# unset sbin_dir
-
-# ==============================================================================
-# HomeBrew
-# ==============================================================================
-if [[ -x /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-
-    # add auto completions
-    # See https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
-    FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
-    autoload -Uz compinit
-    compinit
-
-    # ==============================================================================
-    # Ruby
-    # ==============================================================================
-    if [[ -d $HOMEBREW_PREFIX/opt/ruby ]]; then
-       PATH="$HOMEBREW_PREFIX/opt/ruby/bin:$PATH"
-       PATH="$HOMEBREW_PREFIX/lib/ruby/gems/3.1.0/bin:$PATH"
-    fi
-
-    # ==============================================================================
-    # ASDF-VM
-    # ==============================================================================
-    [[ -f "`brew --prefix asdf`/libexec/asdf.sh" ]] && source "`brew --prefix asdf`/libexec/asdf.sh"
-fi
-
-# ==============================================================================
-# Android SDK
-# ==============================================================================
-if [[ -z $ANDROID_SDK_ROOT && -d ~/.local/share/android ]]; then
-    export ANDROID_SDK_ROOT="$HOME/.local/share/android"
-
-    # for sdk_path in {tools,platform-tools,emulator}; do
-    #     [[ -d $ANDROID_SDK_ROOT/$sdk_path ]] && PATH="$ANDROID_SDK_ROOT/$sdk_path:$PATH"
-    # done
-    # unset sdk_path
-fi
-
-# ==============================================================================
-# User Local
-# ==============================================================================
-if [[ -d $HOME/.local/bin ]]; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-# Prevent Duplicate Path
-# Credit: https://askubuntu.com/a/1349910/10706
-export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
-
-# ==============================================================================
-# Git Prompt
-# see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-# ==============================================================================
-
-# [ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
 
 for dotfile in ~/.{exports,aliases,functions}; do
     [[ -r $dotfile && -f $dotfile ]] && source $dotfile
@@ -80,5 +52,3 @@ unset dotfile
 if type starship &>/dev/null; then
     eval "$(starship init `basename $SHELL`)"
 fi
-
-# export PATH="$(consolidate_path $PATH)"
