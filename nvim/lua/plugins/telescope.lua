@@ -17,6 +17,7 @@ return {
 
       return {
         defaults = {
+          path_display = { "smart" },
           prompt_prefix = " ",
           selection_caret = " ",
           layout_config = {
