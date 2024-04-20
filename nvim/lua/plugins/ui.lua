@@ -1,6 +1,11 @@
 return {
 
   {
+    'stevearc/dressing.nvim',
+    event = 'VeryLazy',
+  },
+
+  {
     'akinsho/bufferline.nvim',
     opts = {
       options = {
