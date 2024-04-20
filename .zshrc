@@ -75,6 +75,8 @@ source $ZSH/oh-my-zsh.sh
 
 [[ -s $HOME/.profile ]] && source $HOME/.profile
 
+[[ -d ~/.local/share/fzf-git ]] && source ~/.local/share/fzf-git/fzf-git.sh
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
