@@ -30,7 +30,7 @@ if command -v pygmentize >/dev/null 2>&1; then
 fi
 
 # Always use color output for `ls`
-# alias ls="command ls ${colorflag}"
+alias ls="command eza --color --icons --group-directories-first"
 
 # List all files colorized in long format
 # alias l="ls -lFh"
