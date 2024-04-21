@@ -2,7 +2,7 @@
 -- vim.keymap.set('n', '<leader>qq', '<Cmd>qa<CR>', { desc = 'Quit all' })
 
 -- Clear search with <ESC>
-vim.keymap.set({ 'i', 'n' }, '<Esc>', '<Cmd>noh<CR><Esc>', { desc = 'Clear search highlight' })
+vim.keymap.set({ 'i', 'n' }, '<Esc><Esc>', '<Cmd>noh<CR>', { desc = 'Clear search highlight' })
 
 -- Diagnostics
 local diagnostic_goto = function(next, severity)
