@@ -81,7 +81,7 @@ return {
 
       require('mason').setup(opts)
       require('mason-lspconfig').setup({
-        ensure_installed = { 'jsonls', 'lua_ls', 'tsserver' },
+        ensure_installed = { 'emmet_ls', 'jsonls', 'lua_ls', 'tsserver' },
         handlers = {
           lsp_zero.default_setup,
           lua_ls = function()

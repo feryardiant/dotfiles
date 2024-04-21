@@ -86,3 +86,22 @@ export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf R
 # Vagrant
 # ==============================================================================
 # export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
+
+# ==============================================================================
+# FZF
+# ==============================================================================
+if command -v fzf >/dev/null 2>&1; then
+	export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+	export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+	export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+
+	export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
+	export FZF_ALT_T_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+fi
+
+# ==============================================================================
+# Bat - Better version of cat
+# ==============================================================================
+if command -v bat >/dev/null 2>&1; then
+	export BAT_THEME=OneHalfDark
+fi
