@@ -12,29 +12,43 @@ return {
       -- },
     },
     opts = {
-        indent = { enable = true },
-        highlight = { enable = true },
-        -- https://github.com/windwp/nvim-ts-autotag
-        autotag = {
-          enable = true,
+      indent = { enable = true },
+      highlight = { enable = true },
+      -- https://github.com/windwp/nvim-ts-autotag
+      autotag = {
+        enable = true,
+      },
+      -- A list of parser names
+      ensure_installed = {
+        'bash',
+        'gitignore',
+        'html',
+        'json',
+        'javascript',
+        'markdown',
+        'markdown_inline',
+        'php',
+        'toml',
+        'typescript',
+        'tsx',
+        'vim',
+        'vimdoc',
+        'vue',
+        'yaml'
+      },
+      -- Install parsers asynchronously
+      sync_install = false,
+      -- Auto install missing parsers when entering buffer
+      auto_install = true,
+      -- Incremental selection
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<C-space>',
+          node_incremental = '<C-space>',
+          node_decremental = '<bs>',
         },
-        -- A list of parser names
-        ensure_installed = {
-          'html',
-          'json',
-          'javascript',
-          'php',
-          'toml',
-          'typescript',
-          'vim',
-          'vimdoc',
-          'vue',
-          'yaml'
-        },
-        -- Install parsers asynchronously
-        sync_install = false,
-        -- Auto install missing parsers when entering buffer
-        auto_install = true,
+      }
     },
     config = function(_, opts)
       require('nvim-treesitter.configs').setup(opts)
