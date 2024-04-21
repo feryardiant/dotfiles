@@ -67,7 +67,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(composer fzf per-directory-history zsh-autosuggestions)
+plugins=(composer per-directory-history zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -75,7 +75,11 @@ source $ZSH/oh-my-zsh.sh
 
 [[ -s $HOME/.profile ]] && source $HOME/.profile
 
-[[ -d ~/.local/share/fzf-git ]] && source ~/.local/share/fzf-git/fzf-git.sh
+if command -v fzf >/dev/null 2>&1; then
+    eval `fzf --zsh`
+
+    [[ -d ~/.local/share/fzf-git ]] && source ~/.local/share/fzf-git/fzf-git.sh
+fi
 
 if command -v thefuck >/dev/null 2>&1; then
     eval `thefuck --alias`
