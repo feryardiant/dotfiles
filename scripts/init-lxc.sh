@@ -89,6 +89,8 @@ set incsearch   " Highlight dynamically as pattern is typed
 set ignorecase  " Ignore case of searches
 set smartcase   " Ignore 'ignorecase' if search patter contains uppercase characters
 set wrapscan    " Searches wrap around end of file
+
+nnoremap <Esc><Esc> :noh<CR> " Double <esc> to clear search highlight
 VIMRC
 
 printf ' done\n'

@@ -170,6 +170,8 @@ set ignorecase  " Ignore case of searches
 set smartcase   " Ignore 'ignorecase' if search patter contains uppercase characters
 set wrapscan    " Searches wrap around end of file
 
+nnoremap <Esc><Esc> :noh<CR> " Double <esc> to clear search highlight
+
 " Window splitting
 set splitbelow  " New window goes below
 set splitright  " New windows goes right
@@ -186,9 +188,6 @@ set fillchars=foldopen:,foldclose:,vert:│,fold:·,foldsep:\ ,diff:-
 set suffixes=.bak,~,.cache,.swp,.swo,.o,.d,.info,.aux,.dvi,.bin,.cb,.dmg,.exe,.ind,.idx,.inx,.out,.toc,.pyc,.pyd,.dll
 set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.pdf,*.o,*.obj,*.min.js
 set wildignore+=*/vendor/*,*/node_modules/*,*/.git/*,*/DS_Store
-
-nmap <Esc> :noh<CR> " Clear search highlight
-imap <Esc> :noh<CR><Esc> " Clear search highlight
 
 " Move lines - use ALT+J/K to move line up and down
 nnoremap <A-j> :m .+1<CR>==         " Move lines down
