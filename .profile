@@ -50,5 +50,5 @@ unset dotfile
 
 # See https://github.com/starship/starship
 if type starship &>/dev/null; then
-    eval "$(starship init `basename $SHELL`)"
+    #eval "$(starship init `basename $SHELL`)"
 fi
