@@ -14,10 +14,6 @@ return {
     opts = {
       indent = { enable = true },
       highlight = { enable = true },
-      -- https://github.com/windwp/nvim-ts-autotag
-      autotag = {
-        enable = true,
-      },
       -- A list of parser names
       ensure_installed = {
         'bash',
@@ -65,7 +61,7 @@ return {
   -- Automatically add closing tags for HTML and JSX
   {
     'windwp/nvim-ts-autotag',
-    opts = {}
+    opts = {},
   },
 
 }
