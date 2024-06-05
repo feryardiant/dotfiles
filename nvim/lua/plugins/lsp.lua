@@ -71,33 +71,13 @@ return {
   },
 
   {
-    'williamboman/mason.nvim',
-    dependencies = {
-      { 'williamboman/mason-lspconfig.nvim' },
-    },
-    opts = {},
-    config = function(_, opts)
-      local lsp_zero = require('lsp-zero')
-
-      require('mason').setup(opts)
-      require('mason-lspconfig').setup({
-        ensure_installed = { 'emmet_ls', 'jsonls', 'lua_ls', 'tsserver' },
-        handlers = {
-          lsp_zero.default_setup,
-          lua_ls = function()
-            require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
-          end
-        }
-      })
-    end
-  },
-
-  {
     'VonHeikemen/lsp-zero.nvim',
     branch = 'v3.x',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       { 'neovim/nvim-lspconfig' },
-      { 'mason.nvim' },
+      { 'williamboman/mason.nvim' },
+      { 'williamboman/mason-lspconfig.nvim' },
       { 'nvim-cmp' },
     },
     init = function()
@@ -107,16 +87,45 @@ return {
     end,
     config = function(_, opts)
       local lsp_zero = require('lsp-zero')
+      local mason_lspconfig = require('mason-lspconfig')
+
+      require('mason').setup({})
+
+      local nmap = function(keys, func, desc)
+        if desc then
+          desc = 'LSP: ' .. desc
+        end
+        vim.keymap.set('n', keys, func, { buffer = buffer, desc = desc, remap = false })
+      end
+
+      mason_lspconfig.setup({
+        ensure_installed = {
+          'emmet_ls',
+          'jsonls',
+          'html',
+          'cssls',
+          'tailwindcss',
+          'svelte',
+          -- 'volar',
+          'lua_ls',
+          'tsserver',
+          'eslint',
+        },
+        handlers = {
+          lsp_zero.default_setup,
+
+          function (server_name)
+            require('lspconfig')[server_name].setup({})
+          end,
+
+          lua_ls = function()
+            require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
+          end
+        }
+      })
 
       lsp_zero.on_attach(function(_, buffer)
         lsp_zero.default_keymaps({ buffer = buffer })
-
-        local nmap = function(keys, func, desc)
-          if desc then
-            desc = 'LSP: ' .. desc
-          end
-          vim.keymap.set('n', keys, func, { buffer = buffer, desc = desc, remap = false })
-        end
 
         nmap('<leader>ca', vim.lsp.buf.code_action, 'Code Action')
       end)
