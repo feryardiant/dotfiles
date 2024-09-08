@@ -15,10 +15,10 @@ return {
 
       ayu.setup({
         overrides = {
-          -- Normal = { bg = 'none' },
+          Normal = { bg = 'none' },
           -- NormalFloat = { bg = '#3a3a3a' },
-          -- SignColumn = { fg = colors.comment },
-          -- LineNr = { fg = colors.comment },
+          SignColumn = { fg = colors.comment },
+          LineNr = { fg = colors.comment },
           Comment = { fg = colors.comment },
           -- CursorLine = { bg = '#1c1c1c' },
           -- CursorLineNr = { fg = colors.accent },
@@ -38,6 +38,10 @@ return {
 
   {
     'tpope/vim-fugitive',
+  },
+
+  {
+    'nvim-lua/plenary.nvim',
   },
 
   {
