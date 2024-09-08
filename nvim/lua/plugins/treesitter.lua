@@ -51,6 +51,13 @@ return {
     end
   },
 
+  {
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    opts = {
+      enable_autocmd = false,
+    },
+  },
+
   -- Show context of the current function
   {
     'nvim-treesitter/nvim-treesitter-context',

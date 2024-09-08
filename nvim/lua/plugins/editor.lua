@@ -63,13 +63,6 @@ return {
   },
 
   {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    opts = {
-      enable_autocmd = false,
-    },
-  },
-
-  {
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function ()

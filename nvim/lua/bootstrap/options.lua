@@ -40,6 +40,10 @@ vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.scrolloff = 5     -- Start scrolling three lines before horizontal border of window
 vim.opt.sidescrolloff = 5 -- Start scrolling three columns before vertical border of window
 
+if vim.fn.has('nvim-0.10') == 1 then
+  vim.opt.smoothscroll = true
+end
+
 -- Indentation
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -86,7 +90,4 @@ vim.opt.wildignore = {
   '*/smarty/*','*/vendor/*','*/node_modules/*','*/.git/*','*/.sass-cache/*'
 }
 
-if vim.fn.has('nvim-0.10') == 1 then
-  vim.opt.smoothscroll = true
-end
 
