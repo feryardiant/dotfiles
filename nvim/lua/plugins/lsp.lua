@@ -107,7 +107,6 @@ return {
           'tailwindcss',
           'svelte',
           'lua_ls',
-          'tsserver',
           'eslint',
           'volar',
         },
@@ -158,7 +157,7 @@ return {
               .. '/node_modules/@vue/language-server'
               .. '/node_modules/@vue/typescript-plugin'
 
-            lspconfig.tsserver.setup({
+            lspconfig.ts_ls.setup({
               init_options = {
                 plugins = {
                   {
