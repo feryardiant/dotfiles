@@ -85,13 +85,13 @@ return {
         virtual_text = true
       })
     end,
-    config = function(_, opts)
+    config = function()
       local lsp_zero = require('lsp-zero')
       local mason_lspconfig = require('mason-lspconfig')
 
       require('mason').setup({})
 
-      local nmap = function(keys, func, desc)
+      local nmap = function(buffer, keys, func, desc)
         if desc then
           desc = 'LSP: ' .. desc
         end
@@ -189,7 +189,7 @@ return {
       lsp_zero.on_attach(function(_, buffer)
         lsp_zero.default_keymaps({ buffer = buffer })
 
-        nmap('<leader>ca', vim.lsp.buf.code_action, 'Code Action')
+        nmap(buffer, '<leader>ca', vim.lsp.buf.code_action, 'Code Action')
       end)
 
       lsp_zero.setup_servers({})
