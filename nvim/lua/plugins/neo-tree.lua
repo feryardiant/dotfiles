@@ -65,6 +65,11 @@ return {
           enabled = true,
         },
       },
+      source_selector = {
+        winbar = true,
+        statusline = true,
+        content_layout = 'center',
+      },
       window = {
         position = 'current'
       },
