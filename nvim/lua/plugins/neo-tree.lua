@@ -11,7 +11,7 @@ return {
       {
         '<leader>ge',
         function()
-          require('neo-tree.command').execute({ source = 'git_status', toggle = true })
+          require('neo-tree.command').execute({ source = 'git_status', position = 'float', toggle = true })
         end,
         desc = 'Git explorer'
       },
@@ -19,7 +19,7 @@ return {
       {
         '<leader>be',
         function()
-          require('neo-tree.command').execute({ source = 'buffers', toggle = true })
+          require('neo-tree.command').execute({ source = 'buffers', position = 'float', toggle = true })
         end,
         desc = 'Buffers explorer'
       },
@@ -27,7 +27,7 @@ return {
       {
         '<leader>fe',
         function()
-          require('neo-tree.command').execute({ source = 'filesystem', toggle = true })
+          require('neo-tree.command').execute({ source = 'filesystem', position = 'float', toggle = true })
         end,
         desc = 'File explorer'
       }
@@ -53,7 +53,6 @@ return {
       vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
     end,
     opts = {
-      enable_git_status = true,
       popup_border_style = "rounded",
       default_component_configs = {
         indent = {
@@ -67,7 +66,7 @@ return {
         },
       },
       window = {
-        position = 'float'
+        position = 'current'
       },
       filesystem = {
         follow_current_file = {
