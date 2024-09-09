@@ -81,15 +81,14 @@ return {
         position = 'float'
       },
       filesystem = {
+        follow_current_file = {
+          enabled = true,
+        },
         filtered_items = {
           hide_dotfiles = false,
           hide_gitignored = false,
           hide_by_name = {
             'node_modules',
-          },
-          hide_by_pattern = {},
-          always_show = {
-            -- '.env'
           },
           never_show = {
             '.git',
@@ -106,32 +105,11 @@ return {
             '*.out',
           },
         },
-        follow_current_file = {
-          enabled = true,
-        },
         use_libuv_file_watcher = true,
-        window = {
-          mappings = {
-            ['.'] = 'set_root',
-            ['<bs>'] = 'navigate_up',
-            ['H'] = 'toggle_hidden',
-          },
-          fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
-            ["<down>"] = "move_cursor_down",
-            ["<up>"] = "move_cursor_up",
-          },
-        },
       },
       buffers = {
         follow_current_files = {
           enabled = true,
-        },
-        window = {
-          mappings = {
-            ['.'] = 'set_root',
-            ['<bs>'] = 'navigate_up',
-            ['bd'] = 'buffer_delete',
-          }
         },
       },
       git_status = {},
