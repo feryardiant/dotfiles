@@ -53,10 +53,31 @@ return {
       filesystem = {
         filtered_items = {
           hide_dotfiles = false,
-          hide_gitinored = false,
+          hide_gitignored = false,
           hide_by_name = {
             'node_modules',
           },
+          hide_by_pattern = {},
+          always_show = {
+            -- '.env'
+          },
+          never_show = {
+            '.git',
+            '.DS_Store',
+            'thumbs.db',
+            'Desktop.ini',
+            '.directory'
+          },
+          never_show_by_pattern = {
+            '*~',
+            '*.swp',
+            '*.bin',
+            '*.exe',
+            '*.out',
+          },
+        },
+        follow_current_file = {
+          enabled = true,
         },
         use_libuv_file_watcher = true
       },
