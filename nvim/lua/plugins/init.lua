@@ -43,6 +43,22 @@ return {
   },
 
   {
+    'rcarriga/nvim-notify',
+    event = 'VimEnter',
+    init = function ()
+      local notify = require('notify')
+
+      ---@diagnostic disable: missing-fields
+      notify.setup({
+        minimum_width = 20,
+        max_width = 30,
+      })
+
+      vim.notify = notify
+    end,
+  },
+
+  {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
     -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
