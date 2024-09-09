@@ -22,6 +22,14 @@ return {
           require('neo-tree.command').execute({ source = 'buffers', toggle = true })
         end,
         desc = 'Buffers explorer'
+      },
+
+      {
+        '<leader>fe',
+        function()
+          require('neo-tree.command').execute({ source = 'filesystem', toggle = true })
+        end,
+        desc = 'File explorer'
       }
     },
     deactivate = function ()
@@ -43,8 +51,6 @@ return {
       vim.fn.sign_define("DiagnosticSignWarn", { text = " ", texthl = "DiagnosticSignWarn" })
       vim.fn.sign_define("DiagnosticSignInfo", { text = " ", texthl = "DiagnosticSignInfo" })
       vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
-
-      vim.keymap.set('n', '<C-b>', ':Neotree toggle<CR>')
     end,
     opts = {
       sources = { 'filesystem', 'buffers', 'git_status', 'document_symbols' },
