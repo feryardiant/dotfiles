@@ -44,18 +44,44 @@ return {
 
   {
     'rcarriga/nvim-notify',
-    event = 'VimEnter',
-    init = function ()
+    config = function ()
       local notify = require('notify')
 
       ---@diagnostic disable: missing-fields
       notify.setup({
-        minimum_width = 20,
-        max_width = 30,
+        minimum_width = 25,
+        max_width = 50,
+        background_colour = '#000000',
       })
-
-      vim.notify = notify
     end,
+  },
+
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    config = function ()
+      require('noice').setup({
+        lsp = {
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          ['vim.lsp.util.stylize_markdown'] = true,
+          ['cmp.entry.get_documentation'] = false,
+        },
+        messages = {
+          view = 'mini'
+        },
+        presets = {
+          bottom_search = true, -- use a classic bottom cmdline for search
+          command_palette = true, -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+          -- inc_rename = false, -- enables an input dialog for inc-rename.nvim
+          -- lsp_doc_border = f, -- add a border to hover docs and signature help
+        },
+      })
+    end
   },
 
   {
@@ -63,14 +89,14 @@ return {
     -- used for completion, annotations and signatures of Neovim apis
     'folke/lazydev.nvim',
     ft = 'lua',
-    dependencies = {
-      { 'Bilal2453/luvit-meta', lazy = true },
-    },
+    -- dependencies = {
+    --   { 'Bilal2453/luvit-meta', lazy = true },
+    -- },
     opts = {
-      library = {
-        -- Load luvit types when the `vim.uv` word is found
-        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
-      },
+      -- library = {
+      --   -- Load luvit types when the `vim.uv` word is found
+      --   { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+      -- },
     },
   },
 

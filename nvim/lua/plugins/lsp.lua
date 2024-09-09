@@ -44,6 +44,7 @@ return {
           { name = 'buffer' }
         }),
         formatting = {
+          expandable_indicator = true,
           fields = { 'kind', 'abbr', 'menu' },
           format = function(entry, item)
             return require('lspkind').cmp_format({
