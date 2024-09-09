@@ -50,6 +50,36 @@ return {
       sources = { 'filesystem', 'buffers', 'git_status', 'document_symbols' },
       enable_git_status = true,
       popup_border_style = "rounded",
+      default_component_configs = {
+        indent = {
+          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
+          expander_collapsed = "",
+          expander_expanded = "",
+          expander_highlight = "NeoTreeExpander",
+        },
+        file_size = {
+          enabled = true,
+          required_width = 64, -- min width of window required to show this column
+        },
+        type = {
+          enabled = true,
+          required_width = 122, -- min width of window required to show this column
+        },
+        last_modified = {
+          enabled = true,
+          required_width = 88, -- min width of window required to show this column
+        },
+        created = {
+          enabled = true,
+          required_width = 110, -- min width of window required to show this column
+        },
+        symlink_target = {
+          enabled = true,
+        },
+      },
+      window = {
+        position = 'float'
+      },
       filesystem = {
         filtered_items = {
           hide_dotfiles = false,
@@ -79,16 +109,32 @@ return {
         follow_current_file = {
           enabled = true,
         },
-        use_libuv_file_watcher = true
-      },
-      default_component_configs = {
-        indent = {
-          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-          expander_collapsed = "",
-          expander_expanded = "",
-          expander_highlight = "NeoTreeExpander",
+        use_libuv_file_watcher = true,
+        window = {
+          mappings = {
+            ['.'] = 'set_root',
+            ['<bs>'] = 'navigate_up',
+            ['H'] = 'toggle_hidden',
+          },
+          fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
+            ["<down>"] = "move_cursor_down",
+            ["<up>"] = "move_cursor_up",
+          },
         },
       },
+      buffers = {
+        follow_current_files = {
+          enabled = true,
+        },
+        window = {
+          mappings = {
+            ['.'] = 'set_root',
+            ['<bs>'] = 'navigate_up',
+            ['bd'] = 'buffer_delete',
+          }
+        },
+      },
+      git_status = {},
     },
     config = function (_, opts)
       require('neo-tree').setup(opts)
