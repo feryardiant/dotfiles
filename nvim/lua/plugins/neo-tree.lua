@@ -53,31 +53,14 @@ return {
       vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
     end,
     opts = {
-      sources = { 'filesystem', 'buffers', 'git_status', 'document_symbols' },
       enable_git_status = true,
       popup_border_style = "rounded",
       default_component_configs = {
         indent = {
-          with_expanders = true, -- if nil and file nesting is enabled, will enable expanders
-          expander_collapsed = "",
-          expander_expanded = "",
-          expander_highlight = "NeoTreeExpander",
-        },
-        file_size = {
-          enabled = true,
-          required_width = 64, -- min width of window required to show this column
-        },
-        type = {
-          enabled = true,
-          required_width = 122, -- min width of window required to show this column
-        },
-        last_modified = {
-          enabled = true,
-          required_width = 88, -- min width of window required to show this column
+          with_expanders = true,
         },
         created = {
           enabled = true,
-          required_width = 110, -- min width of window required to show this column
         },
         symlink_target = {
           enabled = true,
@@ -95,30 +78,32 @@ return {
           hide_gitignored = false,
           hide_by_name = {
             'node_modules',
+            'vendor',
+          },
+          hide_by_pattern = {
+            '*.old',
+            '._*',
           },
           never_show = {
-            '.git',
             '.DS_Store',
-            'thumbs.db',
+            '.directory',
+            '.git',
             'Desktop.ini',
-            '.directory'
+            'thumbs.db',
           },
           never_show_by_pattern = {
             '*~',
-            '*.swp',
             '*.bin',
             '*.exe',
             '*.out',
+            '*.swp',
           },
         },
         use_libuv_file_watcher = true,
       },
-      buffers = {
-        follow_current_files = {
-          enabled = true,
-        },
-      },
-      git_status = {},
+      document_symbols = {
+        follow_cursor = true,
+      }
     },
     config = function (_, opts)
       require('neo-tree').setup(opts)
