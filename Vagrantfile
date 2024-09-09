@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
 
   # config.vm.synced_folder ".", "/vagrant"
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
-    rsync__exclude: [".git/", "._scripts/", "*.old", "*~", "*.log", ".DS_Store"]
+    rsync__exclude: [".git", "._*", "*.old", "*~", "*.log", ".DS_Store"]
 
   config.vm.provider "qemu" do |q|
     # q.gui = true
