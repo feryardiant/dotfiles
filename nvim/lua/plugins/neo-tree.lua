@@ -49,10 +49,11 @@ return {
     opts = {
       sources = { 'filesystem', 'buffers', 'git_status', 'document_symbols' },
       enable_git_status = true,
+      popup_border_style = "rounded",
       filesystem = {
         filtered_items = {
           hide_dotfiles = false,
-          hide_gitinored = true,
+          hide_gitinored = false,
           hide_by_name = {
             'node_modules',
           },
