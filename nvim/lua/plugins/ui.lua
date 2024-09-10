@@ -38,7 +38,7 @@ return {
           componnet_separators = '',
           section_separators = '',
         },
-        extensions = { "neo-tree", "lazy" },
+        extensions = { 'neo-tree', 'lazy' },
       }
     end,
     init = function()

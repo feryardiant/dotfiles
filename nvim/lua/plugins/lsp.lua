@@ -1,4 +1,4 @@
-return {
+ return {
 
   {
     'L3MON4D3/LuaSnip',
@@ -198,7 +198,7 @@ return {
               init_options = {
                 plugins = {
                   {
-                    name = "@vue/typescript-plugin",
+                    name = '@vue/typescript-plugin',
                     location = lspconfig.util.path.join(
                       get_mason_pkg_path('vue-language-server'),
                       'node_modules/@vue/language-server',

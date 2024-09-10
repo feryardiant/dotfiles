@@ -4,7 +4,7 @@ return {
     'nvim-treesitter/nvim-treesitter',
     version = false,
     build = ':TSUpdate',
-    -- cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+    -- cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
     dependencies = {
       { 'nvim-treesitter/playground' },
       -- {

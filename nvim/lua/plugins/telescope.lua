@@ -17,9 +17,9 @@ return {
 
       return {
         defaults = {
-          path_display = { "smart" },
-          prompt_prefix = " ",
-          selection_caret = " ",
+          path_display = { 'smart' },
+          prompt_prefix = ' ',
+          selection_caret = ' ',
           layout_config = {
             vertical = { width = 0.5 }
           },
