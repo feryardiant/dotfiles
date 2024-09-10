@@ -31,7 +31,7 @@ return {
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
-          -- { name = 'buffer' }
+          { name = 'buffer', keyword_length = 5 },
         },
         formatting = {
           expandable_indicator = true,
@@ -46,6 +46,11 @@ return {
           expand = function(args)
             luasnip.lsp_expand(args.body)
           end
+        },
+        window = {
+          documentation = cmp.config.window.bordered {
+            winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None',
+          },
         },
         mapping = cmp.mapping.preset.insert({
           ['<Tab>'] = cmp.mapping.select_next_item(),
