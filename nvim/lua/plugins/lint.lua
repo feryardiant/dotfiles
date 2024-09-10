@@ -8,13 +8,12 @@ return {
 
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
-        php = { 'pint' },
-        javascript = { 'eslint' },
-        typescript = { 'eslint' },
-        javascriptreact = { 'eslint' },
-        typescriptreact = { 'eslint' },
-        svlete = { 'eslint' },
-        vue = { 'eslint' },
+        javascript = { 'eslint_d' },
+        typescript = { 'eslint_d' },
+        javascriptreact = { 'eslint_d' },
+        typescriptreact = { 'eslint_d' },
+        svlete = { 'eslint_d' },
+        vue = { 'eslint_d' },
       }
 
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
