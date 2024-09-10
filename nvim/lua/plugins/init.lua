@@ -38,12 +38,16 @@ return {
 
   {
     'folke/which-key.nvim',
-    event = 'VimEnter',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons' }
+    },
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {},
   },
 
   {
     'rcarriga/nvim-notify',
+    lazy = true,
     config = function ()
       local notify = require('notify')
 
@@ -60,8 +64,8 @@ return {
     'folke/noice.nvim',
     event = 'VeryLazy',
     dependencies = {
-      'MunifTanjim/nui.nvim',
-      'rcarriga/nvim-notify',
+      { 'MunifTanjim/nui.nvim' },
+      { 'rcarriga/nvim-notify' },
     },
     config = function ()
       require('noice').setup({
@@ -91,30 +95,60 @@ return {
   },
 
   {
-    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-    -- used for completion, annotations and signatures of Neovim apis
-    'folke/lazydev.nvim',
-    ft = 'lua',
-    -- dependencies = {
-    --   { 'Bilal2453/luvit-meta', lazy = true },
-    -- },
-    opts = {
-      -- library = {
-      --   -- Load luvit types when the `vim.uv` word is found
-      --   { path = 'luvit-meta/library', words = { 'vim%.uv' } },
-      -- },
+    'stevearc/dressing.nvim',
+    lazy = true,
+  },
+
+  -- {
+  --   'akinsho/bufferline.nvim',
+  --   opts = {
+  --     options = {
+  --       mode = 'tabs',
+  --       diagnostics = 'nvim_lsp',
+  --       offsets = {
+  --         {
+  --           filetype = 'neo-tree',
+  --           text = 'File Explorer',
+  --           highlight = 'Directory',
+  --         }
+  --       },
+  --     },
+  --   },
+  --   config = function(_, opts)
+  --     require('bufferline').setup(opts)
+  --   end
+  -- },
+
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons' },
     },
+    opts = function()
+      vim.o.laststatus = vim.g.lualine_laststatus
+
+      return {
+        options = {
+          theme = 'auto',
+          globalstatus = true,
+          disabled_filetypes = { 'dashboard', 'alpha', 'starter' },
+          componnet_separators = '',
+          section_separators = '',
+        },
+        extensions = { 'neo-tree', 'lazy' },
+      }
+    end,
+    init = function()
+      vim.g.lualine_laststatus = vim.o.laststatus
+      if vim.fn.argc(-1) > 0 then
+        vim.o.statusline = ''
+      else
+        vim.o.laststatus = 0
+      end
+    end,
+    config = function (_, opts)
+      require('lualine').setup(opts)
+    end
   },
 
-  {
-    'tpope/vim-fugitive',
-  },
-
-  {
-    'nvim-lua/plenary.nvim',
-  },
-
-  {
-    'nvim-tree/nvim-web-devicons'
-  },
 }

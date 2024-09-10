@@ -1,12 +1,13 @@
 return {
 
   {
-    'mfussenegger/nvim-dap',
+    'rcarriga/nvim-dap-ui',
+    lazy = true,
     dependencies = {
-      'rcarriga/nvim-dap-ui',
-      'nvim-neotest/nvim-nio',
-      'williamboman/mason.nvim',
-      'jay-babu/mason-nvim-dap.nvim',
+      { 'mfussenegger/nvim-dap', lazy = true },
+      { 'nvim-neotest/nvim-nio' },
+      { 'williamboman/mason.nvim' },
+      { 'jay-babu/mason-nvim-dap.nvim' },
     },
     keys = function (_, keys)
       local dap = require('dap')
@@ -22,9 +23,13 @@ return {
         unpack(keys)
       }
     end,
-    config = function ()
+    opts = function ()
+      return {}
+    end,
+    config = function (_, opts)
       local dap = require('dap')
       local dapui = require('dapui')
+      local mason_dap = require('mason-nvim-dap')
 
       ---Retrieve mason package install path
       ---@param package_name string
@@ -39,7 +44,7 @@ return {
         )
       end
 
-      require('mason-nvim-dap').setup({
+      mason_dap.setup({
         automatic_installation = true,
         ensure_installed = {
           'chrome-debug-adapter',
@@ -52,7 +57,7 @@ return {
           -- all sources with no handler get passed here
           -- see https://github.com/jay-babu/mason-nvim-dap.nvim?tab=readme-ov-file#advanced-customization
           function (config)
-            require('mason-nvim-dap').default_setup(config)
+            mason_dap.default_setup(config)
           end,
 
           -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#php
@@ -66,12 +71,12 @@ return {
               }
             }
 
-            require('mason-nvim-dap').default_setup(config)
+            mason_dap.default_setup(config)
           end
         }
       })
 
-      dapui.setup({})
+      dapui.setup(opts)
 
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close

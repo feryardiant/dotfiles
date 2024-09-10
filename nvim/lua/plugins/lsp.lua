@@ -2,7 +2,7 @@
 
   {
     'L3MON4D3/LuaSnip',
-    event = 'VeryLazy',
+    lazy = true,
     opts = {
       history = true,
       delete_check_events = 'TextChanged',
@@ -13,17 +13,18 @@
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
-      { 'hrsh7th/cmp-buffer' },
-      { 'hrsh7th/cmp-nvim-lsp' },
-      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
-      { 'hrsh7th/cmp-path' },
+      { 'hrsh7th/cmp-buffer', lazy = true },
+      { 'hrsh7th/cmp-nvim-lsp', lazy = true },
+      { 'hrsh7th/cmp-nvim-lsp-signature-help', lazy = true },
+      { 'hrsh7th/cmp-path', lazy = true },
       { 'onsails/lspkind.nvim' },
+      { 'L3MON4D3/LuaSnip' },
     },
     config = function()
       local cmp = require('cmp')
       local luasnip = require('luasnip')
 
-      luasnip.setup({})
+      -- luasnip.setup({})
 
       cmp.setup({
         sources = {
@@ -81,6 +82,7 @@
 
   {
     'neovim/nvim-lspconfig',
+    event = 'InsertEnter',
     dependencies = {
       { 'williamboman/mason.nvim', config = true },
       { 'williamboman/mason-lspconfig.nvim' },
@@ -156,7 +158,6 @@
       end
 
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
         'nginx_language_server',
         'emmet_ls',
         'html',

@@ -1,9 +1,26 @@
 return {
 
   {
+    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
+    -- used for completion, annotations and signatures of Neovim apis
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    -- dependencies = {
+    --   { 'Bilal2453/luvit-meta', lazy = true },
+    -- },
+    opts = {
+      -- library = {
+      --   -- Load luvit types when the `vim.uv` word is found
+      --   { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+      -- },
+    },
+  },
+
+  {
     'lewis6991/gitsigns.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
-      'vim-fugitive',
+      { 'tpope/vim-fugitive' },
     },
     opts = {
       current_line_blame = true,
@@ -23,11 +40,14 @@ return {
 
   {
     'echasnovski/mini.pairs',
+    event = 'InsertEnter',
+    lazy = true,
     opts = {}
   },
 
   {
     'echasnovski/mini.surround',
+    event = 'InsertEnter',
     keys = function(_, keys)
       -- Populate the keys based on the user's options
       local plugin = require('lazy.core.config').spec.plugins['mini.surround']
@@ -61,6 +81,7 @@ return {
 
   {
     'echasnovski/mini.comment',
+    lazy = true,
     opts = {
       options = {
         custom_commentstring = function()
@@ -72,11 +93,13 @@ return {
 
   {
     'folke/trouble.nvim',
+    lazy = true,
     dependencies = {
-      { 'nvim-web-devicons' },
+      { 'nvim-tree/nvim-web-devicons' },
     },
     opts = {
       use_diagnostic_signs = true
     }
-  }
+  },
+
 }

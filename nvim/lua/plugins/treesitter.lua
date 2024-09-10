@@ -7,9 +7,23 @@ return {
     -- cmd = { 'TSUpdateSync', 'TSUpdate', 'TSInstall' },
     dependencies = {
       { 'nvim-treesitter/playground' },
-      -- {
-      --   'nvim-treesitter/nvim-treesitter-textobjects',
-      -- },
+      { 'nvim-treesitter/nvim-treesitter-textobjects' },
+      {
+        'JoosepAlviste/nvim-ts-context-commentstring',
+        opts = {
+          enable_autocmd = false,
+        },
+      },
+
+      -- Show context of the current function
+      {
+        'nvim-treesitter/nvim-treesitter-context',
+        enabled = true,
+        opts = { mode = 'cursor', max_line = 3 }
+      },
+
+      -- Automatically add closing tags for HTML and JSX
+      { 'windwp/nvim-ts-autotag' },
     },
     opts = {
       indent = { enable = true },
@@ -49,26 +63,6 @@ return {
     config = function(_, opts)
       require('nvim-treesitter.configs').setup(opts)
     end
-  },
-
-  {
-    'JoosepAlviste/nvim-ts-context-commentstring',
-    opts = {
-      enable_autocmd = false,
-    },
-  },
-
-  -- Show context of the current function
-  {
-    'nvim-treesitter/nvim-treesitter-context',
-    enabled = true,
-    opts = { mode = 'cursor', max_line = 3 }
-  },
-
-  -- Automatically add closing tags for HTML and JSX
-  {
-    'windwp/nvim-ts-autotag',
-    opts = {}
   },
 
 }
