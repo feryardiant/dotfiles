@@ -8,6 +8,7 @@ return {
       { 'nvim-neotest/nvim-nio' },
       { 'williamboman/mason.nvim' },
       { 'jay-babu/mason-nvim-dap.nvim' },
+      { 'stevearc/dressing.nvim' },
     },
     keys = function (_, keys)
       local dap = require('dap')
@@ -31,19 +32,6 @@ return {
       local dapui = require('dapui')
       local mason_dap = require('mason-nvim-dap')
 
-      ---Retrieve mason package install path
-      ---@param package_name string
-      ---@param path string
-      ---@return string
-      local function get_mason_pkg_path (package_name, path)
-        local util = require('lspconfig.util')
-
-        return util.path.join(
-          require('mason-registry').get_package(package_name):get_install_path(),
-          path
-        )
-      end
-
       mason_dap.setup({
         automatic_installation = true,
         ensure_installed = {
@@ -65,10 +53,7 @@ return {
           php = function (config)
             config.adapters = {
               type = 'executable',
-              command = 'node',
-              args = {
-                get_mason_pkg_path('php-debug-adapter', 'extension/out/phpDebug.js'),
-              }
+              command = 'php-debug-adapter',
             }
 
             mason_dap.default_setup(config)
