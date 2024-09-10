@@ -92,7 +92,12 @@ return {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function (event)
           local telescope_builtin = require('telescope.builtin')
-          local map = function(keys, func, desc, mode)
+
+          ---@param keys string
+          ---@param func function
+          ---@param desc string
+          ---@param mode? table|string
+          local function map(keys, func, desc, mode)
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc, remap = false })
           end
