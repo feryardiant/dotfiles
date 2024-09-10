@@ -127,77 +127,42 @@ return {
         html = {},
         cssls = {
           settings = {
-            css = {
-              lint = {
-                -- Do not warn for Tailwind's @apply rule
-                unknownAtRules = 'ignore',
-              },
-            },
+            css = require('settings').css
           },
         },
         tailwindcss = {},
 
         intelephense = {},
         eslint = {},
-        tsserver = {
-          filetypes = {
-            'javascript',
-            'javascriptreact',
-            'javascript.jsx',
-            'typescript',
-            'typescriptreact',
-            'typescript.tsx',
-            'vue',
-          },
-          init_options = {
-            plugins = {
-              {
-                name = "@vue/typescript-plugin",
-                location = require('mason-registry')
-                  .get_package('vue-language-server')
-                  :get_install_path()
-                  .. '/node_modules/@vue/language-server'
-                  .. '/node_modules/@vue/typescript-plugin',
-                languages = { 'vue', 'javascript', 'typescript' }
-              },
-            }
-          },
-          settings = {
-            tsserver_plugins = {
-              '@vue/typescript-plugin',
-            },
-          }
-        },
+        tsserver = {},
         svelte = {},
-        volar = {
-          init_options = {
-            tsdk = '/opt/homebrew/lib/node_modules/typescript/lib'
-          },
-        },
+        volar = {},
 
         jsonls = {
           settings = {
-            json = require('schemas').json,
+            json = require('settings').json,
           },
         },
         yamlls = {
           settings = {
-            yaml = require('schemas').yaml,
+            yaml = require('settings').yaml,
           },
         },
         lua_ls = {
           settings = {
-            Lua = {
-              completion = {
-                callSnippet = 'Replace',
-              },
-              diagnostics = { disable = { 'missing-fields' } },
-            },
+            Lua = require('settings').lua,
           },
         },
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})
+
+      ---Retrieve mason package install path
+      ---@param package_name string
+      ---@return string
+      local function get_mason_pkg_path (package_name)
+        return require('mason-registry').get_package(package_name):get_install_path()
+      end
 
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
@@ -217,6 +182,82 @@ return {
 
             lspconfig[server_name].setup(config)
           end,
+
+          ts_ls = function ()
+            local vue_ts_plugin_path = lspconfig.util.path.join(
+              get_mason_pkg_path('vue-language-server'),
+              'node_modules/@vue/language-server',
+              'node_modules/@vue/typescript-plugin'
+            )
+
+            lspconfig.ts_ls.setup({
+              filetypes = {
+                'javascript',
+                'javascriptreact',
+                'javascript.jsx',
+                'typescript',
+                'typescriptreact',
+                'typescript.tsx',
+                'vue',
+              },
+              init_options = {
+                plugins = {
+                  {
+                    name = "@vue/typescript-plugin",
+                    location = vue_ts_plugin_path,
+                    languages = { 'vue', 'javascript', 'typescript' }
+                  },
+                }
+              },
+              settings = {
+                tsserver_plugins = {
+                  '@vue/typescript-plugin',
+                },
+              }
+            })
+          end,
+
+          volar = function ()
+            -- credit : https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#volar
+            local project_ts_path = ''
+            local global_ts_path = lspconfig.util.path.join(
+              get_mason_pkg_path('typescript-language-server'),
+              'node_modules/typescript/lib'
+            )
+
+            ---Check typescript server lib directory
+            ---@param root_path string
+            ---@return string?
+            local function check_ts_dir(root_path)
+              project_ts_path = lspconfig.util.path.join(root_path, 'node_modules', 'typescript', 'lib')
+
+              if lspconfig.util.path.exists(project_ts_path) then
+                return root_path
+              end
+            end
+
+            ---Get typescript server path
+            ---@param root_path string
+            ---@return string
+            local function get_ts_path(root_path)
+              if lspconfig.util.search_ancestors(root_path, check_ts_dir) then
+                return project_ts_path
+              else
+                return global_ts_path
+              end
+            end
+
+            lspconfig.volar.setup({
+              init_options = {
+                typescript = {
+                  tsdk = global_ts_path
+                }
+              },
+              on_new_config = function (new_config, root_path)
+                new_config.init_options.typescript.tsdk = get_ts_path(root_path)
+              end
+            })
+          end
         }
       })
     end

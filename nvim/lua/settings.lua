@@ -1,4 +1,16 @@
 return {
+  css = {
+    lint = {
+      -- Do not warn for Tailwind's @apply rule
+      unknownAtRules = 'ignore',
+    },
+  },
+  lua = {
+    completion = {
+      callSnippet = 'Replace',
+    },
+    diagnostics = { disable = { 'missing-fields' } },
+  },
   json = {
     schemas = {
       {
