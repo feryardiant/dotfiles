@@ -115,6 +115,8 @@ return {
 
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+          map('<C-i>', vim.lsp.buf.signature_help, 'Show signature help', { 'i', 'n' })
         end
       })
 
