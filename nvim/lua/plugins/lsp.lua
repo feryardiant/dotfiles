@@ -121,23 +121,11 @@ return {
       local lspconfig = require('lspconfig')
 
       local servers = {
-        nginx_language_server = {},
-
-        emmet_ls = {},
-        html = {},
         cssls = {
           settings = {
             css = require('settings').css
           },
         },
-        tailwindcss = {},
-
-        intelephense = {},
-        eslint = {},
-        tsserver = {},
-        svelte = {},
-        volar = {},
-
         jsonls = {
           settings = {
             json = require('settings').json,
@@ -166,6 +154,15 @@ return {
 
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'nginx_language_server',
+        'emmet_ls',
+        'html',
+        'tailwindcss',
+        'intelephense',
+        'eslint',
+        'ts_ls',
+        'svelte',
+        'volar',
       })
 
       require('mason-lspconfig').setup({
@@ -184,13 +181,8 @@ return {
           end,
 
           ts_ls = function ()
-            local vue_ts_plugin_path = lspconfig.util.path.join(
-              get_mason_pkg_path('vue-language-server'),
-              'node_modules/@vue/language-server',
-              'node_modules/@vue/typescript-plugin'
-            )
-
             lspconfig.ts_ls.setup({
+              capabilities = capabilities,
               filetypes = {
                 'javascript',
                 'javascriptreact',
@@ -204,7 +196,11 @@ return {
                 plugins = {
                   {
                     name = "@vue/typescript-plugin",
-                    location = vue_ts_plugin_path,
+                    location = lspconfig.util.path.join(
+                      get_mason_pkg_path('vue-language-server'),
+                      'node_modules/@vue/language-server',
+                      'node_modules/@vue/typescript-plugin'
+                    ),
                     languages = { 'vue', 'javascript', 'typescript' }
                   },
                 }
@@ -248,6 +244,7 @@ return {
             end
 
             lspconfig.volar.setup({
+              capabilities = capabilities,
               init_options = {
                 typescript = {
                   tsdk = global_ts_path
