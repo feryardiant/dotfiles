@@ -41,8 +41,8 @@ vim.keymap.set('n', '<A-Left>', '<Cmd>vertical resize-2<CR>', { desc = 'Decrease
 vim.keymap.set('n', '<A-Right>', '<Cmd>vertical resize+2<CR>', { desc = 'Increase window width' })
 
 -- Speed up viewport scrolling
-vim.keymap.set('n', '<C-e>', '4<C-e>', { desc = 'Scroll 4 lines down' })
-vim.keymap.set('n', '<C-y>', '4<C-y>', { desc = 'Scroll 4 lines up' })
+vim.keymap.set('n', '<C-j>', '4<C-e>', { desc = 'Scroll 4 lines down' })
+vim.keymap.set('n', '<C-k>', '4<C-y>', { desc = 'Scroll 4 lines up' })
 
 -- Buffers navigation
 vim.keymap.set('n', '[b', vim.cmd.bprevious, { noremap = true, desc = 'Previous Buffer' })
