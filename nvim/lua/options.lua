@@ -22,6 +22,8 @@ vim.opt.number = true          -- Enable line numbers
 vim.opt.relativenumber = true  -- Relative line numbers
 vim.opt.cursorline = true      -- Highlight line under the cursor
 
+-- vim.opt.signcolumn = 'yes'
+
 -- Persistent Undo
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
@@ -89,5 +91,4 @@ vim.opt.wildignore = {
   '*.jpg','*.jpeg','*.gif','*.png','*.gif','*.psd','*.pdf','*.o','*.obj','*.min.js',
   '*/smarty/*','*/vendor/*','*/node_modules/*','*/.git/*','*/.sass-cache/*'
 }
-
 
