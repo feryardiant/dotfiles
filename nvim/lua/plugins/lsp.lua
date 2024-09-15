@@ -1,4 +1,4 @@
- return {
+return {
 
   {
     'L3MON4D3/LuaSnip',
@@ -64,12 +64,13 @@
           }),
 
           -- <c-l> will move you to the right of each of the expansion locations.
-          -- <c-h> is similar, except moving you backwards.
           ['<C-l>'] = cmp.mapping(function()
             if luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
             end
           end, { 'i', 's' }),
+
+          -- <c-h> is similar, except moving you backwards.
           ['<C-h>'] = cmp.mapping(function()
             if luasnip.locally_jumpable(-1) then
               luasnip.jump(-1)
@@ -160,6 +161,8 @@
       vim.list_extend(ensure_installed, {
         'nginx_language_server',
         'emmet_ls',
+        'dockerls',
+        'sqls',
         'html',
         'tailwindcss',
         'intelephense',
