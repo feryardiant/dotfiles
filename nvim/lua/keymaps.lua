@@ -1,5 +1,5 @@
 -- Clear search with <ESC>
-vim.keymap.set({ 'i', 'n' }, '<Esc><Esc>', '<Cmd>noh<CR>', { desc = 'Clear search highlight' })
+vim.keymap.set('n', '<Esc>', '<Cmd>nohlsearch<CR>', { desc = 'Clear search highlight' })
 
 -- Diagnostics
 local diagnostic_goto = function(next, severity)
