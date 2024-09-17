@@ -41,17 +41,15 @@ return {
             return require('lspkind').cmp_format({
               -- mode = 'symbol',
             })(entry, item)
-          end
+          end,
         },
         snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end
+          expand = function(args) luasnip.lsp_expand(args.body) end,
         },
         window = {
-          documentation = cmp.config.window.bordered {
+          documentation = cmp.config.window.bordered({
             winhighlight = 'Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:Visual,Search:None',
-          },
+          }),
         },
         mapping = cmp.mapping.preset.insert({
           ['<Tab>'] = cmp.mapping.select_next_item(),
@@ -60,25 +58,21 @@ return {
           ['<Esc>'] = cmp.mapping.abort(),
           ['<CR>'] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
-            select = true
+            select = true,
           }),
 
           -- <c-l> will move you to the right of each of the expansion locations.
           ['<C-l>'] = cmp.mapping(function()
-            if luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            end
+            if luasnip.expand_or_locally_jumpable() then luasnip.expand_or_jump() end
           end, { 'i', 's' }),
 
           -- <c-h> is similar, except moving you backwards.
           ['<C-h>'] = cmp.mapping(function()
-            if luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            end
+            if luasnip.locally_jumpable(-1) then luasnip.jump(-1) end
           end, { 'i', 's' }),
-        })
+        }),
       })
-    end
+    end,
   },
 
   {
@@ -88,12 +82,12 @@ return {
       { 'williamboman/mason.nvim', config = true },
       { 'williamboman/mason-lspconfig.nvim' },
       { 'nvim-cmp' },
-      { 'hrsh7th/cmp-nvim-lsp' }
+      { 'hrsh7th/cmp-nvim-lsp' },
     },
-    config = function ()
+    config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
-        callback = function (event)
+        callback = function(event)
           local telescope_builtin = require('telescope.builtin')
 
           ---@param keys string
@@ -127,13 +121,13 @@ return {
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
             local highlight_augroup = vim.api.nvim_create_augroup('my-lsp-highlight', { clear = false })
 
-            vim.api.nvim_create_autocmd({'CursorHold'}, {
+            vim.api.nvim_create_autocmd({ 'CursorHold' }, {
               buffer = event.buff,
               group = highlight_augroup,
               callback = vim.lsp.buf.document_highlight,
             })
 
-            vim.api.nvim_create_autocmd({'CursorMoved'}, {
+            vim.api.nvim_create_autocmd({ 'CursorMoved' }, {
               buffer = event.buff,
               group = highlight_augroup,
               callback = vim.lsp.buf.clear_references,
@@ -141,19 +135,21 @@ return {
 
             vim.api.nvim_create_autocmd('LspDetach', {
               group = vim.api.nvim_create_augroup('lsp-detach', { clear = true }),
-              callback = function (e)
+              callback = function(e)
                 vim.lsp.buf.clear_references()
                 vim.api.nvim_clear_autocmds({ group = 'my-lsp-highlight', buffer = e.buf })
-              end
+              end,
             })
           end
 
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>th', function ()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
-            end, '[T]oggle Inlay [H]ints')
+            map(
+              '<leader>th',
+              function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })) end,
+              '[T]oggle Inlay [H]ints'
+            )
           end
-        end
+        end,
       })
 
       local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -164,7 +160,7 @@ return {
       local servers = {
         cssls = {
           settings = {
-            css = require('settings').css
+            css = require('settings').css,
           },
         },
         jsonls = {
@@ -179,8 +175,8 @@ return {
         },
         intelephense = {
           settings = {
-            intelephense = require('settings').intelephense
-          }
+            intelephense = require('settings').intelephense,
+          },
         },
         lua_ls = {
           settings = {
@@ -194,7 +190,7 @@ return {
       ---Retrieve mason package install path
       ---@param package_name string
       ---@return string
-      local function get_mason_pkg_path (package_name)
+      local function get_mason_pkg_path(package_name)
         return require('mason-registry').get_package(package_name):get_install_path()
       end
 
@@ -214,12 +210,10 @@ return {
       require('mason-lspconfig').setup({
         ensure_installed = ensure_installed,
         handlers = {
-          function (server_name)
+          function(server_name)
             local config = servers[server_name] or {}
 
-            if server_name == 'tsserver' then
-              server_name = 'ts_ls'
-            end
+            if server_name == 'tsserver' then server_name = 'ts_ls' end
 
             if server_name == 'emmet_ls' then
               config.filetypes = {
@@ -237,24 +231,20 @@ return {
                 'typescriptreact',
                 'vue',
                 'htmlangular',
-                'blade'
+                'blade',
               }
             end
 
-            if server_name == 'intelephense' then
-              config.filetypes = { 'blade', 'php', 'php_only' }
-            end
+            if server_name == 'intelephense' then config.filetypes = { 'blade', 'php', 'php_only' } end
 
-            if server_name == 'html' then
-              config.filetypes = { 'blade', 'html', 'templ' }
-            end
+            if server_name == 'html' then config.filetypes = { 'blade', 'html', 'templ' } end
 
             config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, config.capabilities or {})
 
             lspconfig[server_name].setup(config)
           end,
 
-          ts_ls = function ()
+          ts_ls = function()
             lspconfig.ts_ls.setup({
               capabilities = capabilities,
               filetypes = {
@@ -275,23 +265,21 @@ return {
                       'node_modules/@vue/language-server',
                       'node_modules/@vue/typescript-plugin'
                     ),
-                    languages = { 'vue', 'javascript', 'typescript' }
+                    languages = { 'vue', 'javascript', 'typescript' },
                   },
-                }
+                },
               },
               settings = {
                 tsserver_plugins = {
                   '@vue/typescript-plugin',
                 },
-              }
+              },
             })
           end,
 
-          volar = function ()
-            local global_ts_path = lspconfig.util.path.join(
-              get_mason_pkg_path('typescript-language-server'),
-              'node_modules/typescript/lib'
-            )
+          volar = function()
+            local global_ts_path =
+              lspconfig.util.path.join(get_mason_pkg_path('typescript-language-server'), 'node_modules/typescript/lib')
 
             ---Get typescript server path
             ---@param root_path string
@@ -306,9 +294,7 @@ return {
               local function check_ts_dir(project_path)
                 project_ts_path = lspconfig.util.path.join(project_path, 'node_modules', 'typescript', 'lib')
 
-                if lspconfig.util.path.exists(project_ts_path) then
-                  return project_path
-                end
+                if lspconfig.util.path.exists(project_ts_path) then return project_path end
               end
 
               if lspconfig.util.search_ancestors(root_path, check_ts_dir) then
@@ -322,17 +308,16 @@ return {
               capabilities = capabilities,
               init_options = {
                 typescript = {
-                  tsdk = global_ts_path
-                }
+                  tsdk = global_ts_path,
+                },
               },
-              on_new_config = function (new_config, root_path)
+              on_new_config = function(new_config, root_path)
                 new_config.init_options.typescript.tsdk = get_ts_path(root_path)
-              end
+              end,
             })
-          end
-        }
+          end,
+        },
       })
-    end
-  }
-
+    end,
+  },
 }

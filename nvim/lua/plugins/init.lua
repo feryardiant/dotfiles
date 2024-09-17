@@ -1,13 +1,12 @@
 return {
 
   {
-    'Shatur/neovim-ayu', name = 'ayu',
+    'Shatur/neovim-ayu',
+    name = 'ayu',
     lazy = false,
     priority = 1000,
-    init = function ()
-      vim.cmd.colorscheme('ayu')
-    end,
-    config = function ()
+    init = function() vim.cmd.colorscheme('ayu') end,
+    config = function()
       local colors = require('ayu.colors')
       local ayu = require('ayu')
 
@@ -26,9 +25,9 @@ return {
           -- Pmenu = { bg = colors.selection_inactive },
           -- PmenuSel = { bg = colors.selection_bg },
           -- Visual = { bg = colors.selection_bg },
-        }
+        },
       })
-    end
+    end,
   },
 
   {
@@ -39,7 +38,7 @@ return {
   {
     'folke/which-key.nvim',
     dependencies = {
-      { 'nvim-tree/nvim-web-devicons' }
+      { 'nvim-tree/nvim-web-devicons' },
     },
     event = { 'BufReadPre', 'BufNewFile' },
     opts = {},
@@ -48,7 +47,7 @@ return {
   {
     'rcarriga/nvim-notify',
     lazy = true,
-    config = function ()
+    config = function()
       local notify = require('notify')
 
       ---@diagnostic disable: missing-fields
@@ -67,7 +66,7 @@ return {
       { 'MunifTanjim/nui.nvim' },
       { 'rcarriga/nvim-notify' },
     },
-    config = function ()
+    config = function()
       require('noice').setup({
         lsp = {
           ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
@@ -81,7 +80,7 @@ return {
           -- }
         },
         messages = {
-          view = 'mini'
+          view = 'mini',
         },
         presets = {
           bottom_search = true, -- use a classic bottom cmdline for search
@@ -91,7 +90,7 @@ return {
           lsp_doc_border = true, -- add a border to hover docs and signature help
         },
       })
-    end
+    end,
   },
 
   {
@@ -146,9 +145,6 @@ return {
         vim.o.laststatus = 0
       end
     end,
-    config = function (_, opts)
-      require('lualine').setup(opts)
-    end
+    config = function(_, opts) require('lualine').setup(opts) end,
   },
-
 }

@@ -11,37 +11,27 @@ return {
     keys = {
       {
         '<leader>ge',
-        function()
-          require('neo-tree.command').execute({ source = 'git_status', position = 'float', toggle = true })
-        end,
-        desc = 'Git explorer'
+        function() require('neo-tree.command').execute({ source = 'git_status', position = 'float', toggle = true }) end,
+        desc = 'Git explorer',
       },
 
       {
         '<leader>be',
-        function()
-          require('neo-tree.command').execute({ source = 'buffers', position = 'float', toggle = true })
-        end,
-        desc = 'Buffers explorer'
+        function() require('neo-tree.command').execute({ source = 'buffers', position = 'float', toggle = true }) end,
+        desc = 'Buffers explorer',
       },
 
       {
         '<leader>fe',
-        function()
-          require('neo-tree.command').execute({ source = 'filesystem', position = 'float', toggle = true })
-        end,
-        desc = 'File explorer'
-      }
+        function() require('neo-tree.command').execute({ source = 'filesystem', position = 'float', toggle = true }) end,
+        desc = 'File explorer',
+      },
     },
-    deactivate = function ()
-      vim.cmd([[Neotree close]])
-    end,
-    init = function ()
+    deactivate = function() vim.cmd([[Neotree close]]) end,
+    init = function()
       if vim.fn.argc(-1) == 1 then
         local stat = vim.loop.fs_stat(vim.fn.argv(0))
-        if stat and stat.type == 'directory' then
-          require('neo-tree')
-        end
+        if stat and stat.type == 'directory' then require('neo-tree') end
       end
 
       vim.g.loaded_netrw = 1
@@ -72,7 +62,7 @@ return {
         content_layout = 'center',
       },
       window = {
-        position = 'current'
+        position = 'current',
       },
       filesystem = {
         follow_current_file = {
@@ -108,20 +98,17 @@ return {
       },
       document_symbols = {
         follow_cursor = true,
-      }
+      },
     },
-    config = function (_, opts)
+    config = function(_, opts)
       require('neo-tree').setup(opts)
 
       vim.api.nvim_create_autocmd('TermClose', {
         pattern = '*lazygit',
-        callback = function ()
-          if package.loaded['neo-tree.source.git_status'] then
-            require('neo-tree.source.git_status').refresh()
-          end
-        end
+        callback = function()
+          if package.loaded['neo-tree.source.git_status'] then require('neo-tree.source.git_status').refresh() end
+        end,
       })
-    end
-  }
-
+    end,
+  },
 }

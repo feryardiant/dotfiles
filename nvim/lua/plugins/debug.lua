@@ -10,7 +10,7 @@ return {
       { 'jay-babu/mason-nvim-dap.nvim' },
       { 'stevearc/dressing.nvim' },
     },
-    keys = function (_, keys)
+    keys = function(_, keys)
       local dap = require('dap')
       local dapui = require('dapui')
 
@@ -21,13 +21,11 @@ return {
         { '<F3>', dap.step_out, desc = 'Debug: Step out' },
         { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
         { '<F7>', dapui.toggle, desc = 'Debug: Toggle UI' },
-        unpack(keys)
+        unpack(keys),
       }
     end,
-    opts = function ()
-      return {}
-    end,
-    config = function (_, opts)
+    opts = function() return {} end,
+    config = function(_, opts)
       local dap = require('dap')
       local dapui = require('dapui')
       local mason_dap = require('mason-nvim-dap')
@@ -44,21 +42,19 @@ return {
         handlers = {
           -- all sources with no handler get passed here
           -- see https://github.com/jay-babu/mason-nvim-dap.nvim?tab=readme-ov-file#advanced-customization
-          function (config)
-            mason_dap.default_setup(config)
-          end,
+          function(config) mason_dap.default_setup(config) end,
 
           -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#php
           ---@param config table
-          php = function (config)
+          php = function(config)
             config.adapters = {
               type = 'executable',
               command = 'php-debug-adapter',
             }
 
             mason_dap.default_setup(config)
-          end
-        }
+          end,
+        },
       })
 
       dapui.setup(opts)
@@ -66,7 +62,6 @@ return {
       dap.listeners.after.event_initialized['dapui_config'] = dapui.open
       dap.listeners.before.event_terminated['dapui_config'] = dapui.close
       dap.listeners.before.event_exited['dapui_config'] = dapui.close
-    end
-  }
-
+    end,
+  },
 }

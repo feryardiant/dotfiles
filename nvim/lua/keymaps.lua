@@ -6,9 +6,7 @@ local diagnostic_goto = function(next, severity)
   local go = next and vim.diagnostic.goto_next or vim.diagnostic.goto_prev
   severity = severity and vim.diagnostic.severity[severity] or nil
 
-  return function()
-    go({ severity = severity })
-  end
+  return function() go({ severity = severity }) end
 end
 
 vim.keymap.set('n', '[d', diagnostic_goto(false), { desc = 'Goto previous diagnostic' })
@@ -57,8 +55,8 @@ vim.keymap.set('v', '<', '<gv', { desc = 'Dedent line' })
 vim.keymap.set('v', '>', '>gv', { desc = 'Indent line' })
 
 -- Copy to system clipboard
-vim.keymap.set({ 'n', 'v' }, '<leader>y', '\"+y', { noremap = true, desc = 'Copy to system clipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Y', '\"+Y', { noremap = true, desc = 'Copy to system clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>y', '"+y', { noremap = true, desc = 'Copy to system clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Y', '"+Y', { noremap = true, desc = 'Copy to system clipboard' })
 
 -- Delete word
-vim.keymap.set({ 'n', 'v' }, '<leader>d', '\"_d', { noremap = true, desc = 'Delete word' })
+vim.keymap.set({ 'n', 'v' }, '<leader>d', '"_d', { noremap = true, desc = 'Delete word' })

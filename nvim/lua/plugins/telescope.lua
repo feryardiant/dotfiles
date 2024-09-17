@@ -1,7 +1,8 @@
 return {
 
   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.4',
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.4',
     cmd = 'Telescope',
     version = false,
     dependencies = {
@@ -10,9 +11,9 @@ return {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make',
         enabled = vim.fn.executable('make') == 1,
-      }
+      },
     },
-    opts = function ()
+    opts = function()
       local actions = require('telescope.actions')
 
       return {
@@ -21,20 +22,20 @@ return {
           prompt_prefix = ' ',
           selection_caret = ' ',
           layout_config = {
-            vertical = { width = 0.5 }
+            vertical = { width = 0.5 },
           },
           mappings = {
             i = {
-              ['<Esc>'] = actions.close
+              ['<Esc>'] = actions.close,
             },
             n = {
-              ['<Esc>'] = actions.close
+              ['<Esc>'] = actions.close,
             },
-          }
+          },
         },
       }
     end,
-    init = function ()
+    init = function()
       local builtin = require('telescope.builtin')
 
       vim.keymap.set('n', '<leader><space>', builtin.buffers, { desc = 'Find files from existing buffer' })
@@ -50,7 +51,6 @@ return {
 
       telescope.load_extension('fzf')
       telescope.load_extension('notify')
-    end
+    end,
   },
-
 }

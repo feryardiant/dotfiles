@@ -20,7 +20,46 @@ return {
     dependencies = {
       { 'hrsh7th/nvim-cmp' },
     },
-    ft = { 'blade', 'php' }
+    ft = { 'blade', 'php' },
+  },
+
+  {
+    'stevearc/conform.nvim',
+    event = { 'BufWritePre' },
+    cmd = { 'ConformInfo' },
+    keys = function(_, keys)
+      local conform = require('conform')
+
+      return {
+        {
+          '<leader>fb',
+          function() conform.format({ async = true, lsp_fallbak = true, timeout_ms = 5000 }) end,
+          desc = '[F]ormat [B]uffer',
+        },
+        unpack(keys),
+      }
+    end,
+    ---@module "conform"
+    ---@type conform.setupOpts
+    opts = {
+      log_level = vim.log.levels.WARN,
+      formatters = {
+        prettier = {
+          prepend_args = { '--ignore-unknown' },
+        },
+      },
+      formatters_by_ft = {
+        blade = { 'prettier', 'blade-formatter', stop_after_first = true },
+        json = { 'prettier', 'jq', stop_after_first = true },
+        javascript = { 'prettier', stop_after_first = true },
+        lua = { 'stylua' },
+        markdown = { 'prettier', 'markdownlint', stop_after_first = true },
+        php = { 'pint', stop_after_first = true },
+        sql = { 'pg_format', 'sqlfmt', stop_after_first = true },
+        yaml = { 'yamlfmt' },
+      },
+    },
+    init = function() vim.o.formatexpr = "v:lua.require('conform').formatexpr()" end,
   },
 
   {
@@ -33,8 +72,8 @@ return {
       current_line_blame = true,
       signs = {
         untracked = { text = '│' },
-      }
-    }
+      },
+    },
   },
 
   {
@@ -49,7 +88,7 @@ return {
     'echasnovski/mini.pairs',
     event = { 'BufReadPre', 'BufNewFile' },
     lazy = true,
-    opts = {}
+    opts = {},
   },
 
   {
@@ -80,13 +119,16 @@ return {
       { '<leader>xx', '<Cmd>Trouble diagnostics toggle<CR>', desc = '[Trouble] Diagnostics' },
       { '<leader>xX', '<Cmd>Trouble diagnostics toggle filter.buf=0<CR>', desc = '[Trouble] Buffer diagnostics' },
       { '<leader>xs', '<Cmd>Trouble symbols toggle focus=false<CR>', desc = '[Trouble] Symbols' },
-      { '<leader>xl', '<Cmd>Trouble lsp toggle focus=false win.position=right<CR>', desc = '[Trouble] LSP Definitions' },
+      {
+        '<leader>xl',
+        '<Cmd>Trouble lsp toggle focus=false win.position=right<CR>',
+        desc = '[Trouble] LSP Definitions',
+      },
       { '<leader>xL', '<Cmd>Trouble loclist toggle<CR>', desc = '[Trouble] Location list' },
       { '<leader>xq', '<Cmd>Trouble qflist toggle<CR>', desc = '[Trouble] Quickfix list' },
     },
     opts = {
-      use_diagnostic_signs = true
-    }
+      use_diagnostic_signs = true,
+    },
   },
-
 }

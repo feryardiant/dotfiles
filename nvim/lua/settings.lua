@@ -21,19 +21,19 @@ return {
     schemas = {
       {
         fileMatch = { 'composer.json' },
-        url = 'https://json.schemastore.org/composer'
+        url = 'https://json.schemastore.org/composer',
       },
       {
         fileMatch = { 'jsconfig.json' },
-        url = 'https://json.schemastore.org/jsconfig'
+        url = 'https://json.schemastore.org/jsconfig',
       },
       {
         fileMatch = { 'tsconfig.json' },
-        url = 'https://json.schemastore.org/tsconfig'
+        url = 'https://json.schemastore.org/tsconfig',
       },
       {
         fileMatch = { 'package.json' },
-        url = 'https://json.schemastore.org/package'
+        url = 'https://json.schemastore.org/package',
       },
       {
         fileMatch = { '.prettierrc.json', '.prettierrc' },
@@ -41,7 +41,7 @@ return {
       },
       {
         fileMatch = { '.eslintrc.json' },
-        url = 'https://json.schemastore.org/eslintrc.json'
+        url = 'https://json.schemastore.org/eslintrc.json',
       },
     },
   },

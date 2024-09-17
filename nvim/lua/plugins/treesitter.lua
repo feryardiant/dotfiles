@@ -19,7 +19,7 @@ return {
       {
         'nvim-treesitter/nvim-treesitter-context',
         enabled = true,
-        opts = { mode = 'cursor', max_line = 3 }
+        opts = { mode = 'cursor', max_line = 3 },
       },
 
       -- Automatically add closing tags for HTML and JSX
@@ -48,7 +48,7 @@ return {
         'vim',
         'vimdoc',
         'vue',
-        'yaml'
+        'yaml',
       },
       -- Install parsers asynchronously
       sync_install = false,
@@ -76,9 +76,9 @@ return {
             ['al'] = '@loop.outer',
             ['ia'] = '@parameter.inner',
             ['aa'] = '@parameter.outer',
-          }
-        }
-      }
+          },
+        },
+      },
     },
     config = function(_, opts)
       local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
@@ -93,7 +93,6 @@ return {
       }
 
       require('nvim-treesitter.configs').setup(opts)
-    end
+    end,
   },
-
 }
