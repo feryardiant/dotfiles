@@ -32,6 +32,7 @@ return {
       ensure_installed = {
         'bash',
         'blade',
+        'comment',
         'gitignore',
         'html',
         'json',

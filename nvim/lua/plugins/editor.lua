@@ -16,6 +16,14 @@ return {
   { 'Bilal2453/luvit-meta', lazy = true },
 
   {
+    'ricardoramirezr/blade-nav.nvim',
+    dependencies = {
+      { 'hrsh7th/nvim-cmp' },
+    },
+    ft = { 'blade', 'php' }
+  },
+
+  {
     'lewis6991/gitsigns.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
