@@ -177,6 +177,11 @@ return {
             yaml = require('settings').yaml,
           },
         },
+        intelephense = {
+          settings = {
+            intelephense = require('settings').intelephense
+          }
+        },
         lua_ls = {
           settings = {
             Lua = require('settings').lua,
@@ -200,7 +205,6 @@ return {
         'sqls',
         'html',
         'tailwindcss',
-        'intelephense',
         'eslint',
         'ts_ls',
         'svelte',
