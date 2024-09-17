@@ -11,7 +11,7 @@ return {
 
   {
     'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       { 'hrsh7th/cmp-buffer', lazy = true },
       { 'hrsh7th/cmp-nvim-lsp', lazy = true },
@@ -83,7 +83,7 @@ return {
 
   {
     'neovim/nvim-lspconfig',
-    event = 'InsertEnter',
+    event = { 'BufReadPre', 'BufNewFile' },
     dependencies = {
       { 'williamboman/mason.nvim', config = true },
       { 'williamboman/mason-lspconfig.nvim' },
@@ -118,6 +118,8 @@ return {
 
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+          map('K', vim.lsp.buf.hover, 'Show signature help')
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
 
@@ -254,28 +256,29 @@ return {
           end,
 
           volar = function ()
-            -- credit : https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#volar
-            local project_ts_path = ''
             local global_ts_path = lspconfig.util.path.join(
               get_mason_pkg_path('typescript-language-server'),
               'node_modules/typescript/lib'
             )
 
-            ---Check typescript server lib directory
-            ---@param root_path string
-            ---@return string?
-            local function check_ts_dir(root_path)
-              project_ts_path = lspconfig.util.path.join(root_path, 'node_modules', 'typescript', 'lib')
-
-              if lspconfig.util.path.exists(project_ts_path) then
-                return root_path
-              end
-            end
-
             ---Get typescript server path
             ---@param root_path string
             ---@return string
             local function get_ts_path(root_path)
+              -- credit : https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#volar
+              local project_ts_path = ''
+
+              ---Check typescript server lib directory
+              ---@param project_path string
+              ---@return string?
+              local function check_ts_dir(project_path)
+                project_ts_path = lspconfig.util.path.join(project_path, 'node_modules', 'typescript', 'lib')
+
+                if lspconfig.util.path.exists(project_ts_path) then
+                  return project_path
+                end
+              end
+
               if lspconfig.util.search_ancestors(root_path, check_ts_dir) then
                 return project_ts_path
               else
