@@ -39,7 +39,7 @@ return {
           fields = { 'kind', 'abbr', 'menu' },
           format = function(entry, item)
             return require('lspkind').cmp_format({
-              mode = 'symbol',
+              -- mode = 'symbol',
             })(entry, item)
           end
         },
@@ -105,13 +105,13 @@ return {
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc, remap = false })
           end
 
-          map('gd', telescope_builtin.lsp_definitions, '[G]oto [D]efinition')
+          map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
-          map('gr', telescope_builtin.lsp_references, '[G]oto [R]eferences')
-          map('gI', telescope_builtin.lsp_implementations, '[G]oto [I]mplementation')
+          map('gr', vim.lsp.buf.references, '[G]oto [R]eferences')
+          map('gI', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
 
-          map('<leader>D', telescope_builtin.lsp_type_definitions, 'Type [D]efinition')
+          map('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
           map('<leader>ds', telescope_builtin.lsp_document_symbols, '[D]ocument [S]ymbols')
 
           map('<leader>ws', telescope_builtin.lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
@@ -177,6 +177,11 @@ return {
             yaml = require('settings').yaml,
           },
         },
+        intelephense = {
+          settings = {
+            intelephense = require('settings').intelephense
+          }
+        },
         lua_ls = {
           settings = {
             Lua = require('settings').lua,
@@ -200,7 +205,6 @@ return {
         'sqls',
         'html',
         'tailwindcss',
-        'intelephense',
         'eslint',
         'ts_ls',
         'svelte',
@@ -215,6 +219,34 @@ return {
 
             if server_name == 'tsserver' then
               server_name = 'ts_ls'
+            end
+
+            if server_name == 'emmet_ls' then
+              config.filetypes = {
+                'astro',
+                'css',
+                'eruby',
+                'html',
+                'htmldjango',
+                'javascriptreact',
+                'less',
+                'pug',
+                'sass',
+                'scss',
+                'svelte',
+                'typescriptreact',
+                'vue',
+                'htmlangular',
+                'blade'
+              }
+            end
+
+            if server_name == 'intelephense' then
+              config.filetypes = { 'blade', 'php', 'php_only' }
+            end
+
+            if server_name == 'html' then
+              config.filetypes = { 'blade', 'html', 'templ' }
             end
 
             config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, config.capabilities or {})

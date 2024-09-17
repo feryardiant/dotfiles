@@ -11,6 +11,12 @@ return {
     },
     diagnostics = { disable = { 'missing-fields' } },
   },
+  intelephense = {
+    environment = {
+      includePaths = {},
+    },
+    files = { maxSize = 5000000 },
+  },
   json = {
     schemas = {
       {
