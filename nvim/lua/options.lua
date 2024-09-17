@@ -92,3 +92,15 @@ vim.opt.wildignore = {
   '*/smarty/*','*/vendor/*','*/node_modules/*','*/.git/*','*/.sass-cache/*'
 }
 
+vim.filetype.add({
+  extension = {
+    keymap = 'dst',
+    neon = 'yaml',
+    overlay = 'dst',
+  },
+  pattern = {
+    ['.*%.blade%.php'] = 'blade',
+    ['.*%.neon%.dist'] = 'yaml',
+  }
+})
+
