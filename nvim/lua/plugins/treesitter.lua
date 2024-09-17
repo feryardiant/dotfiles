@@ -31,6 +31,7 @@ return {
       -- A list of parser names
       ensure_installed = {
         'bash',
+        'blade',
         'gitignore',
         'html',
         'json',
@@ -38,6 +39,8 @@ return {
         'markdown',
         'markdown_inline',
         'php',
+        'phpdoc',
+        'php_only',
         'toml',
         'typescript',
         'tsx',
@@ -58,9 +61,36 @@ return {
           node_incremental = '<C-space>',
           node_decremental = '<bs>',
         },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            ['if'] = '@function.inner',
+            ['af'] = '@function.outer',
+            ['ic'] = '@class.inner',
+            ['ac'] = '@class.outer',
+            ['il'] = '@loop.inner',
+            ['al'] = '@loop.outer',
+            ['ia'] = '@parameter.inner',
+            ['aa'] = '@parameter.outer',
+          }
+        }
       }
     },
     config = function(_, opts)
+      local parser_config = require('nvim-treesitter.parsers').get_parser_configs()
+
+      parser_config['blade'] = {
+        install_info = {
+          url = 'https://github.com/EmranMR/tree-sitter-blade',
+          files = { 'src/parser.c' },
+          branch = 'main',
+        },
+        filetype = 'blade',
+      }
+
       require('nvim-treesitter.configs').setup(opts)
     end
   },
