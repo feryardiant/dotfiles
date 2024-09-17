@@ -39,7 +39,7 @@ return {
           fields = { 'kind', 'abbr', 'menu' },
           format = function(entry, item)
             return require('lspkind').cmp_format({
-              mode = 'symbol',
+              -- mode = 'symbol',
             })(entry, item)
           end
         },
@@ -221,19 +221,32 @@ return {
               server_name = 'ts_ls'
             end
 
-            if server_name == 'intelephense' then
+            if server_name == 'emmet_ls' then
               config.filetypes = {
-                'blade',
-                'php',
+                'astro',
+                'css',
+                'eruby',
+                'html',
+                'htmldjango',
+                'javascriptreact',
+                'less',
+                'pug',
+                'sass',
+                'scss',
+                'svelte',
+                'typescriptreact',
+                'vue',
+                'htmlangular',
+                'blade'
               }
             end
 
+            if server_name == 'intelephense' then
+              config.filetypes = { 'blade', 'php', 'php_only' }
+            end
+
             if server_name == 'html' then
-              config.filetypes = {
-                'blade',
-                'html',
-                'templ',
-              }
+              config.filetypes = { 'blade', 'html', 'templ' }
             end
 
             config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, config.capabilities or {})
