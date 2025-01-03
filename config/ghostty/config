@@ -1,8 +1,10 @@
 font-family = "FiraCode Nerd Font"
 font-size = 16
 
-background-opacity = 0.8
-background-blur-radius = 10
+background-opacity = 0.9
+background-blur-radius = 20
 
 command = /opt/homebrew/bin/tmux
 window-step-resize = true
+window-padding-x = 5
+window-padding-y = 4
