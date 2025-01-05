@@ -131,4 +131,10 @@ return {
       use_diagnostic_signs = true,
     },
   },
+
+  {
+    'ghostty',
+    dir = '/Applications/Ghostty.app/Contents/Resources/vim/vimfiles/',
+  },
+
 }
