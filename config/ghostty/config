@@ -8,3 +8,6 @@ background-blur-radius = 20
 window-step-resize = true
 window-padding-x = 5
 window-padding-y = 4
+window-inherit-working-directory = false
+
+working-directory = /Users/fery/Workspace
