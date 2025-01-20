@@ -187,7 +187,7 @@ set fillchars=foldopen:,foldclose:,vert:│,fold:·,foldsep:\ ,diff:-
 
 set suffixes=.bak,~,.cache,.swp,.swo,.o,.d,.info,.aux,.dvi,.bin,.cb,.dmg,.exe,.ind,.idx,.inx,.out,.toc,.pyc,.pyd,.dll
 set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.pdf,*.o,*.obj,*.min.js
-set wildignore+=*/vendor/*,*/node_modules/*,*/.git/*,*/DS_Store
+set wildignore+=*/vendor/*,*/node_modules/*,*/.git/*,*/.DS_Store
 
 " Move lines - use ALT+J/K to move line up and down
 nnoremap <A-j> :m .+1<CR>==         " Move lines down
