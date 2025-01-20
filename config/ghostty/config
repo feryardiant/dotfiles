@@ -1,4 +1,4 @@
-font-family = "FiraCode Nerd Font Mono"
+font-family = "FiraMono Nerd Font Propo"
 font-size = 16
 
 background-opacity = 0.9
@@ -6,6 +6,7 @@ background-blur-radius = 20
 
 # command = /opt/homebrew/bin/tmux
 window-step-resize = true
+window-save-state = always
 window-padding-x = 5
 window-padding-y = 4
 window-inherit-working-directory = false
