@@ -88,7 +88,11 @@ export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf R
 # export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
 
 # ==============================================================================
-OBJC_DISABLE_INITIALIZE_FORK_SAFETY=yes
+# Fix OBJC initialization issue
+# see: https://github.com/rails/rails/issues/38560
+# ==============================================================================
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export DISABLE_SPRING=true
 
 # ==============================================================================
 # FZF

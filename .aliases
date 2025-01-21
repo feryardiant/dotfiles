@@ -29,8 +29,10 @@ if command -v pygmentize >/dev/null 2>&1; then
 	alias ccat='pygmentize -g'
 fi
 
-# Always use color output for `ls`
-alias ls="command eza --color --icons --group-directories-first"
+# Always use color output for ls
+if command -v eza >/dev/null 2>&1; then
+	alias ls="eza --color --icons --group-directories-first"
+fi
 
 # List all files colorized in long format
 # alias l="ls -lFh"

@@ -48,6 +48,16 @@ for dotfile in ~/.{exports,aliases,functions}; do
 done
 unset dotfile
 
+if command -v fzf >/dev/null 2>&1; then
+    eval `fzf --zsh`
+
+    [[ -d ~/.local/share/fzf-git ]] && source ~/.local/share/fzf-git/fzf-git.sh
+fi
+
+if command -v thefuck >/dev/null 2>&1; then
+    eval `thefuck --alias`
+fi
+
 # See https://github.com/starship/starship
 if type starship &>/dev/null; then
     eval "$(starship init `basename $SHELL`)"
