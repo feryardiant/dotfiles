@@ -1,14 +1,9 @@
 # Easier navigation: .., ..., ...., ....., ~ and -
-# alias ..="cd .."
-# alias ...="cd ../.."
-# alias ....="cd ../../.."
-# alias .....="cd ../../../.."
-# alias ~="cd $HOME" # `cd` is probably faster to type though
-
-# Shortcuts
-# alias h="history"
-# alias st="subl -a"
-# alias gac="git a && git c"
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ~="cd $HOME" # `cd` is probably faster to type though
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -22,34 +17,15 @@ alias grep='grep ${colorflag}'
 alias fgrep='fgrep ${colorflag}'
 alias egrep='egrep ${colorflag}'
 
-# Install Pygments package using python-pip
-# pip install Pygments [--user]
-# See: http://pygments.org/
-if command -v pygmentize >/dev/null 2>&1; then
-    alias ccat='pygmentize -g'
-fi
-
 # Always use color output for ls
 if command -v eza >/dev/null 2>&1; then
     alias ls="eza --color --icons --group-directories-first"
 fi
 
 # List all files colorized in long format
-# alias l="ls -lFh"
+alias l="ls -lh"
 # List all files colorized in long format, including dot files
-# alias la="ls -laFh"
-# List only directories
-# alias ld='l | grep "^d"'
-# List only directories, including dot files
-# alias lad='la | grep "^d"'
-# List only links
-# alias ll='l | grep "^l"'
-# List only links, including dot files
-# alias lal='la | grep "^l"'
-# List all contents exclude directory
-# alias lf='l | grep "^-"'
-# List all contents include the dotfiles and still witout directory
-# alias laf='la | grep "^-"'
+alias la="ls -lah"
 
 # Stopwatch
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
