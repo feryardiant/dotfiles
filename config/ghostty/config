@@ -1,10 +1,13 @@
-font-family = "FiraMono Nerd Font Propo"
+font-family = "FiraCode Nerd Font Propo"
 font-size = 16
 
 background-opacity = 0.9
 background-blur-radius = 20
 
 command = /opt/homebrew/bin/tmux
+
+theme = Ayu Mirage
+
 window-step-resize = true
 window-save-state = always
 window-padding-x = 5
