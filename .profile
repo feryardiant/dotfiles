@@ -79,7 +79,7 @@ if command -v thefuck >/dev/null 2>&1; then
 fi
 
 if command -v zoxide >/dev/null 2>&1; then
-    eval $(zoxide init $_shell_basename)
+    eval "$(zoxide init $_shell_basename)"
 
     alias cd="z"
 fi
@@ -88,7 +88,7 @@ fi
 # StarShip | https://github.com/starship/starship
 # ==============================================================================
 if type starship &>/dev/null; then
-    eval $(starship init $_shell_basename)
+    eval "$(starship init $_shell_basename)"
 fi
 
 unset _shell_basename
