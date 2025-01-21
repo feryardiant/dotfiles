@@ -91,10 +91,18 @@ select-word-style bash
 
 export WORDCHARS='.-'
 
+## History file configuration
+[ -z "$HISTFILE" ] && HISTFILE="$HOME/.zsh_history"
+
 # Credit: https://youtu.be/uOnL4fEnldA
-setopt hist_expire_dups_first
-setopt hist_ignore_dups
-setopt hist_verify
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_dups       # ignore duplicated commands history list
+setopt hist_verify            # show command with history expansion to user before running it
+setopt extended_history       # record timestamp of command in HISTFILE
+
+# Credit: https://www.jimhester.com/post/2012-09-26-per-directory-history/
+setopt inc_append_history
+setopt share_history          # share command history data between session
 
 # https://github.com/Aloxaf/fzf-tab
 if command -v fzf >/dev/null 2>&1 && [ -d ~/.local/share/fzf-tab ]; then
@@ -113,6 +121,7 @@ bindkey "^[[B" history-search-forward
 
 source `brew --prefix`/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.local/share/per-directory-history/per-directory-history.zsh
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
