@@ -16,8 +16,14 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
     # add auto completions
     # See https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
     FPATH="$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH"
+
+    # Credit: https://superuser.com/a/1092328/144662
+    # Credit: https://thevaluable.dev/zsh-completion-guide-examples/
     autoload -Uz compinit
     compinit
+
+    source `brew --prefix`/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
     # ==============================================================================
     # Ruby
@@ -36,8 +42,8 @@ fi
 # ==============================================================================
 # Android SDK
 # ==============================================================================
-if [[ -z $ANDROID_SDK_ROOT && -d ~/.local/share/android ]]; then
-    export ANDROID_SDK_ROOT="$HOME/.local/share/android"
+if [[ -z $ANDROID_SDK_ROOT && -d "$XDG_DATA_HOME/android" ]]; then
+    export ANDROID_SDK_ROOT="$XDG_DATA_HOME/android"
 
     # for sdk_path in {tools,platform-tools,emulator}; do
     #     [[ -d $ANDROID_SDK_ROOT/$sdk_path ]] && PATH="$ANDROID_SDK_ROOT/$sdk_path:$PATH"
@@ -46,22 +52,36 @@ if [[ -z $ANDROID_SDK_ROOT && -d ~/.local/share/android ]]; then
 fi
 
 # ==============================================================================
-# SDKMan
+# SDKMan | https://sdkman.io/
 # ==============================================================================
-SDKMAN_DIR="$HOME/.sdkman"
-if [[ -d $SDKMAN_DIR ]]; then
-    [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-    if [[ -x /usr/libexec/java_home ]]; then
-        export JAVA_HOME="$(/usr/libexec/java_home)"
-    fi
+if [[ -d "$HOME/.sdkman" ]]; then
+    export SDKMAN_DIR="$HOME/.sdkman"
 
-    export SDKMAN_DIR
+    [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 fi
 
 # ==============================================================================
 # Rust Cargo
 # ==============================================================================
-[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+if [[ -d "$HOME/.cargo" ]]; then
+    [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+    [[ -d "$HOME/.cargo/bin" ]] && PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+# ==============================================================================
+# Composer | https://getcomposer.org/
+# ==============================================================================
+if command -v composer >/dev/null 2>&1; then
+    [[ -z "$COMPOSER_HOME" ]] && export COMPOSER_HOME="$XDG_CONFIG_HOME/composer"
+    [[ -d "$COMPOSER_HOME/vendor/bin" ]] && PATH="$COMPOSER_HOME/vendor/bin:$PATH"
+fi
+
+# ==============================================================================
+# Phive | https://phar.io/
+# ==============================================================================
+if command -v phive >/dev/null 2>&1; then
+    [[ -z "$PHIVE_HOME" ]] && export PHIVE_HOME="$XDG_DATA_HOME/phive"
+fi
 
 # ==============================================================================
 # User Local
@@ -73,14 +93,6 @@ fi
 # Prevent Duplicate Path
 # Credit: https://askubuntu.com/a/1349910/10706
 export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
-# export PATH="$(consolidate_path $PATH)"
-
-# ==============================================================================
-# Git Prompt
-# see: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
-# ==============================================================================
-
-# [ -f ~/.local/tools/git-prompt.sh ] && . ~/.local/tools/git-prompt.sh
 
 # ==============================================================================
 # Vagrant
@@ -95,20 +107,8 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 export DISABLE_SPRING=true
 
 # ==============================================================================
-# FZF
-# ==============================================================================
-if command -v fzf >/dev/null 2>&1; then
-	export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-	export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-	export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
-
-	export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
-	export FZF_ALT_T_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-fi
-
-# ==============================================================================
 # Bat - Better version of cat
 # ==============================================================================
 if command -v bat >/dev/null 2>&1; then
-	export BAT_THEME=OneHalfDark
+    export BAT_THEME=OneHalfDark
 fi

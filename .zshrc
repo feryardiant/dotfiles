@@ -73,12 +73,6 @@
 
 # User configuration
 
-# Credit: https://superuser.com/a/1092328/144662
-# Credit: https://thevaluable.dev/zsh-completion-guide-examples/
-autoload -U compinit && compinit
-# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-# zstyle ':completion:*' menu select
-
 [[ -s $HOME/.profile ]] && source $HOME/.profile
 
 # Compilation flags
@@ -119,8 +113,6 @@ fi
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
 
-source `brew --prefix`/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source ~/.local/share/per-directory-history/per-directory-history.zsh
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,

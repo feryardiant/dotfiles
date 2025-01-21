@@ -38,6 +38,10 @@ export HISTCONTROL=ignoreboth
 # Import basic utilities
 [[ -s $HOME/.env ]] && source $HOME/.env
 
+[ -z "$XDG_CONFIG_HOME" ] && export XDG_CONFIG_HOME=$HOME/.config
+[ -z "$XDG_CACHE_HOME" ] && export XDG_CACHE_HOME=$HOME/.cache
+[ -z "$XDG_DATA_HOME" ] && export XDG_DATA_HOME=$HOME/.local/share
+
 # Import basic utilities
 if [ -d $DOTFILES_DIR ]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
@@ -50,26 +54,41 @@ unset dotfile
 
 _shell_basename=`basename $SHELL`
 
+# ==============================================================================
+# FZF | https://github.com/junegunn/fzf
+# ==============================================================================
 if command -v fzf >/dev/null 2>&1; then
-    eval "$(fzf --$_shell_basename)"
+    export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+
+    export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
+    export FZF_ALT_T_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+    source <(fzf --$_shell_basename)
 
     # Credit: https://doronbehar.com/articles/ZSH-FZF-completion/
     source "`brew --prefix fzf`/shell/completion.$_shell_basename"
 fi
 
+# ==============================================================================
+# TheFuck | https://github.com/nvbn/thefuck
+# ==============================================================================
 if command -v thefuck >/dev/null 2>&1; then
     eval `thefuck --alias`
 fi
 
 if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init $_shell_basename)"
+    eval $(zoxide init $_shell_basename)
 
     alias cd="z"
 fi
 
-# See https://github.com/starship/starship
+# ==============================================================================
+# StarShip | https://github.com/starship/starship
+# ==============================================================================
 if type starship &>/dev/null; then
-    eval "$(starship init $_shell_basename)"
+    eval $(starship init $_shell_basename)
 fi
 
 unset _shell_basename
