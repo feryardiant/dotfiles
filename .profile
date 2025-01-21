@@ -58,6 +58,12 @@ if command -v thefuck >/dev/null 2>&1; then
     eval `thefuck --alias`
 fi
 
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init `basename $SHELL`)"
+
+    alias cd="z"
+fi
+
 # See https://github.com/starship/starship
 if type starship &>/dev/null; then
     eval "$(starship init `basename $SHELL`)"
