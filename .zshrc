@@ -84,6 +84,13 @@ autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' menu select
 
+# Make CTRL+W deletes per-word
+# Credit: https://unix.stackexchange.com/a/392199/55210
+autoload -U select-word-style
+select-word-style bash
+
+export WORDCHARS='.-'
+
 # Credit: https://youtu.be/uOnL4fEnldA
 setopt hist_expire_dups_first
 setopt hist_ignore_dups
