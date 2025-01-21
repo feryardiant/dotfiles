@@ -143,30 +143,6 @@ ln -sf $my_pwd/.tmux.conf ~/.tmux.conf
 e $c_suc $' ✔ Done\n'
 
 # ------------------------------------------------------------------------------
-# Shell Profile
-# ------------------------------------------------------------------------------
-
-# if [ "$with_zsh" = '1' ]; then
-# 	. $my_pwd/scripts/zsh.sh > $_LOG_FILE
-# fi
-
-if _has_pkg 'zsh'; then
-	e $c_inf 'Setup oh-my-zsh'
-
-	zsh_dir=~/.oh-my-zsh
-	[ ! -d $zsh_dir ] && git clone -q --depth=1 https://github.com/ohmyzsh/ohmyzsh.git $zsh_dir
-	[ -d $zsh_dir/themes ] && ln -sf $my_pwd/prompt-themes/honukai.zsh-theme $zsh_dir/themes/
-	_resque ~/.zshrc && ln -sf $my_pwd/.zshrc ~/.zshrc
-
-	# if [[ ! -z $git_email ]]; then
-	# 	cd $zsh_dir && git add themes && git commit -q -m "Add honukai.zsh-theme"
-	# 	cd $HOME
-	# fi
-
-	e $c_suc $' ✔ Done\n'
-fi
-
-# ------------------------------------------------------------------------------
 # VIM & NeoVIM
 # ------------------------------------------------------------------------------
 

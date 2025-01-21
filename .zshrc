@@ -1,11 +1,11 @@
 # Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+# export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+# ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -67,26 +67,33 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(composer per-directory-history zsh-autosuggestions)
+# plugins=(composer per-directory-history zsh-autosuggestions)
 
-source $ZSH/oh-my-zsh.sh
+# source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
 [[ -s $HOME/.profile ]] && source $HOME/.profile
 
-if command -v fzf >/dev/null 2>&1; then
-    eval `fzf --zsh`
-
-    [[ -d ~/.local/share/fzf-git ]] && source ~/.local/share/fzf-git/fzf-git.sh
-fi
-
-if command -v thefuck >/dev/null 2>&1; then
-    eval `thefuck --alias`
-fi
-
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+
+# Credit: https://superuser.com/a/1092328/144662
+# Credit: https://thevaluable.dev/zsh-completion-guide-examples/
+autoload -Uz compinit && compinit
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' menu select
+
+# Credit: https://youtu.be/uOnL4fEnldA
+setopt hist_expire_dups_first
+setopt hist_ignore_dups
+setopt hist_verify
+
+bindkey "^[[A" history-search-backward
+bindkey "^[[B" history-search-forward
+
+source `brew --prefix`/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
