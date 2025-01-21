@@ -48,10 +48,13 @@ for dotfile in ~/.{exports,aliases,functions}; do
 done
 unset dotfile
 
-if command -v fzf >/dev/null 2>&1; then
-    eval `fzf --zsh`
+_shell_basename=`basename $SHELL`
 
-    [[ -d ~/.local/share/fzf-git ]] && source ~/.local/share/fzf-git/fzf-git.sh
+if command -v fzf >/dev/null 2>&1; then
+    eval "$(fzf --$_shell_basename)"
+
+    # Credit: https://doronbehar.com/articles/ZSH-FZF-completion/
+    source "`brew --prefix fzf`/shell/completion.$_shell_basename"
 fi
 
 if command -v thefuck >/dev/null 2>&1; then
@@ -59,12 +62,14 @@ if command -v thefuck >/dev/null 2>&1; then
 fi
 
 if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init `basename $SHELL`)"
+    eval "$(zoxide init $_shell_basename)"
 
     alias cd="z"
 fi
 
 # See https://github.com/starship/starship
 if type starship &>/dev/null; then
-    eval "$(starship init `basename $SHELL`)"
+    eval "$(starship init $_shell_basename)"
 fi
+
+unset _shell_basename

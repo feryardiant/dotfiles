@@ -73,16 +73,16 @@
 
 # User configuration
 
+# Credit: https://superuser.com/a/1092328/144662
+# Credit: https://thevaluable.dev/zsh-completion-guide-examples/
+autoload -U compinit && compinit
+# zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+# zstyle ':completion:*' menu select
+
 [[ -s $HOME/.profile ]] && source $HOME/.profile
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
-
-# Credit: https://superuser.com/a/1092328/144662
-# Credit: https://thevaluable.dev/zsh-completion-guide-examples/
-autoload -Uz compinit && compinit
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*' menu select
 
 # Make CTRL+W deletes per-word
 # Credit: https://unix.stackexchange.com/a/392199/55210
@@ -95,6 +95,18 @@ export WORDCHARS='.-'
 setopt hist_expire_dups_first
 setopt hist_ignore_dups
 setopt hist_verify
+
+# https://github.com/Aloxaf/fzf-tab
+if command -v fzf >/dev/null 2>&1 && [ -d ~/.local/share/fzf-tab ]; then
+    source ~/.local/share/fzf-tab/fzf-tab.plugin.zsh
+
+    # preview directory's content with eza when completing cd
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls $realpath'
+
+    if [ ! -z $TMUX ]; then
+        zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+    fi
+fi
 
 bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
