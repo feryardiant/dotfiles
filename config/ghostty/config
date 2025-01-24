@@ -1,6 +1,7 @@
 font-family = "FiraCode Nerd Font Propo"
 font-size = 16
 
+adjust-underline-position = 3
 background-opacity = 0.9
 background-blur-radius = 20
 
