@@ -5,9 +5,12 @@ adjust-underline-position = 3
 background-opacity = 0.9
 background-blur-radius = 20
 
-command = /opt/homebrew/bin/tmux
+# command = /opt/homebrew/bin/tmux
 
 theme = Ayu Mirage
+
+macos-titlebar-style = tabs
+macos-option-as-alt = left
 
 window-step-resize = true
 window-save-state = always
