@@ -32,11 +32,6 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
        PATH="`brew --prefix ruby`/bin:$PATH"
        PATH="`gem env home`/bin:$PATH"
     fi
-
-    # ==============================================================================
-    # ASDF-VM
-    # ==============================================================================
-    [[ -f "`brew --prefix asdf`/libexec/asdf.sh" ]] && source "`brew --prefix asdf`/libexec/asdf.sh"
 fi
 
 # ==============================================================================
@@ -61,11 +56,26 @@ if [[ -d "$HOME/.sdkman" ]]; then
 fi
 
 # ==============================================================================
-# Rust Cargo
+# Rust Cargo | https://crates.io/
 # ==============================================================================
 if [[ -d "$HOME/.cargo" ]]; then
     [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
     [[ -d "$HOME/.cargo/bin" ]] && PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+# ==============================================================================
+# ASDF-VM | https://asdf-vm.com
+# ==============================================================================
+if command -v asdf >/dev/null 2>&1 && [[ -d "$HOME/.asdf" ]]; then
+    export ASDF_DATA_DIR="$HOME/.asdf"
+    PATH="$ASDF_DATA_DIR/shims:$PATH"
+
+    if [[ ! -d "$ASDF_DATA_DIR/completions" ]]; then
+        mkdir -p $ASDF_DATA_DIR/completions
+        asdf completion zsh > "$ASDF_DATA_DIR/completions/_asdf"
+    fi
+
+    FPATH="$ASDF_DATA_DIR/completions:$FPATH"
 fi
 
 # ==============================================================================
