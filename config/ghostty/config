@@ -2,8 +2,8 @@ font-family = "FiraCode Nerd Font Propo"
 font-size = 16
 
 adjust-underline-position = 3
-background-opacity = 0.9
-background-blur-radius = 20
+background-opacity = 0.95
+background-blur-radius = 25
 
 # command = /opt/homebrew/bin/tmux
 
@@ -16,6 +16,6 @@ window-step-resize = true
 window-save-state = always
 window-padding-x = 5
 window-padding-y = 4
-window-inherit-working-directory = false
 
 working-directory = /Users/fery/Workspace
+window-inherit-working-directory = false
