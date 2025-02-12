@@ -54,6 +54,8 @@ unset dotfile
 
 _shell_basename=`basename $SHELL`
 
+export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PATH"
+
 # ==============================================================================
 # FZF | https://github.com/junegunn/fzf
 # ==============================================================================
