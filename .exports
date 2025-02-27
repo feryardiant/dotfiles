@@ -17,13 +17,9 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
     # See https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
     FPATH="$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH"
 
-    # Credit: https://superuser.com/a/1092328/144662
-    # Credit: https://thevaluable.dev/zsh-completion-guide-examples/
-    autoload -Uz compinit
-    compinit
-
-    source `brew --prefix`/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    if [[ -d `brew --prefix`/share/zsh-syntax-highlighting ]]; then
+        source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    fi
 
     # ==============================================================================
     # Ruby
@@ -64,21 +60,6 @@ if [[ -d "$HOME/.cargo" ]]; then
 fi
 
 # ==============================================================================
-# ASDF-VM | https://asdf-vm.com
-# ==============================================================================
-if command -v asdf >/dev/null 2>&1 && [[ -d "$HOME/.asdf" ]]; then
-    export ASDF_DATA_DIR="$HOME/.asdf"
-    PATH="$ASDF_DATA_DIR/shims:$PATH"
-
-    if [[ ! -d "$ASDF_DATA_DIR/completions" ]]; then
-        mkdir -p $ASDF_DATA_DIR/completions
-        asdf completion zsh > "$ASDF_DATA_DIR/completions/_asdf"
-    fi
-
-    FPATH="$ASDF_DATA_DIR/completions:$FPATH"
-fi
-
-# ==============================================================================
 # Composer | https://getcomposer.org/
 # ==============================================================================
 if command -v composer >/dev/null 2>&1; then
@@ -94,17 +75,6 @@ if command -v phive >/dev/null 2>&1; then
 fi
 
 # ==============================================================================
-# User Local
-# ==============================================================================
-if [[ -d "$HOME/.local/bin" ]]; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-# Prevent Duplicate Path
-# Credit: https://askubuntu.com/a/1349910/10706
-export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
-
-# ==============================================================================
 # Vagrant
 # ==============================================================================
 # export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
@@ -115,6 +85,8 @@ export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf R
 # ==============================================================================
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 export DISABLE_SPRING=true
+
+export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 
 # ==============================================================================
 # Bat - Better version of cat

@@ -1,11 +1,11 @@
 # Path to your oh-my-zsh installation.
-# export ZSH="$HOME/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
+ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -62,58 +62,25 @@
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Import basic utilities
+[[ -s $HOME/.env ]] && source $HOME/.env
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-# plugins=(composer per-directory-history zsh-autosuggestions)
+plugins=(asdf composer fzf per-directory-history zsh-autosuggestions zsh-interactive-cd)
 
-# source $ZSH/oh-my-zsh.sh
+source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
 [[ -s $HOME/.profile ]] && source $HOME/.profile
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Make CTRL+W deletes per-word
-# Credit: https://unix.stackexchange.com/a/392199/55210
-autoload -U select-word-style
-select-word-style bash
-
-export WORDCHARS='.-'
-
-## History file configuration
-[ -z "$HISTFILE" ] && HISTFILE="$HOME/.zsh_history"
-
-# Credit: https://youtu.be/uOnL4fEnldA
-setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-setopt hist_ignore_dups       # ignore duplicated commands history list
-setopt hist_verify            # show command with history expansion to user before running it
-setopt extended_history       # record timestamp of command in HISTFILE
-
-# Credit: https://www.jimhester.com/post/2012-09-26-per-directory-history/
-setopt inc_append_history
-setopt share_history          # share command history data between session
-
-# https://github.com/Aloxaf/fzf-tab
-if command -v fzf >/dev/null 2>&1 && [ -d ~/.local/share/fzf-tab ]; then
-    source ~/.local/share/fzf-tab/fzf-tab.plugin.zsh
-
-    # preview directory's content with eza when completing cd
-    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls $realpath'
-
-    if [ ! -z $TMUX ]; then
-        zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
-    fi
-fi
-
-bindkey "^[[A" history-search-backward
-bindkey "^[[B" history-search-forward
-
-source ~/.local/share/per-directory-history/per-directory-history.zsh
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh

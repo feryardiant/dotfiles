@@ -257,13 +257,3 @@ function consolidate_path() {
 	result="${result#:}"
 	echo "${result%:}"
 }
-
-if command -v fzf >/dev/null 2>&1; then
-	_fzf_compgen_path() {
-		fd --hidden --exclude .git . "$1"
-	}
-
-	_fzf_compgen_dir() {
-		fd --type=d --hidden --exclude .git . "$1"
-	}
-fi
