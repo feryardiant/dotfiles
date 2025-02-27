@@ -36,13 +36,6 @@ export HISTCONTROL=ignoreboth
 # [ -z "$TMUX" ] && export TERM=tmux-256color
 
 # Import basic utilities
-[[ -s $HOME/.env ]] && source $HOME/.env
-
-[ -z "$XDG_CONFIG_HOME" ] && export XDG_CONFIG_HOME=$HOME/.config
-[ -z "$XDG_CACHE_HOME" ] && export XDG_CACHE_HOME=$HOME/.cache
-[ -z "$XDG_DATA_HOME" ] && export XDG_DATA_HOME=$HOME/.local/share
-
-# Import basic utilities
 if [ -d $DOTFILES_DIR ]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
 fi
@@ -52,45 +45,20 @@ for dotfile in ~/.{exports,aliases,functions}; do
 done
 unset dotfile
 
-_shell_basename=`basename $SHELL`
-
-export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PATH"
-
 # ==============================================================================
-# FZF | https://github.com/junegunn/fzf
+# Zoxide | https://github.com/ajeetdsouza/zoxide
 # ==============================================================================
-if command -v fzf >/dev/null 2>&1; then
-    export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
-
-    export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {}'"
-    export FZF_ALT_T_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-
-    source <(fzf --$_shell_basename)
-
-    # Credit: https://doronbehar.com/articles/ZSH-FZF-completion/
-    source "`brew --prefix fzf`/shell/completion.$_shell_basename"
-fi
-
-# ==============================================================================
-# TheFuck | https://github.com/nvbn/thefuck
-# ==============================================================================
-if command -v thefuck >/dev/null 2>&1; then
-    eval `thefuck --alias`
-fi
-
 if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init $_shell_basename)"
-
-    alias cd="z"
+    eval "$(zoxide init zsh)"
 fi
 
 # ==============================================================================
-# StarShip | https://github.com/starship/starship
+# User Local
 # ==============================================================================
-if type starship &>/dev/null; then
-    eval "$(starship init $_shell_basename)"
+if [[ -d "$HOME/.local/bin" ]]; then
+    PATH="$HOME/.local/bin:$PATH"
 fi
 
-unset _shell_basename
+# Prevent Duplicate Path
+# Credit: https://askubuntu.com/a/1349910/10706
+export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
