@@ -15,3 +15,6 @@ disabled = true
 
 [gcloud]
 disabled = true
+
+[lua]
+symbol = ' '
