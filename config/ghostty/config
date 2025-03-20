@@ -9,13 +9,15 @@ background-blur-radius = 25
 
 theme = Ayu Mirage
 
-macos-titlebar-style = tabs
+# macos-titlebar-style = tabs
 macos-option-as-alt = left
 
 window-step-resize = true
 window-save-state = always
 window-padding-x = 5
 window-padding-y = 4
+window-width = 100
+window-height = 32
 
 working-directory = /Users/fery/Workspace
 window-inherit-working-directory = false
