@@ -55,7 +55,12 @@
     "env": [".env", ".env.*"],
     "tmux": [".tmux.conf", "tmux.conf"]
   },
-  "format_on_save": "off",
+  "formatter": {
+    "code_actions": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "format_on_save": "on",
   "git_panel": {
     "dock": "right"
   },
@@ -77,6 +82,26 @@
   "languages": {
     "PHP": {
       "language_servers": ["intelephense", "!phpactor"]
+    },
+    "TypeScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      }
+    },
+    "JavaScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      }
+    },
+    "TSX": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      }
+    },
+    "Vue.js": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true
+      }
     }
   },
   "lsp": {
