@@ -7,6 +7,7 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "show_edit_predictions": true,
   "assistant": {
     "dock": "left",
     "default_model": {
@@ -20,6 +21,12 @@
   "buffer_font_size": 15,
   "chat_panel": {
     "dock": "left"
+  },
+  "edit_predictions": {
+    "disabled_globs": [
+      "**/*.log",
+      "**/*.old"
+    ]
   },
   "features": {
     // "inline_completion_provider": "supermaven",
@@ -37,7 +44,6 @@
     "**/.classpath",
     "**/.settings",
     // above is default from Zed
-    "**/*.old",
     "**/out",
     "**/dist",
     "**/.husky",

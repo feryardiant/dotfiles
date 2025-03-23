@@ -1,0 +1,16 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Editor && edit_prediction",
+    "bindings": {
+      // Here we also allow `alt-enter` to accept the prediction
+      "alt-enter": "editor::AcceptEditPrediction"
+    }
+  }
+]
