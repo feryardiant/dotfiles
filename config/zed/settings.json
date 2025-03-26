@@ -26,7 +26,8 @@
     "disabled_globs": [
       "**/*.log",
       "**/*.old"
-    ]
+    ],
+    "mode": "subtle"
   },
   "features": {
     // "inline_completion_provider": "supermaven",
