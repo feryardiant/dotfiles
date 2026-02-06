@@ -1,0 +1,36 @@
+{
+  "general": {
+    "checkpointing": {
+      "enabled": true
+    },
+    "disableAutoUpdate": true,
+    "previewFeatures": true,
+    "enableAutoUpdate": false
+  },
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  },
+  "mcpServers": {
+    "mcp-server-context7": {
+      "command": "context7-mcp"
+    },
+    "mcp-server-sequential-thinking": {
+      "command": "mcp-server-sequential-thinking"
+    },
+    "mcp-server-everything": {
+      "command": "mcp-server-everything"
+    },
+    "mcp-shadcn": {
+      "command": "shadcn-mcp"
+    }
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "Ayu"
+  }
+}

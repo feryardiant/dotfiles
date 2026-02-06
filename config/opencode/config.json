@@ -1,0 +1,36 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "theme": "ayu",
+  "model": "openrouter/qwen/qwen3-coder:free",
+  "mcp": {
+    "mcp-server-context7": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "context7-mcp"
+      ]
+    },
+    "mcp-server-sequential-thinking": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "mcp-server-sequential-thinking"
+      ]
+    },
+    "mcp-server-everyting": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "mcp-server-everything"
+      ]
+    }
+  },
+  "provider": {
+    "openrouter": {
+      "models": {
+        "deepseek/deepseek-r1:free": {},
+        "qwen/qwen3-coder:free": {}
+      }
+    }
+  }
+}
