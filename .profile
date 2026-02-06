@@ -67,6 +67,12 @@ if [[ -d "$HOME/.local/bin" ]]; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# ==============================================================================
+# Bun Completions
+# ==============================================================================
+[ -s "/Users/fery/.bun/_bun" ] && source "/Users/fery/.bun/_bun"
+
+
 # Prevent Duplicate Path
 # Credit: https://askubuntu.com/a/1349910/10706
 export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
