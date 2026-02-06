@@ -7,6 +7,24 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "ssh_connections": [
+    {
+      "host": "staging-01",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/ubuntu"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "staging-02",
+      "args": [],
+      "projects": []
+    }
+  ],
   "agent": {
     "always_allow_tool_actions": true,
     "dock": "left",
