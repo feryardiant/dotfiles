@@ -26,25 +26,71 @@
     }
   ],
   "agent": {
+    "default_profile": "write",
+    "use_modifier_to_send": true,
     "always_allow_tool_actions": true,
     "dock": "left",
     "default_model": {
-      "provider": "anthropic",
-      "model": "claude-sonnet-4-latest"
+      "provider": "google",
+      "model": "gemini-3-pro-preview"
+    }
+  },
+  "agent_servers": {
+    "gemini": {
+      "ignore_system_version": false
     },
-    "version": "2"
+    "OpenCode": {
+      "command": "opencode",
+      "args": ["acp"]
+    }
   },
   "base_keymap": "VSCode",
   "buffer_font_family": "FiraCode Nerd Font",
   "buffer_font_size": 16,
-  "chat_panel": {
-    "dock": "left"
-  },
   "context_servers": {
-    "postgres-context-server": {
-      "settings": {
-        "database_url": "postgresql://myuser:mypassword@localhost:5432/mydatabase"
+    "mcp-taskmaster-ai": {
+      "enabled": true,
+      "command": "task-master-ai",
+      "args": [],
+      "env": {
+        "MAX_TOKENS": "20000",
+        "DEFAULT_SUBTASK": "10",
+        "DEFAULT_PRIORITY": "medium",
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
+        "GOOGLE_API_KEY": "${GEMINI_API_KEY}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
       }
+    },
+    "mcp-playwright": {
+      "enabled": true,
+      "command": "mcp-server-playwright",
+      "args": []
+    },
+    "mcp-sentry": {
+      "enabled": true,
+      "command": "mcp-remote",
+      "args": [
+        "https://mcp.sentry.dev/mcp"
+      ]
+    },
+    "mcp-server-context7": {
+      "enabled": true,
+      "settings": {
+        "default_minimum_tokens": "10000"
+      }
+    },
+    "mcp-server-github": {
+      "enabled": true,
+      "settings": {
+        "github_personal_access_token": "${GITHUB_MCP_TOKEN}"
+      }
+    },
+    "postgres-context-server": {
+      "settings": {}
+    },
+    "mcp-server-sequential-thinking": {
+      "settings": {}
     }
   },
   "debugger": {
@@ -59,9 +105,7 @@
     "mode": "subtle"
   },
   "features": {
-    // "inline_completion_provider": "supermaven",
-    "edit_prediction_provider": "zed",
-    "copilot": false
+    "edit_prediction_provider": "zed"
   },
   // File scan exclusions, hide on the file explorer and search
   "file_scan_exclusions": [
