@@ -119,7 +119,6 @@
     "**/.settings",
     // above is default from Zed
     "**/out",
-    "**/dist",
     "**/.husky",
     "**/.next",
     "**/.nyc_output",
@@ -129,18 +128,33 @@
     "**/.turbo"
   ],
   "file_types": {
-    "Blade": ["*.blade.php"],
-    "JSONC": ["devcontainer.json", "tsconfig.*.json"],
-    "Nginx": ["*/nginx/**.conf"],
-    "env": [".env", ".env.*"],
-    "tmux": [".tmux.conf", "tmux.conf"]
+    "Blade": [
+      "*.blade.php"
+    ],
+    "JSONC": [
+      ".devcontainer/*/devcontainer.json",
+      ".devcontainer/devcontainer.json",
+      ".devcontainer.json",
+      "tsconfig.*.json",
+      "**/.zed/**/*.json",
+      "**/zed/**/*.json",
+      "**/Zed/**/*.json",
+      "**/.vscode/**/*.json"
+    ],
+    "Nginx": [
+      "*/nginx/**.conf"
+    ],
+    "env": [
+      ".env",
+      ".env.*"
+    ],
+    "tmux": [
+      ".tmux.conf",
+      "tmux.conf"
+    ]
   },
-  "formatter": {
-    "code_actions": {
-      "source.fixAll.eslint": true
-    }
-  },
-  "format_on_save": "on",
+  "formatter": "language_server",
+  "format_on_save": "off",
   "git_panel": {
     "dock": "right"
   },
@@ -161,7 +175,11 @@
   },
   "languages": {
     "PHP": {
-      "language_servers": ["intelephense", "!phpactor"]
+      "language_servers": [
+        "intelephense",
+        "!phptools",
+        "!phpactor"
+      ]
     },
     "TypeScript": {
       "code_actions_on_format": {
@@ -185,14 +203,39 @@
     }
   },
   "lsp": {
-    "lua": {
-      "diagnostics.globals": ["vim"]
+    "json-language-server": {
+      "settings": {
+        "json": {
+          "schemas": [
+            {
+              "fileMatch": [".devcontainer/*/devcontainer.json", ".devcontainer/devcontainer.json", ".devcontainer.json"],
+              "url": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.base.schema.json"
+            },
+            {
+              "fileMatch": ["deno.json", "deno.jsonc"],
+              "url": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json"
+            }
+          ]
+        }
+      }
     },
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "schemas": {}
+        }
+      }
+    },
+    "lua-language-server": {},
     "vtsls": {
       "settings": {
         // Add vue.js integration
         // See https://github.com/zed-extensions/vue/issues/6#issuecomment-2739514942
         "vtsls": {
+          "experimental": {
+            // https://github.com/zed-industries/zed/issues/13317#issuecomment-2646080375
+            "maxInlayHintLength": 25
+          },
           "tsserver": {
             "globalPlugins": [
               {
