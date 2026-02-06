@@ -17,11 +17,18 @@
         "mcp-server-sequential-thinking"
       ]
     },
-    "mcp-server-everyting": {
+    "mcp-server-everything": {
       "type": "local",
       "enabled": true,
       "command": [
         "mcp-server-everything"
+      ]
+    },
+    "mcp-shadcn": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "shadcn-mcp"
       ]
     }
   },
