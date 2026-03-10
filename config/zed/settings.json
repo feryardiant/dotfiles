@@ -16,11 +16,26 @@
           "paths": [
             "/home/ubuntu"
           ]
+        },
+        {
+          "paths": [
+            "/opt"
+          ]
+        },
+        {
+          "paths": [
+            "/opt/stacks"
+          ]
         }
       ]
     },
     {
       "host": "staging-02",
+      "args": [],
+      "projects": []
+    },
+    {
+      "host": "10.10.0.120",
       "args": [],
       "projects": []
     }
@@ -32,7 +47,7 @@
     "dock": "left",
     "default_model": {
       "provider": "google",
-      "model": "gemini-3-pro-preview"
+      "model": "gemini-3-flash-preview"
     }
   },
   "agent_servers": {
@@ -40,6 +55,7 @@
       "ignore_system_version": false
     },
     "OpenCode": {
+      "type": "custom",
       "command": "opencode",
       "args": ["acp"]
     }
@@ -48,46 +64,11 @@
   "buffer_font_family": "FiraCode Nerd Font",
   "buffer_font_size": 16,
   "context_servers": {
-    "mcp-taskmaster-ai": {
-      "enabled": true,
-      "command": "task-master-ai",
-      "args": [],
-      "env": {
-        "MAX_TOKENS": "20000",
-        "DEFAULT_SUBTASK": "10",
-        "DEFAULT_PRIORITY": "medium",
-        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
-        "GOOGLE_API_KEY": "${GEMINI_API_KEY}",
-        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
-        "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}"
-      }
-    },
-    "mcp-playwright": {
-      "enabled": true,
-      "command": "mcp-server-playwright",
-      "args": []
-    },
-    "mcp-sentry": {
-      "enabled": true,
-      "command": "mcp-remote",
-      "args": [
-        "https://mcp.sentry.dev/mcp"
-      ]
-    },
     "mcp-server-context7": {
       "enabled": true,
       "settings": {
         "default_minimum_tokens": "10000"
       }
-    },
-    "mcp-server-github": {
-      "enabled": true,
-      "settings": {
-        "github_personal_access_token": "${GITHUB_MCP_TOKEN}"
-      }
-    },
-    "postgres-context-server": {
-      "settings": {}
     },
     "mcp-server-sequential-thinking": {
       "settings": {}
@@ -98,14 +79,12 @@
   },
   "show_edit_predictions": true,
   "edit_predictions": {
+    "provider": "zed",
     "disabled_globs": [
       "**/*.log",
       "**/*.old"
     ],
     "mode": "subtle"
-  },
-  "features": {
-    "edit_prediction_provider": "zed"
   },
   // File scan exclusions, hide on the file explorer and search
   "file_scan_exclusions": [
