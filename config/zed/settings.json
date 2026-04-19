@@ -41,9 +41,11 @@
     }
   ],
   "agent": {
-    "default_profile": "write",
+    "tool_permissions": {
+      "default": "allow"
+    },
+    "default_profile": "ask",
     "use_modifier_to_send": true,
-    "always_allow_tool_actions": true,
     "dock": "left",
     "default_model": {
       "provider": "google",
@@ -52,12 +54,7 @@
   },
   "agent_servers": {
     "gemini": {
-      "ignore_system_version": false
-    },
-    "OpenCode": {
-      "type": "custom",
-      "command": "opencode",
-      "args": ["acp"]
+      "type": "registry"
     }
   },
   "base_keymap": "VSCode",
