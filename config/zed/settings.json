@@ -141,9 +141,6 @@
   "inlay_hints": {
     "enabled": true
   },
-  "notification_panel": {
-    "dock": "left"
-  },
   "outline_panel": {
     "dock": "right"
   },
