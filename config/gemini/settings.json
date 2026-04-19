@@ -3,9 +3,9 @@
     "checkpointing": {
       "enabled": true
     },
-    "disableAutoUpdate": true,
     "previewFeatures": true,
-    "enableAutoUpdate": false
+    "enableAutoUpdate": false,
+    "defaultApprovalMode": "plan"
   },
   "ide": {
     "hasSeenNudge": true,
@@ -28,9 +28,19 @@
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
-    }
+    },
+    "enablePermanentToolApproval": true
   },
   "ui": {
-    "theme": "Ayu"
+    "theme": "Ayu",
+    "footer": {
+      "hideSandboxStatus": true
+    }
+  },
+  "model": {
+    "name": "gemini-3-flash-preview"
+  },
+  "billing": {
+    "overageStrategy": "ask"
   }
 }

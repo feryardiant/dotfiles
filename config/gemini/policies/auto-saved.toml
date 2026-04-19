@@ -1,0 +1,20 @@
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "activate_skill"
+modes = [ "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "run_shell_command"
+commandPrefix = [ "asdf", "bun", "docker", "git", "composer", "pnpm", "npm" ]
+modes = [ "plan", "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "run_shell_command"
+commandPrefix = [ "cat", "ls", "man" ]
+allowRedirection = true
+modes = [ "plan", "autoEdit", "yolo" ]
