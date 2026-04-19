@@ -11,15 +11,15 @@
     {
       "host": "staging-01",
       "args": [],
+      "projects": []
+    },
+    {
+      "host": "staging-01",
+      "args": [],
       "projects": [
         {
           "paths": [
-            "/home/ubuntu"
-          ]
-        },
-        {
-          "paths": [
-            "/opt"
+            "/home/ubuntu/containers"
           ]
         },
         {
@@ -31,6 +31,39 @@
     },
     {
       "host": "staging-02",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/ubuntu"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "10.10.0.101",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/opt/dockge"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "10.10.0.103",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/home/admin"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "10.10.0.110",
       "args": [],
       "projects": []
     },
