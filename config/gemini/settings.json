@@ -23,6 +23,9 @@
     },
     "mcp-shadcn": {
       "command": "shadcn-mcp"
+    },
+    "mcp-chrome-devtools": {
+      "command": "chrome-devtools-mcp"
     }
   },
   "security": {
