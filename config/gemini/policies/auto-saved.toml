@@ -8,13 +8,13 @@ modes = [ "autoEdit", "yolo" ]
 decision = "allow"
 priority = 950
 toolName = "run_shell_command"
-commandPrefix = [ "asdf", "bun", "docker", "git", "composer", "pnpm", "npm" ]
+commandPrefix = [ "act", "asdf", "bun", "composer", "devcontainer", "docker", "gh", "git", "npm", "pnpm" ]
 modes = [ "plan", "autoEdit", "yolo" ]
 
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "run_shell_command"
-commandPrefix = [ "cat", "ls", "man" ]
+commandPrefix = [ "cat", "chmod", "grep", "ls", "man" ]
 allowRedirection = true
 modes = [ "plan", "autoEdit", "yolo" ]
