@@ -9,7 +9,7 @@ background-blur-radius = 25
 
 theme = Ayu Mirage
 
-# macos-titlebar-style = tabs
+macos-titlebar-style = tabs
 macos-option-as-alt = left
 
 window-step-resize = true
