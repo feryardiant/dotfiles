@@ -1,9 +1,11 @@
 {
+  "context": {
+    "fileName": ["AGENTS.md", "GEMINI.md"]
+  },
   "general": {
     "checkpointing": {
       "enabled": true
     },
-    "previewFeatures": true,
     "enableAutoUpdate": false,
     "defaultApprovalMode": "plan"
   },
