@@ -8,7 +8,18 @@ modes = [ "autoEdit", "yolo" ]
 decision = "allow"
 priority = 950
 toolName = "run_shell_command"
-commandPrefix = [ "act", "asdf", "bun", "composer", "devcontainer", "docker", "gh", "git", "npm", "pnpm" ]
+commandPrefix = [
+  "act",
+  "asdf",
+  "bun",
+  "composer",
+  "devcontainer",
+  "docker",
+  "gh",
+  "git",
+  "npm",
+  "pnpm"
+]
 modes = [ "plan", "autoEdit", "yolo" ]
 
 [[rule]]
@@ -18,3 +29,17 @@ toolName = "run_shell_command"
 commandPrefix = [ "cat", "chmod", "grep", "ls", "man" ]
 allowRedirection = true
 modes = [ "plan", "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "sequentialthinking"
+mcpName = "mcp-server-sequential-thinking"
+modes = [ "plan", "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "echo"
+mcpName = "mcp-server-everything"
+modes = [ "autoEdit", "yolo" ]
