@@ -15,11 +15,6 @@
     {
       "host": "staging-01",
       "args": [],
-      "projects": []
-    },
-    {
-      "host": "staging-01",
-      "args": [],
       "projects": [
         {
           "paths": [
