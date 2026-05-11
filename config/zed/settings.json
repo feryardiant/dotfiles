@@ -70,6 +70,15 @@
       "host": "10.10.0.120",
       "args": [],
       "projects": []
+    },
+    {
+      "host": "hostinger-b1",
+      "args": [],
+      "projects": [
+        {
+          "paths": []
+        }
+      ]
     }
   ],
   "agent": {
