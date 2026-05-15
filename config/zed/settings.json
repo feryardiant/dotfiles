@@ -94,6 +94,12 @@
     }
   },
   "agent_servers": {
+    "opencode": {
+      "type": "registry"
+    },
+    "kilo": {
+      "type": "registry"
+    },
     "gemini": {
       "type": "registry"
     }
