@@ -7,6 +7,18 @@ modes = [ "plan", "default", "autoEdit", "yolo" ]
 [[rule]]
 decision = "allow"
 priority = 950
+toolName = "enter_plan_mode"
+modes = [ "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "exit_plan_mode"
+modes = [ "plan" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
 toolName = "run_shell_command"
 commandPrefix = [
   "act",
