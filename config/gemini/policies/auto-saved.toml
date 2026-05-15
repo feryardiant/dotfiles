@@ -45,6 +45,13 @@ modes = [ "plan", "autoEdit", "yolo" ]
 [[rule]]
 decision = "allow"
 priority = 950
+toolName = "run_shell_command"
+commandPrefix = [ "vendor/bin/kahlan" ]
+modes = [ "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
 toolName = "sequentialthinking"
 mcpName = "mcp-server-sequential-thinking"
 modes = [ "plan", "autoEdit", "yolo" ]
