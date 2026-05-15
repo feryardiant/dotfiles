@@ -2,28 +2,28 @@
   "$schema": "https://opencode.ai/config.json",
   "model": "google/gemini-3-flash-preview",
   "mcp": {
-    "mcp-server-context7": {
+    "context7": {
       "type": "local",
       "enabled": true,
       "command": [
         "context7-mcp"
       ]
     },
-    "mcp-server-sequential-thinking": {
+    "sequential-thinking": {
       "type": "local",
       "enabled": true,
       "command": [
         "mcp-server-sequential-thinking"
       ]
     },
-    "mcp-server-everything": {
+    "everything": {
       "type": "local",
       "enabled": true,
       "command": [
         "mcp-server-everything"
       ]
     },
-    "mcp-shadcn": {
+    "shadcn": {
       "type": "local",
       "enabled": true,
       "command": [
