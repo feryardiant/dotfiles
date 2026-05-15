@@ -2,7 +2,7 @@
 decision = "allow"
 priority = 950
 toolName = "activate_skill"
-modes = [ "autoEdit", "yolo" ]
+modes = [ "plan", "default", "autoEdit", "yolo" ]
 
 [[rule]]
 decision = "allow"
