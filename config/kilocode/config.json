@@ -1,0 +1,44 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "mcp": {
+    "context7": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "context7-mcp"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "mcp-server-sequential-thinking"
+      ]
+    },
+    "everything": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "mcp-server-everything"
+      ]
+    },
+    "shadcn": {
+      "type": "local",
+      "enabled": true,
+      "command": [
+        "shadcn-mcp"
+      ]
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "enabled": true,
+      "command": ["chrome-devtools-mcp"]
+    }
+  },
+  "permission": {
+    "bash": "allow"
+  },
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git"
+  ]
+}
