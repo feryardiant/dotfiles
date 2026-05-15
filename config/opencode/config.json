@@ -36,6 +36,10 @@
       "command": ["chrome-devtools-mcp"]
     }
   },
+  "permission": {
+    "bash": "allow"
+  },
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"],
   "provider": {
     "openrouter": {
       "models": {
