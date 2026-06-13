@@ -62,3 +62,17 @@ priority = 950
 toolName = "echo"
 mcpName = "mcp-server-everything"
 modes = [ "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "resolve-library-id"
+mcpName = "mcp-server-context7"
+modes = [ "plan", "default", "autoEdit", "yolo" ]
+
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "query-docs"
+mcpName = "mcp-server-context7"
+modes = [ "plan", "default", "autoEdit", "yolo" ]
