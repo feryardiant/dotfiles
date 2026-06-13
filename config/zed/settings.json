@@ -9,6 +9,10 @@
 {
   "agent_buffer_font_size": 15.0,
   "buffer_line_height": "comfortable",
+  "use_smartcase_search": true,
+  "search": {
+    "case_sensitive": true
+  },
   "cli_default_open_behavior": "new_window",
   "collaboration_panel": {
     "dock": "right"
@@ -84,6 +88,7 @@
     }
   ],
   "agent": {
+    "message_editor_min_lines": 3,
     "tool_permissions": {
       "default": "allow"
     },
@@ -181,6 +186,8 @@
   "formatter": "language_server",
   "format_on_save": "off",
   "git_panel": {
+    "file_icons": true,
+    "status_style": "icon",
     "dock": "right"
   },
   "icon_theme": "Catppuccin Frappé",
@@ -191,6 +198,7 @@
     "dock": "right"
   },
   "project_panel": {
+    "git_status_indicator": true,
     "button": true,
     "dock": "right",
     "git_status": true
