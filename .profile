@@ -75,10 +75,14 @@ if [[ -d "$HOME/.local/bin" ]]; then
 fi
 
 # ==============================================================================
-# Bun Completions
+# Bun (https://bun.sh)
 # ==============================================================================
-[ -s "/Users/fery/.bun/_bun" ] && source "/Users/fery/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
+# ==============================================================================
+# Vite+ (https://viteplus.dev)
+# ==============================================================================
+[ -f "$HOME/.vite-plus/env" ] && source "$HOME/.vite-plus/env"
 
 # Prevent Duplicate Path
 # Credit: https://askubuntu.com/a/1349910/10706
