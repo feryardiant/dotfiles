@@ -12,5 +12,10 @@
       // Here we also allow `alt-enter` to accept the prediction
       "alt-enter": "editor::AcceptEditPrediction"
     }
+  },
+  {
+    "bindings": {
+      "cmd-k cmd-f": "workspace::CloseProject"
+    }
   }
 ]
