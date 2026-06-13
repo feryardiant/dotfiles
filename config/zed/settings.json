@@ -102,9 +102,15 @@
   },
   "agent_servers": {
     "opencode": {
+      "default_config_options": {
+        "model": "opencode/deepseek-v4-flash-free"
+      },
       "type": "registry"
     },
     "kilo": {
+      "default_config_options": {
+        "model": "kilo/kilo-auto/free"
+      },
       "type": "registry"
     },
     "gemini": {

@@ -1,6 +1,7 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
   "agent": {},
+  "model": "kilo/kilo-auto/free",
   "mcp": {
     "context7": {
       "type": "local",
