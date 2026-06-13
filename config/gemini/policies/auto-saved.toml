@@ -46,7 +46,7 @@ modes = [ "plan", "autoEdit", "yolo" ]
 decision = "allow"
 priority = 950
 toolName = "run_shell_command"
-commandPrefix = [ "vendor/bin/kahlan" ]
+commandPrefix = [ "vendor/bin/kahlan", "vendor/bin/phpcs", "vendor/bin/pint", "vendor/bin/wp" ]
 modes = [ "autoEdit", "yolo" ]
 
 [[rule]]
