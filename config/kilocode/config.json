@@ -33,7 +33,9 @@
     "chrome-devtools": {
       "type": "local",
       "enabled": true,
-      "command": ["chrome-devtools-mcp"]
+      "command": [
+        "chrome-devtools-mcp"
+      ]
     }
   },
   "permission": {
