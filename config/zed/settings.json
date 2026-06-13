@@ -7,6 +7,8 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "agent_buffer_font_size": 15.0,
+  "buffer_line_height": "comfortable",
   "cli_default_open_behavior": "new_window",
   "collaboration_panel": {
     "dock": "right"
@@ -106,7 +108,7 @@
   },
   "base_keymap": "VSCode",
   "buffer_font_family": "FiraCode Nerd Font",
-  "buffer_font_size": 16,
+  "buffer_font_size": 15.0,
   "context_servers": {
     "mcp-server-context7": {
       "enabled": true,
@@ -304,7 +306,7 @@
   },
   "theme": "Ayu Dark",
   "ui_font_family": "FiraCode Nerd Font",
-  "ui_font_size": 16,
+  "ui_font_size": 15.0,
   "wrap_guides": [
     80,
     100,
