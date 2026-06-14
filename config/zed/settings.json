@@ -222,26 +222,6 @@
         "!phpactor"
       ]
     },
-    "TypeScript": {
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    },
-    "JavaScript": {
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    },
-    "TSX": {
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    },
-    "Vue.js": {
-      "code_actions_on_format": {
-        "source.fixAll.eslint": true
-      }
-    }
   },
   "lsp": {
     "tailwindcss-language-server": {
