@@ -90,7 +90,12 @@
   "agent": {
     "message_editor_min_lines": 3,
     "tool_permissions": {
-      "default": "allow"
+      "tools": {
+        "terminal": {
+          "default": "allow"
+        }
+      },
+      "default": "confirm"
     },
     "default_profile": "ask",
     "use_modifier_to_send": true,
