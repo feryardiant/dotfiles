@@ -24,7 +24,7 @@
       "projects": [
         {
           "paths": [
-            "/home/ubuntu/containers"
+            "~/containers"
           ]
         },
         {
@@ -40,7 +40,7 @@
       "projects": [
         {
           "paths": [
-            "/home/ubuntu"
+            "~"
           ]
         }
       ]
@@ -62,7 +62,7 @@
       "projects": [
         {
           "paths": [
-            "/home/admin"
+            "~"
           ]
         }
       ]
@@ -82,7 +82,11 @@
       "args": [],
       "projects": [
         {
-          "paths": []
+          "paths": [
+            "~/domains/mitratenda.id",
+            "~/domains/mogsy.id",
+            "~/domains/yahiqo.id"
+          ]
         }
       ]
     }
