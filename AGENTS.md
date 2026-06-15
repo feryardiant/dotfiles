@@ -28,6 +28,8 @@ For `.aliases`, `.bashrc`, `.exports`, `.functions`, `.profile` and `.zshrc` sym
   - `tmux.conf` — symlinked to `~/.config/tmux/tmux.conf`
 - `./config/vim/` — VIM config directory.
   - `vimrc` — symlinked to `~/.config/vim/vimrc`
+- `./config/wakatime/` — WakaTime config directory.
+  - `config.cfg` — symlinked to `~/.wakatime.cfg`
 - `./config/zed/` — Zed config directory.
   - `keymap.json` — symlinked to `~/.config/zed/keymap.json`
   - `settings.json` — symlinked to `~/.config/zed/settings.json`
