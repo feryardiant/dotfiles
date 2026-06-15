@@ -108,12 +108,14 @@
   "agent_servers": {
     "opencode": {
       "default_config_options": {
+        "mode": "plan",
         "model": "opencode/deepseek-v4-flash-free"
       },
       "type": "registry"
     },
     "kilo": {
       "default_config_options": {
+        "mode": "plan",
         "model": "kilo/kilo-auto/free"
       },
       "type": "registry"
