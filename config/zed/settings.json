@@ -218,11 +218,7 @@
   },
   "languages": {
     "PHP": {
-      "language_servers": [
-        "intelephense",
-        "!phptools",
-        "!phpactor"
-      ]
+      "language_servers": ["intelephense", "!phptools", "!phpactor", "..."]
     },
   },
   "lsp": {
