@@ -227,6 +227,12 @@
         "require_config_file": true
       }
     },
+    "oxfmt": {},
+    "oxlint": {},
+    "eslint": {},
+    "astro-language-server": {},
+    "svelte-language-server": {},
+    "vue-language-server": {},
     "tailwindcss-language-server": {
       "settings": {
         "classFunctions": ["cva", "cx"],
