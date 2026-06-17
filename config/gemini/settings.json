@@ -1,6 +1,10 @@
 {
   "context": {
-    "fileName": ["AGENTS.md", "GEMINI.md"]
+    "fileName": [
+      "AGENTS.md",
+      "GEMINI.md",
+      "/Users/fery/Config/dotfiles/config/ai/instructions/global.md"
+    ]
   },
   "general": {
     "checkpointing": {

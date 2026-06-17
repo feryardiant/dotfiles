@@ -14,8 +14,13 @@ Personal dotfiles managed via `install.sh`. Cross-platform (macOS via Homebrew, 
 
 For `.aliases`, `.bashrc`, `.exports`, `.functions`, `.profile` and `.zshrc` symlinked to `~/` directly
 
-- `./config/ai/` — shared AI directory across multiple agents, currently only `gemini`, `kilocode` and `opencode`.
+- `./config/ai/` — shared AI directory across multiple agents.
   - `agents/` — symlinked to `~/.config/kilo/agents/`, `~/.config/opencode/agents/`
+  - `instructions/global.md` — shared global instructions. Referenced via:
+    - OpenCode: `"instructions"` in `config.json`
+    - KiloCode: `"instructions"` in `config.json`
+    - Gemini: `"context.fileName"` in `settings.json`
+    - Zed: symlinked to `~/.config/zed/AGENTS.md`
   - `skills/` — symlinked to `~/.config/kilo/skills/`, `~/.config/opencode/skills/`, `~/.gemini/skills/`
 - `./config/gemini/` — Google Gemini CLI config directory.
   - `policies/` — symlinked to `~/.gemini/policies/`
@@ -57,8 +62,9 @@ Aliases: `s` (status -s), `a` (add -A), `c` (commit -sm), `p` (push origin), `co
 
 ## AI Tool Configs
 
-- All AI Tools should shares same or at least similar `permissions`, `policies`, `agents`, `skills`, `extension` or `plugins` (if supported)
-- `agents` and `skills` managed within `./config/ai` directory and the contents inside should be ignored from git
+- All AI Tools should share similar `permissions`, `policies`, `agents`, `skills`, `instructions`, `extensions` or `plugins` (if supported)
+- `agents`, `skills`, and `instructions` managed within `./config/ai` directory. `agents` and `skills` contents should be ignored from git.
+- Tool permissions are configured per-agent (`plan` vs `build`/`code`): read-only in plan mode, full access with command confirmations in build/write mode.
 
 ## Platform Notes
 

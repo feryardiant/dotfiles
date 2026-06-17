@@ -92,27 +92,105 @@
     }
   ],
   "agent": {
-    "message_editor_min_lines": 3,
-    "tool_permissions": {
-      "tools": {
-        "terminal": {
-          "default": "allow"
+    "auto_compact": {
+      "enabled": true,
+      "threshold": "95%"
+    },
+    "default_profile": "write",
+    "default_model": {
+      "provider": "opencode",
+      "model": "free/big-pickle"
+    },
+    "profiles": {
+      "ask": {
+        "name": "Ask",
+        "tools": {
+          "read_file": true,
+          "grep": true,
+          "list_directory": true,
+          "search_web": true,
+          "fetch": true,
+          "spawn_agent": true,
+          "terminal": false,
+          "edit_file": false,
+          "write_file": false,
+          "delete_path": false,
+          "move_path": false,
+          "copy_path": false,
+          "create_directory": false
         }
       },
-      "default": "confirm"
+      "write": {
+        "name": "Write",
+        "tools": {
+          "read_file": true,
+          "grep": true,
+          "list_directory": true,
+          "search_web": true,
+          "fetch": true,
+          "spawn_agent": true,
+          "terminal": true,
+          "edit_file": true,
+          "write_file": true,
+          "delete_path": true,
+          "move_path": true,
+          "copy_path": true,
+          "create_directory": true
+        }
+      }
     },
-    "default_profile": "ask",
-    "use_modifier_to_send": true,
     "dock": "left",
-    "default_model": {
-      "provider": "google",
-      "model": "gemini-3-flash-preview"
-    }
+    "message_editor_min_lines": 3,
+    "tool_permissions": {
+      "default": "confirm",
+      "tools": {
+        "diagnostics": {
+          "default": "allow"
+        },
+        "grep": {
+          "default": "allow"
+        },
+        "list_directory": {
+          "default": "allow"
+        },
+        "search_web": {
+          "default": "allow"
+        },
+        "fetch": {
+          "default": "allow"
+        },
+        "spawn_agent": {
+          "default": "confirm"
+        },
+        "terminal": {
+          "always_allow": [
+            { "pattern": "^cat(\\s|$)" },
+            { "pattern": "^grep(\\s|$)" },
+            { "pattern": "^ls(\\s|$)" },
+            { "pattern": "^man(\\s|$)" },
+            { "pattern": "^docker(\\s|$)" },
+            { "pattern": "^devcontainer(\\s|$)" },
+            { "pattern": "^git (log|diff|grep|show|status)(\\s|$)" },
+            { "pattern": "^composer (run|exec|list|install)(\\s|$)" },
+            { "pattern": "^npm (run|exec|list|ci|install)(\\s|$)" },
+            { "pattern": "^npx(\\s|$)" },
+            { "pattern": "^bun (run|install)(\\s|$)" },
+            { "pattern": "^bunx(\\s|$)" },
+            { "pattern": "^pnpm (run|exec|dlx|list|install)(\\s|$)" },
+            { "pattern": "^vp (run|list|check)(\\s|$)" },
+            { "pattern": "^vendor/bin/" },
+            { "pattern": "^node_modules/\\.bin/" }
+          ],
+          "default": "confirm"
+        }
+      },
+    },
+    "use_modifier_to_send": true,
   },
   "agent_servers": {
     "opencode": {
       "default_config_options": {
-        "mode": "plan",
+        "mode": "build",
         "model": "opencode/deepseek-v4-flash-free"
       },
       "type": "registry"
@@ -131,17 +209,7 @@
   "base_keymap": "VSCode",
   "buffer_font_family": "FiraCode Nerd Font",
   "buffer_font_size": 15.0,
-  "context_servers": {
-    "mcp-server-context7": {
-      "enabled": true,
-      "settings": {
-        "default_minimum_tokens": "10000"
-      }
-    },
-    "mcp-server-sequential-thinking": {
-      "settings": {}
-    }
-  },
+  "context_servers": {},
   "debugger": {
     // "dock": "left",
   },

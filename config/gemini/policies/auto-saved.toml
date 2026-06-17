@@ -2,77 +2,100 @@
 decision = "allow"
 priority = 950
 toolName = "activate_skill"
-modes = [ "plan", "default", "autoEdit", "yolo" ]
+modes = ["plan", "default", "autoEdit", "yolo"]
 
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "enter_plan_mode"
-modes = [ "autoEdit", "yolo" ]
+modes = ["autoEdit", "yolo"]
 
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "exit_plan_mode"
-modes = [ "plan" ]
+modes = ["plan"]
 
+# Safe read-only commands (all modes)
+[[rule]]
+decision = "allow"
+priority = 950
+toolName = "run_shell_command"
+commandPrefix = ["cat", "grep", "ls", "man", "docker", "devcontainer"]
+allowRedirection = true
+modes = ["plan", "default", "autoEdit", "yolo"]
+
+# Git read-only (all modes)
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "run_shell_command"
 commandPrefix = [
-  "act",
-  "asdf",
-  "bun",
-  "composer",
-  "devcontainer",
-  "docker",
-  "gh",
-  "git",
-  "npm",
-  "pnpm"
+  "git log",
+  "git diff",
+  "git grep",
+  "git show",
+  "git status"
 ]
-modes = [ "plan", "autoEdit", "yolo" ]
+modes = ["plan", "default", "autoEdit", "yolo"]
 
+# Dep scripts, executables, listing (all modes)
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "run_shell_command"
-commandPrefix = [ "cat", "chmod", "grep", "ls", "man" ]
-allowRedirection = true
-modes = [ "plan", "autoEdit", "yolo" ]
+commandPrefix = [
+  "composer run",
+  "composer exec",
+  "composer list",
+  "composer install",
+  "npm run",
+  "npm exec",
+  "npm list",
+  "npm ci",
+  "npm install",
+  "npx",
+  "bun run",
+  "bunx",
+  "bun install",
+  "pnpm run",
+  "pnpm exec",
+  "pnpm dlx",
+  "pnpm list",
+  "pnpm install",
+  "vp run",
+  "vp list",
+  "vp check",
+  "vendor/bin/",
+  "node_modules/.bin/"
+]
+modes = ["plan", "default", "autoEdit", "yolo"]
 
-[[rule]]
-decision = "allow"
-priority = 950
-toolName = "run_shell_command"
-commandPrefix = [ "vendor/bin/kahlan", "vendor/bin/phpcs", "vendor/bin/pint", "vendor/bin/wp" ]
-modes = [ "autoEdit", "yolo" ]
-
+# MCP tools
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "sequentialthinking"
 mcpName = "mcp-server-sequential-thinking"
-modes = [ "plan", "autoEdit", "yolo" ]
+modes = ["plan", "autoEdit", "yolo"]
 
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "echo"
 mcpName = "mcp-server-everything"
-modes = [ "autoEdit", "yolo" ]
+modes = ["autoEdit", "yolo"]
 
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "resolve-library-id"
 mcpName = "mcp-server-context7"
-modes = [ "plan", "default", "autoEdit", "yolo" ]
+modes = ["plan", "default", "autoEdit", "yolo"]
 
 [[rule]]
 decision = "allow"
 priority = 950
 toolName = "query-docs"
 mcpName = "mcp-server-context7"
-modes = [ "plan", "default", "autoEdit", "yolo" ]
+modes = ["plan", "default", "autoEdit", "yolo"]

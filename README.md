@@ -14,8 +14,9 @@ Personal dotfiles managed via `install.sh`. Cross-platform (macOS via Homebrew, 
 
 For `.aliases`, `.bashrc`, `.exports`, `.functions`, `.profile` and `.zshrc` symlinked to `~/` directly
 
-- `./config/ai/` — shared AI directory across multiple agents, currently only `gemini`, `kilocode` and `opencode`.
+- `./config/ai/` — shared AI directory across multiple agents.
   - `agents/` — symlinked to `~/.config/kilo/agents/`, `~/.config/opencode/agents/`
+  - `instructions/global.md` — shared global instructions
   - `skills/` — symlinked to `~/.config/kilo/skills/`, `~/.config/opencode/skills/`, `~/.gemini/skills/`
 - `./config/gemini/` — Google Gemini CLI config directory.
   - `policies/` — symlinked to `~/.gemini/policies/`
