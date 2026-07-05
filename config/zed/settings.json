@@ -19,6 +19,29 @@
   },
   "ssh_connections": [
     {
+      "host": "office.lan",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "/etc/pve"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "internal.lan",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~",
+            "/opt/stacks"
+          ]
+        },
+      ]
+    },
+    {
       "host": "staging-01",
       "args": [],
       "projects": [
@@ -44,38 +67,6 @@
           ]
         }
       ]
-    },
-    {
-      "host": "10.10.0.101",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "/opt/dockge"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "10.10.0.103",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "10.10.0.110",
-      "args": [],
-      "projects": []
-    },
-    {
-      "host": "10.10.0.120",
-      "args": [],
-      "projects": []
     },
     {
       "host": "hostinger-b1",
