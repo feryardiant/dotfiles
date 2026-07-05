@@ -70,11 +70,7 @@ cd $HOME
 e $c_inf 'Setup dotfiles'
 
 # Setup
-dotfiles="aliases profile exports functions"
-for dotfile in $dotfiles; do
-	_resque ~/.$dotfile
-	ln -sf $my_pwd/.$dotfile .
-done
+_resque ~/.profile && ln -sf $my_pwd/.profile .
 
 # Cleanup
 unset dotfile dotfiles

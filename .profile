@@ -38,12 +38,12 @@ export HISTCONTROL=ignoreboth
 # Import basic utilities
 if [ -d $DOTFILES_DIR ]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
-fi
 
-for dotfile in ~/.{exports,aliases,functions}; do
-    [[ -r $dotfile && -f $dotfile ]] && source $dotfile
-done
-unset dotfile
+    for _base in $DOTFILES_DIR/home/*.sh; do
+        [[ -r $_base && -f $_base ]] && source $_base
+    done
+    unset _base
+fi
 
 # ==============================================================================
 # Zoxide | https://github.com/ajeetdsouza/zoxide
