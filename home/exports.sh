@@ -20,38 +20,47 @@ if [[ -x /opt/homebrew/bin/brew ]]; then
     if [[ -d `brew --prefix`/share/zsh-syntax-highlighting ]]; then
         source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     fi
-
-    # ==============================================================================
-    # Ruby
-    # ==============================================================================
-    if [[ -d "`brew --prefix ruby`" ]]; then
-       PATH="`brew --prefix ruby`/bin:$PATH"
-       PATH="`gem env home`/bin:$PATH"
-    fi
 fi
+
+# ==============================================================================
+# Ruby
+# ==============================================================================
+if [[ -d "`brew --prefix ruby`" ]]; then
+    PATH="`brew --prefix ruby`/bin:$PATH"
+    PATH="`gem env home`/bin:$PATH"
+fi
+
+# ==============================================================================
+# Fix OBJC initialization issue
+# see: https://github.com/rails/rails/issues/38560
+# ==============================================================================
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+export DISABLE_SPRING=true
+
+export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PATH"
 
 # ==============================================================================
 # Android SDK
 # ==============================================================================
-if [[ -d "$XDG_DATA_HOME/android" ]]; then
-    export ANDROID_HOME="$XDG_DATA_HOME/android"
-    export ANDROID_USER_HOME="$XDG_CONFIG_HOME/android"
-    export ANDROID_EMULATOR_HOME="$XDG_DATA_HOME/android"
+# if [[ -d "$XDG_DATA_HOME/android" ]]; then
+#     export ANDROID_HOME="$XDG_DATA_HOME/android"
+#     export ANDROID_USER_HOME="$XDG_CONFIG_HOME/android"
+#     export ANDROID_EMULATOR_HOME="$XDG_DATA_HOME/android"
 
-    for sdk_path in {cmdline-tools/latest/bin,platform-tools,emulator}; do
-        [[ -d $ANDROID_HOME/$sdk_path ]] && PATH="$PATH:$ANDROID_HOME/$sdk_path"
-    done
-    unset sdk_path
-fi
+#     for sdk_path in {cmdline-tools/latest/bin,platform-tools,emulator}; do
+#         [[ -d $ANDROID_HOME/$sdk_path ]] && PATH="$PATH:$ANDROID_HOME/$sdk_path"
+#     done
+#     unset sdk_path
+# fi
 
 # ==============================================================================
 # SDKMan | https://sdkman.io/
 # ==============================================================================
-if [[ -d "$HOME/.sdkman" ]]; then
-    export SDKMAN_DIR="$HOME/.sdkman"
+# if [[ -d "$HOME/.sdkman" ]]; then
+#     export SDKMAN_DIR="$HOME/.sdkman"
 
-    [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-fi
+#     [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+# fi
 
 # ==============================================================================
 # Rust Cargo | https://crates.io/
@@ -74,6 +83,13 @@ if command -v composer >/dev/null 2>&1; then
 fi
 
 # ==============================================================================
+# Phive | https://phar.io/
+# ==============================================================================
+if command -v phive >/dev/null 2>&1; then
+    [[ -z "$PHIVE_HOME" ]] && export PHIVE_HOME="$XDG_DATA_HOME/phive"
+fi
+
+# ==============================================================================
 # Bun | https://bun.sh/
 # ==============================================================================
 if command -v bun >/dev/null 2>&1; then
@@ -82,29 +98,35 @@ if command -v bun >/dev/null 2>&1; then
 fi
 
 # ==============================================================================
-# Phive | https://phar.io/
-# ==============================================================================
-if command -v phive >/dev/null 2>&1; then
-    [[ -z "$PHIVE_HOME" ]] && export PHIVE_HOME="$XDG_DATA_HOME/phive"
-fi
-
-# ==============================================================================
-# Vagrant
-# ==============================================================================
-# export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
-
-# ==============================================================================
-# Fix OBJC initialization issue
-# see: https://github.com/rails/rails/issues/38560
-# ==============================================================================
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-export DISABLE_SPRING=true
-
-export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PATH"
-
-# ==============================================================================
 # Bat - Better version of cat
 # ==============================================================================
 if command -v bat >/dev/null 2>&1; then
     export BAT_THEME=OneHalfDark
+fi
+
+# ==============================================================================
+# Zoxide | https://github.com/ajeetdsouza/zoxide
+# ==============================================================================
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+fi
+
+# ==============================================================================
+# Ngrok | https://ngrok.com
+# ==============================================================================
+if command -v ngrok >/dev/null 2>&1; then
+    eval "$(ngrok completion)"
+fi
+
+# ==============================================================================
+# Vite+ | https://viteplus.dev
+# ==============================================================================
+# [ -f "$HOME/.vite-plus/env" ] && source "$HOME/.vite-plus/env"
+
+# ==============================================================================
+# ASDF
+# ==============================================================================
+if command -v asdf >/dev/null 2>&1; then
+    [[ -d "$HOME/.asdf" ]] && export ASDF_DATA_DIR="$HOME/.asdf"
+    export PATH="$ASDF_DATA_DIR/shims:$PATH"
 fi

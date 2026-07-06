@@ -40,49 +40,18 @@ if [ -d $DOTFILES_DIR ]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
 
     for _base in $DOTFILES_DIR/home/*.sh; do
-        [[ -r $_base && -f $_base ]] && source $_base
+        [[ -r $_base ]] && source $_base
     done
     unset _base
 fi
 
 # ==============================================================================
-# Zoxide | https://github.com/ajeetdsouza/zoxide
+# User Local bin, if not exists in `$PATH`
 # ==============================================================================
-if command -v zoxide >/dev/null 2>&1; then
-    eval "$(zoxide init zsh)"
-fi
-
-# ==============================================================================
-# Ngrok | https://ngrok.com
-# ==============================================================================
-if command -v ngrok >/dev/null 2>&1; then
-    eval "$(ngrok completion)"
-fi
-
-# ==============================================================================
-# ASDF
-# ==============================================================================
-if command -v asdf >/dev/null 2>&1; then
-    [[ -d "$HOME/.asdf" ]] && export ASDF_DATA_DIR="$HOME/.asdf"
-    PATH="$ASDF_DATA_DIR/shims:$PATH"
-fi
-
-# ==============================================================================
-# User Local
-# ==============================================================================
-if [[ -d "$HOME/.local/bin" ]]; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
-# ==============================================================================
-# Bun (https://bun.sh)
-# ==============================================================================
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-
-# ==============================================================================
-# Vite+ (https://viteplus.dev)
-# ==============================================================================
-[ -f "$HOME/.vite-plus/env" ] && source "$HOME/.vite-plus/env"
+# if [[ -d "$HOME/.local/bin" && -n "${PATH##*$HOME/.local/bin*}" ]]; then
+#     export PATH="$HOME/.local/bin:$PATH"
+# fi
+PATH="$HOME/.local/bin:$PATH"
 
 # Prevent Duplicate Path
 # Credit: https://askubuntu.com/a/1349910/10706

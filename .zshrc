@@ -74,7 +74,8 @@ export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(fzf per-directory-history starship zsh-autosuggestions zsh-interactive-cd)
+plugins=(per-directory-history starship zsh-autosuggestions zsh-interactive-cd)
+# plugins=(fzf per-directory-history starship zsh-autosuggestions zsh-interactive-cd)
 
 source $ZSH/oh-my-zsh.sh
 
