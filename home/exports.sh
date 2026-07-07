@@ -42,16 +42,16 @@ export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PA
 # ==============================================================================
 # Android SDK
 # ==============================================================================
-# if [[ -d "$XDG_DATA_HOME/android" ]]; then
-#     export ANDROID_HOME="$XDG_DATA_HOME/android"
-#     export ANDROID_USER_HOME="$XDG_CONFIG_HOME/android"
-#     export ANDROID_EMULATOR_HOME="$XDG_DATA_HOME/android"
+if [[ -d "$XDG_DATA_HOME/android" ]]; then
+    export ANDROID_HOME="$XDG_DATA_HOME/android"
+    export ANDROID_USER_HOME="$XDG_CONFIG_HOME/android"
+    export ANDROID_EMULATOR_HOME="$XDG_DATA_HOME/android"
 
-#     for sdk_path in {cmdline-tools/latest/bin,platform-tools,emulator}; do
-#         [[ -d $ANDROID_HOME/$sdk_path ]] && PATH="$PATH:$ANDROID_HOME/$sdk_path"
-#     done
-#     unset sdk_path
-# fi
+    for sdk_path in {cmdline-tools/latest/bin,platform-tools,emulator}; do
+        [[ -d $ANDROID_HOME/$sdk_path ]] && PATH="$PATH:$ANDROID_HOME/$sdk_path"
+    done
+    unset sdk_path
+fi
 
 # ==============================================================================
 # SDKMan | https://sdkman.io/
