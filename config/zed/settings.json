@@ -20,11 +20,42 @@
   "ssh_connections": [
     {
       "host": "office.lan",
-      "args": [],
+      "username": "root",
+      "nickname": "Root Office",
+      "args": [
+        "-i",
+        "~/.ssh/id_rsa"
+      ],
       "projects": [
         {
           "paths": [
             "/etc/pve"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "office.lan",
+      "username": "admin",
+      "nickname": "Office Admin",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "office.lan",
+      "username": "fery",
+      "nickname": "Fery Office",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~"
           ]
         }
       ]
