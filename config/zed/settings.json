@@ -20,8 +20,8 @@
   "ssh_connections": [
     {
       "host": "office.lan",
+      "nickname": "Office Root",
       "username": "root",
-      "nickname": "Root Office",
       "args": [
         "-i",
         "~/.ssh/id_rsa"
@@ -31,13 +31,18 @@
           "paths": [
             "/etc/pve"
           ]
+        },
+        {
+          "paths": [
+            "/home/admin"
+          ]
         }
       ]
     },
     {
       "host": "office.lan",
-      "username": "admin",
       "nickname": "Office Admin",
+      "username": "admin",
       "args": [],
       "projects": [
         {
@@ -49,8 +54,8 @@
     },
     {
       "host": "office.lan",
+      "nickname": "Office Fery",
       "username": "fery",
-      "nickname": "Fery Office",
       "args": [],
       "projects": [
         {
@@ -62,6 +67,7 @@
     },
     {
       "host": "internal.lan",
+      "nickname": "Internal Admin",
       "args": [],
       "projects": [
         {
@@ -69,7 +75,20 @@
             "~",
             "/opt/stacks"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "host": "home.lan",
+      "nickname": "Home Admin",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~",
+            "/opt/stacks"
+          ]
+        }
       ]
     },
     {
@@ -78,12 +97,12 @@
       "projects": [
         {
           "paths": [
-            "~/containers"
+            "/opt/stacks"
           ]
         },
         {
           "paths": [
-            "/opt/stacks"
+            "~/containers"
           ]
         }
       ]
