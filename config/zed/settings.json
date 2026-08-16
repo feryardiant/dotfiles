@@ -4,299 +4,27 @@
 // documentation: https://zed.dev/docs/configuring-zed
 //
 // To see all of Zed's default settings without changing your
-// custom settings, run the `open default settings` command
-// from the command palette or from `Zed` application menu.
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "agent_buffer_font_size": 15.0,
-  "buffer_line_height": "comfortable",
-  "use_smartcase_search": true,
-  "search": {
-    "case_sensitive": true
-  },
-  "cli_default_open_behavior": "new_window",
-  "collaboration_panel": {
-    "dock": "right"
-  },
-  "ssh_connections": [
-    {
-      "host": "office.lan",
-      "nickname": "Office Root",
-      "username": "root",
-      "args": [
-        "-i",
-        "~/.ssh/id_rsa"
-      ],
-      "projects": [
-        {
-          "paths": [
-            "/etc/pve"
-          ]
-        },
-        {
-          "paths": [
-            "/home/admin"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "office.lan",
-      "nickname": "Office Admin",
-      "username": "admin",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "office.lan",
-      "nickname": "Office Fery",
-      "username": "fery",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "internal.lan",
-      "nickname": "Internal Admin",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~",
-            "/opt/stacks"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "home.lan",
-      "nickname": "Home Admin",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~",
-            "/opt/stacks"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "staging-01",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "/opt/stacks"
-          ]
-        },
-        {
-          "paths": [
-            "~/containers"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "staging-02",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~"
-          ]
-        }
-      ]
-    },
-    {
-      "host": "hostinger-b1",
-      "args": [],
-      "projects": [
-        {
-          "paths": [
-            "~/domains/mitratenda.id",
-            "~/domains/mogsy.id",
-            "~/domains/yahiqo.id"
-          ]
-        }
-      ]
-    }
-  ],
-  "agent": {
-    "auto_compact": {
-      "enabled": true,
-      "threshold": "95%"
-    },
-    "default_profile": "write",
-    "default_model": {
-      "provider": "opencode",
-      "model": "free/big-pickle"
-    },
-    "profiles": {
-      "ask": {
-        "name": "Ask",
-        "tools": {
-          "read_file": true,
-          "grep": true,
-          "list_directory": true,
-          "search_web": true,
-          "fetch": true,
-          "spawn_agent": true,
-          "terminal": false,
-          "edit_file": false,
-          "write_file": false,
-          "delete_path": false,
-          "move_path": false,
-          "copy_path": false,
-          "create_directory": false
-        }
-      },
-      "write": {
-        "name": "Write",
-        "tools": {
-          "read_file": true,
-          "grep": true,
-          "list_directory": true,
-          "search_web": true,
-          "fetch": true,
-          "spawn_agent": true,
-          "terminal": true,
-          "edit_file": true,
-          "write_file": true,
-          "delete_path": true,
-          "move_path": true,
-          "copy_path": true,
-          "create_directory": true
-        }
-      }
-    },
-    "dock": "left",
-    "message_editor_min_lines": 3,
-    "tool_permissions": {
-      "default": "confirm",
-      "tools": {
-        "diagnostics": {
-          "default": "allow"
-        },
-        "grep": {
-          "default": "allow"
-        },
-        "list_directory": {
-          "default": "allow"
-        },
-        "search_web": {
-          "default": "allow"
-        },
-        "fetch": {
-          "default": "allow"
-        },
-        "spawn_agent": {
-          "default": "confirm"
-        },
-        "terminal": {
-          "always_allow": [
-            { "pattern": "^cat(\\s|$)" },
-            { "pattern": "^grep(\\s|$)" },
-            { "pattern": "^ls(\\s|$)" },
-            { "pattern": "^man(\\s|$)" },
-            { "pattern": "^docker(\\s|$)" },
-            { "pattern": "^devcontainer(\\s|$)" },
-            { "pattern": "^git (log|diff|grep|show|status)(\\s|$)" },
-            { "pattern": "^composer (run|exec|list|install)(\\s|$)" },
-            { "pattern": "^npm (run|exec|list|ci|install)(\\s|$)" },
-            { "pattern": "^npx(\\s|$)" },
-            { "pattern": "^bun (run|install)(\\s|$)" },
-            { "pattern": "^bunx(\\s|$)" },
-            { "pattern": "^pnpm (run|exec|dlx|list|install)(\\s|$)" },
-            { "pattern": "^vp (run|list|check)(\\s|$)" },
-            { "pattern": "^vendor/bin/" },
-            { "pattern": "^node_modules/\\.bin/" }
-          ],
-          "default": "confirm"
-        }
-      },
-    },
-    "use_modifier_to_send": true,
-  },
   "agent_servers": {
-    "opencode": {
+    "OpenCode": {
       "default_config_options": {
-        "mode": "build",
-        "model": "opencode/deepseek-v4-flash-free"
+        "mode": "plan"
       },
-      "type": "registry"
-    },
-    "kilo": {
-      "default_config_options": {
-        "mode": "plan",
-        "model": "kilo/kilo-auto/free"
-      },
-      "type": "registry"
-    },
-    "gemini": {
-      "type": "registry"
+      "type": "custom",
+      "command": "~/.local/bin/opencode",
+      "args": ["acp"],
     }
   },
   "base_keymap": "VSCode",
-  "buffer_font_family": "FiraCode Nerd Font",
-  "buffer_font_size": 15.0,
-  "context_servers": {},
-  "debugger": {
-    // "dock": "left",
-  },
-  "show_edit_predictions": true,
-  "edit_predictions": {
-    "provider": "zed",
-    "disabled_globs": [
-      "**/*.log",
-      "**/*.old"
-    ],
-    "mode": "subtle"
-  },
-  // File scan exclusions, hide on the file explorer and search
-  "file_scan_exclusions": [
-    "**/.git",
-    "**/.svn",
-    "**/.hg",
-    "**/CVS",
-    "**/.DS_Store",
-    "**/Thumbs.db",
-    "**/.classpath",
-    "**/.settings",
-    // above is default from Zed
-    "**/out",
-    "**/.husky",
-    "**/.next",
-    "**/.nyc_output",
-    "**/.pnpm-store",
-    "**/.storybook",
-    "**/.tap",
-    "**/.turbo"
-  ],
+  "use_smartcase_search": true,
+  "buffer_font_family": "FiraCode Nerd Font Propo",
+  "buffer_font_size": 14.0,
+  "ui_font_family": "FiraCode Nerd Font",
+  "ui_font_size": 15.0,
+  "icon_theme": "Catppuccin Mocha",
   "file_types": {
-    "Blade": [
-      "*.blade.php"
-    ],
-    "JSONC": [
-      ".devcontainer/*/devcontainer.json",
-      ".devcontainer/devcontainer.json",
-      ".devcontainer.json",
-      "tsconfig.*.json",
-      "**/.zed/**/*.json",
-      "**/zed/**/*.json",
-      "**/Zed/**/*.json",
-      "**/.vscode/**/*.json"
-    ],
     "Nginx": [
       "*/nginx/**.conf"
     ],
@@ -309,138 +37,21 @@
       "tmux.conf"
     ]
   },
-  "formatter": "language_server",
-  "format_on_save": "off",
   "git_panel": {
     "file_icons": true,
-    "status_style": "icon",
-    "dock": "right"
   },
-  "icon_theme": "Catppuccin Frappé",
-  "inlay_hints": {
-    "enabled": true
+  "theme": {
+    "mode": "system",
+    "light": "Ayu Light",
+    "dark": "Ayu Dark",
   },
-  "outline_panel": {
-    "dock": "right"
+  "vim_mode": true,
+  "vim": {
+    "use_smartcase_find": true
   },
-  "project_panel": {
-    "git_status_indicator": true,
-    "button": true,
-    "dock": "right",
-    "git_status": true
-  },
-  "languages": {
-    "PHP": {
-      "language_servers": ["intelephense", "!phptools", "!phpactor", "..."]
-    },
-  },
-  "lsp": {
-    "biome": {
-      "settings": {
-        "require_config_file": true
-      }
-    },
-    "oxfmt": {},
-    "oxlint": {},
-    "eslint": {},
-    "astro-language-server": {},
-    "svelte-language-server": {},
-    "vue-language-server": {},
-    "tailwindcss-language-server": {
-      "settings": {
-        "classFunctions": ["cva", "cx"],
-        "experimental": {
-          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"]
-        }
-      }
-    },
-    "typescript-language-server": {},
-    "vtsls": {
-      "settings": {
-        // Add vue.js integration
-        // See https://github.com/zed-extensions/vue/issues/6#issuecomment-2739514942
-        "vtsls": {
-          "experimental": {
-            // https://github.com/zed-industries/zed/issues/13317#issuecomment-2646080375
-            "maxInlayHintLength": 25
-          },
-          "tsserver": {
-            "globalPlugins": [
-              {
-                "name": "@vue/typescript-plugin",
-                "location": "/opt/homebrew/lib/node_modules",
-                "enableForWorkspaceTypeScriptVersions": true
-              }
-            ]
-          }
-        },
-        // For TypeScript:
-        "typescript": {
-          "tsserver": {
-            "maxTsServerMemory": 4096
-          }
-        },
-        // For JavaScript:
-        "javascript": {
-          "tsserver": {
-            "maxTsServerMemory": 4096
-          }
-        }
-      }
-    },
-    "json-language-server": {
-      "settings": {
-        "json": {
-          "schemas": [
-            {
-              "fileMatch": [".gemini/settings.json", "gemini/settings.json"],
-              "url": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json"
-            },
-            {
-              "fileMatch": [".devcontainer/*/devcontainer.json", ".devcontainer/devcontainer.json", ".devcontainer.json"],
-              "url": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.base.schema.json"
-            },
-            {
-              "fileMatch": ["*/composer.json", ".composer.json"],
-              "url": "https://getcomposer.org/schema.json"
-            },
-            {
-              "fileMatch": ["deno.json", "deno.jsonc"],
-              "url": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json"
-            }
-          ]
-        }
-      }
-    },
-    "yaml-language-server": {
-      "settings": {
-        "yaml": {
-          "schemas": {}
-        }
-      }
-    },
-    "lua-language-server": {},
-  },
-  "terminal": {
-    "button": false,
-    "detect_venv": {
-      "on": {
-        "directories": [
-          "env",
-          ".venv",
-          "venv"
-        ],
-        "activate_script": "default"
-      }
-    }
-  },
-  "theme": "Ayu Dark",
-  "ui_font_family": "FiraCode Nerd Font",
-  "ui_font_size": 15.0,
   "wrap_guides": [
     80,
     100,
     120
   ],
-  "vim_mode": true
 }
