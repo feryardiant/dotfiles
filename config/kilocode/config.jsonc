@@ -1,0 +1,13 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "model": "kilo/kilo-auto/free",
+  "instructions": [
+    "/Users/fery/Config/dotfiles/config/ai/instructions/global.md"
+  ],
+  "mcp": {},
+  "permission": {},
+  "plugin": [
+    "superpowers@git+https://github.com/obra/superpowers.git"
+  ],
+  "provider": {}
+}
