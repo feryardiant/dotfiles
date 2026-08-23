@@ -62,26 +62,16 @@ export ZSH="$HOME/.oh-my-zsh"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-# Import basic utilities
-[[ -s $HOME/.env ]] && source $HOME/.env
-
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(per-directory-history starship zsh-autosuggestions zsh-interactive-cd)
-# plugins=(fzf per-directory-history starship zsh-autosuggestions zsh-interactive-cd)
+plugins=(fzf mise per-directory-history starship zsh-interactive-cd zoxide)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
-[[ -s $HOME/.profile ]] && source $HOME/.profile
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
