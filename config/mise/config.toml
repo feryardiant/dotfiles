@@ -1,3 +1,18 @@
 [tools]
+bun = "1.4"
+deno = "2.9"
 go = "1.27"
+java = "22"
+node = "24"
+php = "8.4"
+rust = "latest"
 uv = "latest"
+zig = "latest"
+zls = "latest"
+
+[env]
+MISE_RUSTUP_HOME = "{{env.HOME}}/.local/share/rustup"
+MISE_CARGO_HOME = "{{env.HOME}}/.local/share/cargo"
+
+[settings.node]
+corepack = true
