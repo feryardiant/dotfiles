@@ -98,7 +98,7 @@ function install_phive() {
         chmod +x "$phive_dir/phive.phar"
         ln -sf "$phive_dir/phive.phar" "$util_install_bin/phive"
 
-        $phive_dir/phive.phar update-repository-list
+        "$phive_dir/phive.phar" update-repository-list
     } >> "$logs_dir/phive.txt" 2>&1
 
     echo -e "\e[32mPhive\e[0m installed in \e[33m~/.local/share/phive\e[0m"
