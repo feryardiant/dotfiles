@@ -73,9 +73,9 @@ fi
 # ==============================================================================
 # Phive | https://phar.io/
 # ==============================================================================
-# if command -v phive >/dev/null 2>&1; then
-#     [[ -z "$PHIVE_HOME" ]] && export PHIVE_HOME="$XDG_DATA_HOME/phive"
-# fi
+if command -v phive >/dev/null 2>&1; then
+    [[ -z "$PHIVE_HOME" ]] && export PHIVE_HOME="$XDG_DATA_HOME/phive"
+fi
 
 # ==============================================================================
 # Bun | https://bun.sh/
