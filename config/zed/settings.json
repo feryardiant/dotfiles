@@ -7,8 +7,23 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  "edit_predictions": {
-    "mode": "subtle"
+  "agent": {
+    "default_profile": "ask",
+    "auto_compact": {
+      "threshold": "90%"
+    },
+    "inline_assistant_model": {
+      "provider": "openrouter",
+      "model": "minimax/minimax-m3:free",
+      "enable_thinking": false
+    },
+    "default_model": {
+      "provider": "openrouter",
+      "model": "minimax/minimax-m3:free",
+      "enable_thinking": true
+    },
+    "favorite_models": [],
+    "model_parameters": []
   },
   "agent_servers": {
     "OpenCode": {
@@ -16,9 +31,20 @@
         "mode": "plan"
       },
       "type": "custom",
-      "command": "~/.local/bin/opencode",
+      "command": "opencode",
       "args": ["acp"],
-    }
+    },
+    "KiloCode": {
+      "default_config_options": {
+        "mode": "plan"
+      },
+      "type": "custom",
+      "command": "kilo",
+      "args": ["acp"],
+    },
+  },
+  "edit_predictions": {
+    "mode": "subtle"
   },
   "base_keymap": "VSCode",
   "use_smartcase_search": true,
