@@ -29,6 +29,11 @@ ext_opts['lzf']="enable-lzf-better-compression='no'"
 ext_opts['openswoole']="enable-sockets='yes' enable-openssl='yes --with-openssl-dir=${req_dirs["openssl"]}' enable-http2='yes' enable-mysqlnd='yes' enable-hook-curl='yes'"
 ext_opts['redis']="enable-redis-igbinary='yes' enable-redis-lzf='yes' enable-redis-zstd='yes' enable-redis-msgpack='no' enable-redis-lz4='yes' with-liblz4='yes'"
 
+# Space separated list of extensions to skip for specific PHP versions
+declare -A ext_skips
+ext_skips['8.2']="openswoole" # OpenSwoole is not available in PHP 8.2
+ext_skips['8.5']="opcache"    # OPCache is always available in PHP 8.5
+
 beta_exts=(uv)
 util_install_home="${XDG_DATA_HOME:-$HOME/.local/share}"
 util_install_bin="$HOME/.local/bin"
@@ -134,6 +139,20 @@ function in_beta() {
     return 1
 }
 
+function is_skipped() {
+    local skips skip_ext
+
+    IFS=' ' read -ra skips <<< "${ext_skips[$2]}"
+
+    [ ${#skips[@]} -eq 0 ] && return 1
+
+    for skip_ext in "${skips[@]}"; do
+        [[ "$skip_ext" == "$1" ]] && return 0
+    done
+
+    return 1
+}
+
 # Remove default php.ini and replace with custom version
 if [[ -f "$install_dir/conf.d/php.ini" ]]; then
     rm "$install_dir/conf.d/php.ini"
@@ -170,6 +189,8 @@ ext_dir=`php_bin -r "echo ini_get('extension_dir').PHP_EOL;"`
 exts=( $( echo ${!pecl_exts[@]} | tr ' ' $'\n' | sort ) )
 
 for ext in ${exts[@]}; do
+    if is_skipped "$ext" "${php_version%.*}"; then continue; fi
+
     if [[ ! -f "$ext_dir/$ext.so" ]]; then
         install_ext pecl $ext ${pecl_exts[$ext]}; continue
     fi
