@@ -74,31 +74,31 @@ function install_pie() {
 function install_phive() {
     if ! command -v gpg >/dev/null 2>&1; then return; fi
 
-    local PHIVE_HOME="$util_install_home/phive"
-    mkdir -p "$PHIVE_HOME"
+    phive_dir="$HOME/.phive"
+    mkdir -p "$phive_dir"
 
     {
-        curl --silent -L https://phar.io/releases/phive.phar > "$PHIVE_HOME/phive.phar"
-        curl --silent -L https://phar.io/releases/phive.phar.asc > "$PHIVE_HOME/phive.phar.asc"
+        curl --silent -L https://phar.io/releases/phive.phar > "$phive_dir/phive.phar"
+        curl --silent -L https://phar.io/releases/phive.phar.asc > "$phive_dir/phive.phar.asc"
     } > "$logs_dir/phive.txt" 2>&1
 
-    if [ ! -f "$PHIVE_HOME/phive.phar.asc" ]; then
+    if [ ! -f "$phive_dir/phive.phar.asc" ]; then
         echo -e "\e[31mPhive\e[0m signature file missing; skipping install" >&2
         return 1
     fi
 
     gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 >> "$logs_dir/phive.txt" 2>&1
 
-    if ! gpg --verify "$PHIVE_HOME/phive.phar.asc" "$PHIVE_HOME/phive.phar" >> "$logs_dir/phive.txt" 2>&1; then
+    if ! gpg --verify "$phive_dir/phive.phar.asc" "$phive_dir/phive.phar" >> "$logs_dir/phive.txt" 2>&1; then
         echo -e "\e[31mPhive\e[0m failed to verify; skipping install" >&2
         return 1
     fi
 
     {
-        chmod +x "$PHIVE_HOME/phive.phar"
-        ln -sf "$PHIVE_HOME/phive.phar" "$util_install_bin/phive"
+        chmod +x "$phive_dir/phive.phar"
+        ln -sf "$phive_dir/phive.phar" "$util_install_bin/phive"
 
-        $PHIVE_HOME/phive.phar update-repository-list
+        $phive_dir/phive.phar update-repository-list
     } >> "$logs_dir/phive.txt" 2>&1
 
     echo -e "\e[32mPhive\e[0m installed in \e[33m~/.local/share/phive\e[0m"
