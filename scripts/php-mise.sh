@@ -50,9 +50,17 @@ function install_pie() {
 
     {
         curl --silent -fLo "$pie_dir/pie.phar" https://github.com/php/pie/releases/latest/download/pie.phar
-        gh attestation verify --owner php "$pie_dir/pie.phar" && chmod +x "$pie_dir/pie.phar"
-        ln -sf "$pie_dir/pie.phar" $util_install_bin/pie
-    } > "$logs_dir/pie.txt"
+    } > "$logs_dir/pie.txt" 2>&1
+
+    if ! gh attestation verify --owner php "$pie_dir/pie.phar" >> "$logs_dir/pie.txt" 2>&1; then
+        echo -e "\e[31mPie\e[0m failed to verify; skipping install" >&2
+        return 1
+    fi
+
+    {
+        chmod +x "$pie_dir/pie.phar"
+        ln -sf "$pie_dir/pie.phar" "$util_install_bin/pie"
+    } >> "$logs_dir/pie.txt" 2>&1
 
     echo -e "\e[32mPie\e[0m installed in \e[33m~/.local/share/php-pie\e[0m"
 }
@@ -67,17 +75,26 @@ function install_phive() {
     {
         curl --silent -L https://phar.io/releases/phive.phar > "$PHIVE_HOME/phive.phar"
         curl --silent -L https://phar.io/releases/phive.phar.asc > "$PHIVE_HOME/phive.phar.asc"
+    } > "$logs_dir/phive.txt" 2>&1
 
-        if [ ! -f "$PHIVE_HOME/phive.phar.asc" ]; then return; fi
+    if [ ! -f "$PHIVE_HOME/phive.phar.asc" ]; then
+        echo -e "\e[31mPhive\e[0m signature file missing; skipping install" >&2
+        return 1
+    fi
 
-        gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
-        gpg --verify "$PHIVE_HOME/phive.phar.asc" "$PHIVE_HOME/phive.phar"
+    gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 >> "$logs_dir/phive.txt" 2>&1
 
+    if ! gpg --verify "$PHIVE_HOME/phive.phar.asc" "$PHIVE_HOME/phive.phar" >> "$logs_dir/phive.txt" 2>&1; then
+        echo -e "\e[31mPhive\e[0m failed to verify; skipping install" >&2
+        return 1
+    fi
+
+    {
         chmod +x "$PHIVE_HOME/phive.phar"
         ln -sf "$PHIVE_HOME/phive.phar" "$util_install_bin/phive"
 
         $PHIVE_HOME/phive.phar update-repository-list
-    } > "$logs_dir/phive.txt"
+    } >> "$logs_dir/phive.txt" 2>&1
 
     echo -e "\e[32mPhive\e[0m installed in \e[33m~/.local/share/phive\e[0m"
 }
@@ -87,18 +104,16 @@ function install_ext() {
     local ext="$2"
     local conf="$3"
 
-    if in_beta $2; then
-        ext="$2-beta"
-    fi
+    local ext_name=`in_beta "$ext" && echo "$ext-beta" || echo "$ext"`
 
     (
         set -e
 
         {
             if [[ ! -z ${ext_opts[$ext]+x} ]]; then
-               	pecl_bin install --configureoptions="${ext_opts[$ext]}" $ext
+               	pecl_bin install --configureoptions="${ext_opts[$ext]}" "$ext_name"
             else
-                pecl_bin install $ext
+                pecl_bin install "$ext_name"
             fi
         } > "$logs_dir/php${php_version}_${ext}.txt"
 
@@ -159,6 +174,6 @@ for ext in ${exts[@]}; do
         install_ext pecl $ext ${pecl_exts[$ext]}; continue
     fi
 
-    ln -sf "$source_dir/conf.d/pecl-$ext.ini" "$install_dir/conf.d/$conf.ini"
+    ln -sf "$source_dir/conf.d/pecl-$ext.ini" "$install_dir/conf.d/${pecl_exts[$ext]}.ini"
     echo -e " - Ext \e[32m$ext\e[0m configured"
 done
