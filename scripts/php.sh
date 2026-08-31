@@ -1,130 +1,200 @@
 #!/usr/bin/env bash
-{
-# clear any previous sudo permission
-sudo -k
 
-install=1
-display_errors='stderr'
-log_errors='STDERR'
-post_max_size='128M'
-upload_max_filesize='100M'
-max_file_uploads='50'
-user_ini_filename='.user.ini'
-
-_usage() {
-	cat <<USAGE
-  Usage:
-    command [option]
-
-  Available Options:
-    --no-install                  Skip the installation.
-    --post-max-size <value>       php.ini 'post_max_size' value, default: ${post_max_size}
-    --upoad-max-filesize <value>  php.ini 'upload_max_filesize' value, default: ${upload_max_filesize}
-    --max-file-upload <value>     php.ini 'max_file_upload' value, default: ${max_file_upload}
-    --user-ini-filename <value>   php.ini 'user_ini.filename' value, default: ${user_ini_filename}
-    --help | -h                   Show this usage help
-USAGE
-}
-
-# versions 7.0,7.1,7.2,7.3,7.4,8.0,8.1
-# extensions cli,phpdbg,dev,redis,sqlite3,pgsql,mysqlnd,memcache,memcached,intl,bz2,igbinary,imagick,gd,bcmath,xdebug,xml,xmlrpc,zip
-# dependencies
-# - redis: redis-server
-# - sqlite3: sqlite3
-# - memcached: memcahced
-# - gd: libgd-tools
-# - mysqlnd: mysql-server
-# - pgsql: postgresql
-# - imagick: libmagickcore-6.q16-6-extra
-# - swoole: libevent-dev
-
-_OPTS=''
-while [ $# -ne 0 ]; do
-	case $1 in
-		--no-install)
-			install=0
-			shift
-		;;
-		--post-max-size)
-			post_max_size="${2}"
-			shift 2
-		;;
-		--upload-max-filesize)
-			upload_max_filesize="${2}"
-			shift 2
-		;;
-		--max-file-upload)
-			max_file_uploads="${2}"
-			shift 2
-		;;
-		--user-ini-filename)
-			user_ini_filename="${2}"
-			shift 2
-		;;
-		-h|--help)
-			_usage
-			exit 0
-		;;
-		-?*)
-			echo "Invalid argument: $1" 1>&2
-			exit 1
-		;;
-		*)
-			break
-		;;
-	esac
-done
-
-echo $_OPTS
-# Configure
-phpv=$(php -r "echo substr(PHP_VERSION, 0, 3);")
-echo "Configuring PHP ${phpv} for development"
-
-if [ $install = 1 ]; then
-	sudo sh <<SCRIPT
-	# add-apt-repository ppa:ondrej/php -y > $_LOG_FILE 2>&1
-SCRIPT
-else
-	echo '[skip] No install'
+if [[ "$MISE_TOOL_NAME" != "php" || -z "$DOTFILES_DIR" ]]; then
+    echo "Skipping php setup"
+    exit 0
 fi
 
-for phpc in /etc/php/$phpv/{apache2,cgi,cli,fpm}; do
-	phpi="${phpc}/php.ini"
+php_version="$MISE_TOOL_VERSION"
+install_dir="$MISE_TOOL_INSTALL_PATH"
+source_dir="$DOTFILES_DIR/config/php"
+logs_dir="$DOTFILES_DIR/scripts/logs"
 
-	if [ ! -r $phpi ]; then
-		echo "[skip] ${phpi} Not available"
-		continue
-	fi
+declare -A req_dirs
+req_dirs['imagemagick']=`brew --prefix imagemagick`
+req_dirs['libpq']=`brew --prefix libpq`
+req_dirs['libevent']=`brew --prefix libevent`
+req_dirs['msgpack']=`brew --prefix msgpack`
+req_dirs['openssl']=`brew --prefix openssl@3`
 
-	sudo sh <<SCRIPT
-	echo "[conf] ${phpi}"
-	echo " - error_reporting"
-	sed -i -E "s~error_reporting =.*~error_reporting = E_ALL~" $phpi
-	echo " - display_errors : ${display_errors}"
-	sed -i -E "s~display_errors =.*~display_errors = stderr~" $phpi
-	echo " - display_startup_errors"
-	sed -i -E "s~display_startup_errors =.*~display_startup_errors = On~" $phpi
-	echo " - log_errors"
-	sed -i -E "s~log_errors =.*~log_errors = On~" $phpi
-	echo " - error_log : ${error_log}"
-	sed -i -E "s~error_log =.*~error_log = STDERR~" $phpi
+export PKG_CONFIG_PATH="${req_dirs['libpq']}/lib/pkgconfig:${req_dirs['openssl']}/lib/pkgconfig"
+export CXXFLAGS="-I`brew --prefix`/include"
+export LDFLAGS="-L`brew --prefix`/lib"
 
-	echo " - post_max_size : ${post_max_size}"
-	sed -i -E "s~post_max_size =.*~post_max_size = ${post_max_size}~" $phpi
-	echo " - upload_max_filesize : ${upload_max_filesize}"
-	sed -i -E "s~upload_max_filesize =.*~upload_max_filesize = ${upload_max_filesize}~" $phpi
-	echo " - max_file_uploads : ${max_file_uploads}"
-	sed -i -E "s~max_file_uploads =.*~max_file_uploads = ${max_file_uploads}~" $phpi
+declare -A ext_opts
+ext_opts['ev']="enable-ev-debug='no'"
+ext_opts['event']="with-event-ns='yes' with-event-libevent-dir='${req_dirs["libevent"]}' with-event-openssl='yes'"
+ext_opts['imagick']="with-imagick='${req_dirs['imagemagick']}'"
+ext_opts['lzf']="enable-lzf-better-compression='no'"
+ext_opts['openswoole']="enable-sockets='yes' enable-openssl='yes --with-openssl-dir=${req_dirs["openssl"]}' enable-http2='yes' enable-mysqlnd='yes' enable-hook-curl='yes'"
+ext_opts['redis']="enable-redis-igbinary='yes' enable-redis-lzf='yes' enable-redis-zstd='yes' enable-redis-msgpack='no' enable-redis-lz4='yes' with-liblz4='yes'"
 
-	# echo " - sendmail_path"
-	# sed -i -E "s~;sendmail_path.*~sendmail_path = ''~" $phpi
-	# sed -i -E "s~sendmail_path =.*~sendmail_path = mhsendmail~" $phpi
+# Space separated list of extensions to skip for specific PHP versions
+declare -A ext_skips
+ext_skips['8.2']="openswoole" # OpenSwoole is not available in PHP 8.2
+ext_skips['8.5']="opcache"    # OPCache is always available in PHP 8.5
 
-	echo " - user_ini.filename : ${user_ini_filename}"
-	sed -i -E "s~;user_ini.filename.*~user_ini.filename = ''~" $phpi
-	sed -i -E "s~user_ini.filename =.*~user_ini.filename = ${user_ini_filename}~" $phpi
-SCRIPT
+beta_exts=(uv)
+util_install_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+util_install_bin="$HOME/.local/bin"
+
+function php_bin() {
+    "$install_dir/bin/php" "$@"
+}
+
+function pecl_bin() {
+    "$install_dir/bin/pecl" "$@"
+}
+
+# Install PIE - https://github.com/php/pie/
+function install_pie() {
+    if ! command -v gh >/dev/null 2>&1; then return; fi
+
+    local pie_dir="$util_install_home/php-pie"
+    mkdir -p "$pie_dir"
+
+    {
+        curl --silent -fLo "$pie_dir/pie.phar" https://github.com/php/pie/releases/latest/download/pie.phar
+    } > "$logs_dir/pie.txt" 2>&1
+
+    if ! gh attestation verify --owner php "$pie_dir/pie.phar" >> "$logs_dir/pie.txt" 2>&1; then
+        echo -e "\e[31mPie\e[0m failed to verify; skipping install" >&2
+        return 1
+    fi
+
+    {
+        chmod +x "$pie_dir/pie.phar"
+        ln -sf "$pie_dir/pie.phar" "$util_install_bin/pie"
+    } >> "$logs_dir/pie.txt" 2>&1
+
+    echo -e "\e[32mPie\e[0m installed in \e[33m~/.local/share/php-pie\e[0m"
+}
+
+# Install Phive - https://phar.io/
+function install_phive() {
+    if ! command -v gpg >/dev/null 2>&1; then return; fi
+
+    phive_dir="$HOME/.phive"
+    mkdir -p "$phive_dir"
+
+    {
+        curl --silent -L https://phar.io/releases/phive.phar > "$phive_dir/phive.phar"
+        curl --silent -L https://phar.io/releases/phive.phar.asc > "$phive_dir/phive.phar.asc"
+    } > "$logs_dir/phive.txt" 2>&1
+
+    if [ ! -f "$phive_dir/phive.phar.asc" ]; then
+        echo -e "\e[31mPhive\e[0m signature file missing; skipping install" >&2
+        return 1
+    fi
+
+    gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 >> "$logs_dir/phive.txt" 2>&1
+
+    if ! gpg --verify "$phive_dir/phive.phar.asc" "$phive_dir/phive.phar" >> "$logs_dir/phive.txt" 2>&1; then
+        echo -e "\e[31mPhive\e[0m failed to verify; skipping install" >&2
+        return 1
+    fi
+
+    {
+        chmod +x "$phive_dir/phive.phar"
+        ln -sf "$phive_dir/phive.phar" "$util_install_bin/phive"
+
+        "$phive_dir/phive.phar" update-repository-list
+    } >> "$logs_dir/phive.txt" 2>&1
+
+    echo -e "\e[32mPhive\e[0m installed in \e[33m~/.local/share/phive\e[0m"
+}
+
+function install_ext() {
+    local mode="$1"
+    local ext="$2"
+    local conf="$3"
+
+    local ext_name=`in_beta "$ext" && echo "$ext-beta" || echo "$ext"`
+
+    (
+        set -e
+
+        {
+            if [[ ! -z ${ext_opts[$ext]+x} ]]; then
+               	pecl_bin install --configureoptions="${ext_opts[$ext]}" "$ext_name"
+            else
+                pecl_bin install "$ext_name"
+            fi
+        } > "$logs_dir/php${php_version}_${ext}.txt"
+
+        ln -sf "$source_dir/conf.d/$mode-$ext.ini" "$install_dir/conf.d/$conf.ini"
+
+        echo -e " - Ext \e[32m$ext\e[0m installed via \e[33m$mode\e[0m"
+    )
+}
+
+# Determine whether an extension is in beta
+function in_beta() {
+    for beta_ext in "${beta_exts[@]}"; do
+        [[ $beta_ext == $1 ]] && return 0
+    done
+
+    unset beta_ext
+
+    return 1
+}
+
+function is_skipped() {
+    local skips skip_ext
+
+    IFS=' ' read -ra skips <<< "${ext_skips[$2]}"
+
+    [ ${#skips[@]} -eq 0 ] && return 1
+
+    for skip_ext in "${skips[@]}"; do
+        [[ "$skip_ext" == "$1" ]] && return 0
+    done
+
+    return 1
+}
+
+# Remove default php.ini and replace with custom version
+if [[ -f "$install_dir/conf.d/php.ini" ]]; then
+    rm "$install_dir/conf.d/php.ini"
+    ln -sf "$source_dir/php.ini" "$install_dir/"
+fi
+
+if [[ ! -d "$logs_dir" ]]; then mkdir -p $logs_dir; fi
+
+if ! command -v pie >/dev/null 2>&1; then install_pie; fi
+if ! command -v phive >/dev/null 2>&1; then install_phive; fi
+
+declare -A pecl_exts
+declare -A pie_exts
+
+for ext_conf in `ls $source_dir/conf.d/*.ini`; do
+    # Split string by delimiter - credit: https://stackoverflow.com/a/918931
+    IFS='-' read -ra conf_arr <<< `basename $ext_conf .ini`
+
+    ext_name="${conf_arr[1]}"
+    order=`[[ "$ext_name" == "xdebug" ]] && echo 99 || echo 01`
+
+    if [[ "${conf_arr[0]}" == "pecl" ]]; then
+        pecl_exts[$ext_name]=$order-ext-$ext_name
+    else
+        pie_exts[$ext_name]=$order-ext-$ext_name
+    fi
 done
 
-unset phpv phpc phpi
-}
+echo "Installing PHP extensions"
+
+pecl_bin update-channels 1> /dev/null
+
+ext_dir=`php_bin -r "echo ini_get('extension_dir').PHP_EOL;"`
+exts=( $( echo ${!pecl_exts[@]} | tr ' ' $'\n' | sort ) )
+
+for ext in ${exts[@]}; do
+    if is_skipped "$ext" "${php_version%.*}"; then continue; fi
+
+    if [[ ! -f "$ext_dir/$ext.so" ]]; then
+        install_ext pecl $ext ${pecl_exts[$ext]}; continue
+    fi
+
+    ln -sf "$source_dir/conf.d/pecl-$ext.ini" "$install_dir/conf.d/${pecl_exts[$ext]}.ini"
+    echo -e " - Ext \e[32m$ext\e[0m configured"
+done
