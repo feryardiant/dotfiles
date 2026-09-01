@@ -55,7 +55,17 @@ if command -v fzf >/dev/null 2>&1; then
     }
 fi
 
+# ==============================================================================
+# Ruby
+# ==============================================================================
+if [[ -d "`brew --prefix ruby`" ]]; then
+    PATH="`brew --prefix ruby`/bin:$PATH"
+    PATH="`gem env home`/bin:$PATH"
+fi
+
+# ==============================================================================
 # OrbStack
+# ==============================================================================
 if [[ -d "$HOME/.orbstack/shell" ]]; then
 	_orbstack_init_file="$HOME/.orbstack/shell/init.$_shell_name"
     [[ -f "$_orbstack_init_file" ]] && source "$_orbstack_init_file" 2>/dev/null || :
@@ -89,14 +99,6 @@ fi
 # Vite+ | https://viteplus.dev
 # ==============================================================================
 [ -f "$HOME/.config/vite-plus/env" ] && source "$HOME/.config/vite-plus/env"
-
-# ==============================================================================
-# Ruby
-# ==============================================================================
-if [[ -d "`brew --prefix ruby`" ]]; then
-    PATH="`brew --prefix ruby`/bin:$PATH"
-    PATH="`gem env home`/bin:$PATH"
-fi
 
 # ==============================================================================
 # Ngrok | https://ngrok.com
