@@ -8,22 +8,45 @@
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
   "agent": {
-    "default_profile": "ask",
     "auto_compact": {
       "threshold": "90%"
     },
+    "default_profile": "ask",
+    "default_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "enable_thinking": true
+    },
+    "favorite_models": [],
     "inline_assistant_model": {
       "provider": "openrouter",
       "model": "minimax/minimax-m3:free",
       "enable_thinking": false
     },
-    "default_model": {
-      "provider": "openrouter",
-      "model": "minimax/minimax-m3:free",
-      "enable_thinking": true
+    "model_parameters": [],
+    "sandbox_permissions": {
+      "network_hosts": [
+        "github.com",
+        "api.github.com"
+      ]
     },
-    "favorite_models": [],
-    "model_parameters": []
+    "tool_permissions": {
+      "tools": {
+        "terminal": {
+          "always_allow": [
+            {
+              "pattern": "^git\\b"
+            },
+            {
+              "pattern": "^echo\\b"
+            }
+          ]
+        },
+        "fetch": {
+          "default": "allow"
+        }
+      }
+    },
   },
   "agent_servers": {
     "OpenCode": {
