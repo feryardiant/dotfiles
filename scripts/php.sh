@@ -104,6 +104,22 @@ function install_phive() {
     echo -e "\e[32mPhive\e[0m installed in \e[33m~/.local/share/phive\e[0m"
 }
 
+function configure_composer_home() {
+    local default_home=$HOME/.config/composer
+    local installed_home=$install_dir/.composer
+
+    # `$COMPOSER_HOME` should only exists in `$XDG_CONFIG_HOME`
+    if [ ! -d "$default_home" ]; then mkdir -p "$default_home"; fi
+
+    # Remove Mise' one (if exists)
+    if [ -d "$installed_home" ]; then rm -rf "$installed_home"; fi
+
+    # Link `$COMPOSER_HOME` to `$HOME/.config/composer`
+    ln -sf "$default_home" "$installed_home"
+
+    echo -e "\e[32mComposer\e[0m home configured to \e[33m~/.config/composer\e[0m"
+}
+
 function install_ext() {
     local mode="$1"
     local ext="$2"
@@ -163,6 +179,8 @@ if [[ ! -d "$logs_dir" ]]; then mkdir -p $logs_dir; fi
 
 if ! command -v pie >/dev/null 2>&1; then install_pie; fi
 if ! command -v phive >/dev/null 2>&1; then install_phive; fi
+
+configure_composer_home
 
 declare -A pecl_exts
 declare -A pie_exts
