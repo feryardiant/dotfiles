@@ -52,7 +52,3 @@ if [[ -d $DOTFILES_DIR ]]; then
     done
     unset _base
 fi
-
-# Prevent Duplicate Path
-# Credit: https://askubuntu.com/a/1349910/10706
-# export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`

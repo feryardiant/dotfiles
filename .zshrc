@@ -73,6 +73,13 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# Re-add `~/.local/bin` to path
+PATH="$HOME/.local/bin:$PATH"
+
+# Prevent Duplicate Path
+# Credit: https://askubuntu.com/a/1349910/10706
+export PATH=`printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ {if (NR > 1) printf RS; printf $1}'`
+
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
