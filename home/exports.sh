@@ -116,27 +116,6 @@ fi
 # fi
 
 # ==============================================================================
-# SDKMan | https://sdkman.io/
-# ==============================================================================
-# if [[ -d "$HOME/.sdkman" ]]; then
-#     export SDKMAN_DIR="$HOME/.sdkman"
-
-#     [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
-# fi
-
-# ==============================================================================
-# Rust Cargo | https://crates.io/
-# ==============================================================================
-# if [[ -d "$HOME/.cargo" ]]; then
-#     [[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-#     [[ -d "$HOME/.cargo/bin" ]] && PATH="$HOME/.cargo/bin:$PATH"
-
-#     if [[ -d "$HOME/.config/.foundry/bin" ]]; then
-#         export PATH="$PATH:$HOME/.config/.foundry/bin"
-#     fi
-# fi
-
-# ==============================================================================
 # Vite+ | https://viteplus.dev
 # ==============================================================================
 # [ -f "$HOME/.vite-plus/env" ] && source "$HOME/.vite-plus/env"
