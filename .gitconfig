@@ -13,32 +13,21 @@
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
 	editor = nvim
-    pager = delta
 	trustctime = false
 	autocrlf = input
 
 # [credential]
 # 	helper = manager
 
-[interactive]
-    diffFilter = delta --color-only --features=interative
-
-[delta]
-    features = decorations
-    line-numbers = true
-    navigate = true
-[delta "decorations"]
-    hunk-header-style = file line-number syntax
+[diff]
+	external = difft
+	tool = nvim
 
 [gpg]
 	program = gpg
 	# format = x509
 # [gpg "x509"]
 # 	program = smimesign
-
-[diff]
-    colorMoved = default
-    tool = nvim
 
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
