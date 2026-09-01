@@ -62,12 +62,17 @@ export ZSH="$HOME/.oh-my-zsh"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
+# Eza config
+# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/eza
+zstyle ':omz:plugins:eza' 'dirs-first' yes
+zstyle ':omz:plugins:eza' 'icons' yes
+
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(fzf mise per-directory-history starship zsh-interactive-cd zoxide)
+plugins=(fzf eza mise per-directory-history starship zsh-interactive-cd zoxide)
 
 source $ZSH/oh-my-zsh.sh
 
