@@ -66,7 +66,7 @@ fi
 # Composer | https://getcomposer.org/
 # ==============================================================================
 if command -v composer >/dev/null 2>&1; then
-    COMPOSER_HOME="$XDG_CONFIG_HOME/composer"
+    export COMPOSER_HOME="$XDG_CONFIG_HOME/composer"
     [[ -d "$COMPOSER_HOME/vendor/bin" ]] && PATH="$COMPOSER_HOME/vendor/bin:$PATH"
 fi
 
