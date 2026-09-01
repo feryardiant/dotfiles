@@ -50,5 +50,8 @@ if [[ -d $DOTFILES_DIR ]]; then
     for _base in $DOTFILES_DIR/home/*.sh; do
         [[ -r $_base ]] && source $_base
     done
+
+    [[ -f $DOTFILES_DIR/.env ]] && source $DOTFILES_DIR/.env
+
     unset _base
 fi
