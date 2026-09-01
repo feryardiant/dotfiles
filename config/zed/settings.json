@@ -14,13 +14,13 @@
     "default_profile": "ask",
     "default_model": {
       "provider": "openrouter",
-      "model": "deepseek/deepseek-v4-flash-0731",
+      "model": "~deepseek/deepseek-v4-flash-latest",
       "enable_thinking": true
     },
     "favorite_models": [],
     "inline_assistant_model": {
       "provider": "openrouter",
-      "model": "minimax/minimax-m3:free",
+      "model": "deepseek/deepseek-v4-flash-latest",
       "enable_thinking": false
     },
     "model_parameters": [],
