@@ -5,7 +5,9 @@
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
   "mcp": {},
-  "permission": {},
+  "permission": {
+    "bash": "allow"
+  },
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git"
   ],
