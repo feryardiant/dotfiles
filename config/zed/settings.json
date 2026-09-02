@@ -92,6 +92,91 @@
   "git_panel": {
     "file_icons": true,
   },
+  "languages": {
+    "PHP": {
+      "language_servers": ["phpantom", "!intelephense", "!phptools", "!phpactor", "..."]
+    },
+  },
+  "lsp": {
+    "biome": {
+      "settings": {
+        "require_config_file": true
+      }
+    },
+    "oxfmt": {},
+    "oxlint": {},
+    "eslint": {},
+    "astro-language-server": {},
+    "svelte-language-server": {},
+    "vue-language-server": {},
+    "tailwindcss-language-server": {},
+    "typescript-language-server": {},
+    "vtsls": {
+      "settings": {
+        // Add vue.js integration
+        // See https://github.com/zed-extensions/vue/issues/6#issuecomment-2739514942
+        "vtsls": {
+          "experimental": {
+            // https://github.com/zed-industries/zed/issues/13317#issuecomment-2646080375
+            "maxInlayHintLength": 25
+          },
+          // "tsserver": {
+          //   "globalPlugins": [
+          //     {
+          //       "name": "@vue/typescript-plugin",
+          //       "location": "/opt/homebrew/lib/node_modules",
+          //       "enableForWorkspaceTypeScriptVersions": true
+          //     }
+          //   ]
+          // }
+        },
+        // For TypeScript:
+        "typescript": {
+          "tsserver": {
+            "maxTsServerMemory": 4096
+          }
+        },
+        // For JavaScript:
+        "javascript": {
+          "tsserver": {
+            "maxTsServerMemory": 4096
+          }
+        }
+      }
+    },
+    "json-language-server": {
+      "settings": {
+        "json": {
+          "schemas": [
+            {
+              "fileMatch": [".gemini/settings.json", "gemini/settings.json"],
+              "url": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json"
+            },
+            {
+              "fileMatch": [".devcontainer/*/devcontainer.json", ".devcontainer/devcontainer.json", ".devcontainer.json"],
+              "url": "https://raw.githubusercontent.com/devcontainers/spec/refs/heads/main/schemas/devContainer.base.schema.json"
+            },
+            {
+              "fileMatch": ["*/composer.json", ".composer.json"],
+              "url": "https://getcomposer.org/schema.json"
+            },
+            {
+              "fileMatch": ["deno.json", "deno.jsonc"],
+              "url": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json"
+            }
+          ]
+        }
+      }
+    },
+    "yaml-language-server": {
+      "settings": {
+        "yaml": {
+          "schemas": {}
+        }
+      }
+    },
+    "lua-language-server": {},
+  },
   "theme": {
     "mode": "system",
     "light": "Ayu Light",
