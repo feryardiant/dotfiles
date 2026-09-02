@@ -4,6 +4,12 @@
   "instructions": [
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
+  "lsp": {
+    "php": {
+      "command": ["phpantom_lsp", "--stdio"],
+      "extensions": [".php"]
+    }
+  },
   "mcp": {},
   "permission": {
     "bash": "allow"
