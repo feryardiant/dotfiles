@@ -3,12 +3,14 @@ bun = "1.4"
 deno = "2.9"
 go = "1.27"
 java = "22"
-node = "24"
+lua = "5.5"
+node = "26"
+nub = { version = "0.8", allow_builds = ["@nubjs/nub"] }
 php = { version = "8.5", postinstall = "$DOTFILES_DIR/scripts/php-mise.sh" }
-rust = "latest"
-uv = "latest"
-zig = "latest"
-zls = "latest"
+rust = "1.98"
+uv = "0.12"
+zig = "0.16"
+zls = "0.16"
 
 [env]
 MISE_RUSTUP_HOME = "{{env.HOME}}/.local/share/rustup"
