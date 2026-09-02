@@ -6,7 +6,7 @@ java = "22"
 lua = "5.5"
 node = "26"
 nub = { version = "0.8", allow_builds = ["@nubjs/nub"] }
-php = { version = "8.5", postinstall = "$DOTFILES_DIR/scripts/php-mise.sh" }
+php = { version = "8.5", postinstall = "$DOTFILES_DIR/scripts/php.sh" }
 rust = "1.98"
 uv = "0.12"
 zig = "0.16"
