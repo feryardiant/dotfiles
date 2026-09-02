@@ -4,7 +4,7 @@ deno = "2.9"
 go = "1.27"
 java = "22"
 node = "24"
-php = { version = "8.4", postinstall = "$DOTFILES_DIR/scripts/php-mise.sh" }
+php = { version = "8.5", postinstall = "$DOTFILES_DIR/scripts/php-mise.sh" }
 rust = "latest"
 uv = "latest"
 zig = "latest"
