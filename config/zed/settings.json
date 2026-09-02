@@ -177,6 +177,110 @@
     },
     "lua-language-server": {},
   },
+  "ssh_connections": [
+    {
+      "host": "office.lan",
+      "nickname": "Office Root",
+      "username": "root",
+      "args": [
+        "-i",
+        "~/.ssh/id_rsa"
+      ],
+      "projects": [
+        {
+          "paths": [
+            "/etc/pve"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "office.lan",
+      "nickname": "Office Admin",
+      "username": "admin",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "office.lan",
+      "nickname": "Office Fery",
+      "username": "fery",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "internal.lan",
+      "nickname": "Internal Admin",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~",
+            "/opt/stacks"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "home.lan",
+      "nickname": "Home Admin",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~",
+            "/opt/stacks"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "staging-01",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~/containers",
+            "/opt/stacks",
+          ]
+        }
+      ]
+    },
+    {
+      "host": "staging-02",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~"
+          ]
+        }
+      ]
+    },
+    {
+      "host": "hostinger-b1",
+      "args": [],
+      "projects": [
+        {
+          "paths": [
+            "~/domains"
+          ]
+        }
+      ]
+    }
+  ],
   "theme": {
     "mode": "system",
     "light": "Ayu Light",
