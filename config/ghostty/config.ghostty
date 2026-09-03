@@ -8,6 +8,8 @@ background-blur-radius = 25
 macos-titlebar-style = tabs
 macos-option-as-alt = left
 
+shell-integration-features = ssh-env,ssh-terminfo
+
 window-step-resize = true
 window-save-state = always
 window-width = 100
