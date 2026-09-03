@@ -11,8 +11,8 @@ export MANPAGER="less -X"
 
 # Larger bash history (allow 32³ entries; default is 500)
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-export HISTSIZE=2048
-export HISTFILESIZE=61440
+export HISTSIZE=20480
+export HISTFILESIZE=614400
 
 # timestamps for bash history. www.debian-administration.org/users/rossen/weblog/1
 # saved for later analysis
