@@ -27,7 +27,8 @@
     "sandbox_permissions": {
       "network_hosts": [
         "github.com",
-        "api.github.com"
+        "*.github.com",
+        "raw.githubusercontent.com"
       ]
     },
     "tool_permissions": {
@@ -35,10 +36,49 @@
         "terminal": {
           "always_allow": [
             {
+              "pattern": "^bun\\b"
+            },
+            {
+              "pattern": "^composer\\b"
+            },
+            {
+              "pattern": "^docker\\b"
+            },
+            {
               "pattern": "^git\\b"
             },
             {
               "pattern": "^echo\\b"
+            },
+            {
+              "pattern": "^head\\b"
+            },
+            {
+              "pattern": "^gh\\b"
+            },
+            {
+              "pattern": "^grep\\b"
+            },
+            {
+              "pattern": "^node\\b"
+            },
+            {
+              "pattern": "^npm\\b"
+            },
+            {
+              "pattern": "^nub\\b"
+            },
+            {
+              "pattern": "^php\\b"
+            },
+            {
+              "pattern": "^pnpm\\b"
+            },
+            {
+              "pattern": "^shasum\\b"
+            },
+            {
+              "pattern": "^tail\\b"
             }
           ]
         },
