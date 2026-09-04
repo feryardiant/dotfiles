@@ -220,6 +220,9 @@
     },
     "lua-language-server": {},
   },
+  "session": {
+    "trust_all_worktrees": true,
+  },
   "ssh_connections": [
     {
       "host": "office.lan",
