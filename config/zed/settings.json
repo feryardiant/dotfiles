@@ -135,6 +135,7 @@
   },
   "languages": {
     "PHP": {
+      "document_symbols": "on",
       "language_servers": ["phpantom", "!intelephense", "!phptools", "!phpactor", "..."]
     },
   },
@@ -148,6 +149,7 @@
     "oxlint": {},
     "eslint": {},
     "astro-language-server": {},
+    "phpantom": {},
     "svelte-language-server": {},
     "vue-language-server": {},
     "tailwindcss-language-server": {},
