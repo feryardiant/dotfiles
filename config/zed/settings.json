@@ -189,9 +189,14 @@
     "file_icons": true,
   },
   "languages": {
+    "Blade": {
+      "document_symbols": "on",
+      "language_servers": ["laravel", "!phpantom", "!intelephense", "!phptools", "!phpactor", "..."],
+      "semantic_tokens": "combined"
+    },
     "PHP": {
       "document_symbols": "on",
-      "language_servers": ["phpantom", "!intelephense", "!phptools", "!phpactor", "..."]
+      "language_servers": ["phpantom", "!laravel", "!intelephense", "!phptools", "!phpactor", "..."]
     },
   },
   "lsp": {
@@ -204,6 +209,7 @@
     "oxlint": {},
     "eslint": {},
     "astro-language-server": {},
+    "laravel": {},
     "phpantom": {},
     "svelte-language-server": {},
     "vue-language-server": {},
