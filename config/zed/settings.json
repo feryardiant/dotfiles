@@ -45,6 +45,9 @@
               "pattern": "^bun\\b"
             },
             {
+              "pattern": "^bunx\\b"
+            },
+            {
               "pattern": "^composer\\b"
             },
             {
@@ -97,9 +100,6 @@
             },
             {
               "pattern": "^cat\\b"
-            },
-            {
-              "pattern": "^echo\\s+===(\\s|$)"
             },
             {
               "pattern": "^sed\\b"
