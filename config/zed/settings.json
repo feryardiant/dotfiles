@@ -33,8 +33,13 @@
       ]
     },
     "tool_permissions": {
+      "default": "allow",
       "tools": {
+        "fetch": {
+          "default": "allow"
+        },
         "terminal": {
+          "default": "confirm",
           "always_allow": [
             {
               "pattern": "^bun\\b"
@@ -83,9 +88,6 @@
             }
           ]
         },
-        "fetch": {
-          "default": "allow"
-        }
       }
     },
   },
