@@ -13,11 +13,32 @@
   "mcp": {
     "chrome-devtools": {
       "type": "local",
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest"]
+      "command": ["npx","-y", "chrome-devtools-mcp@latest"],
+      "environment": {
+        "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
+      }
+    },
+    "context7": {
+      "type": "local",
+      "enabled": true,
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+    },
+    "context-mode": {
+      "type": "local",
+      "enabled": true,
+      "command": ["npx", "-y", "context-mode@latest"],
     },
     "dbx": {
       "type": "local",
       "command": ["npx", "-y", "@dbx-app/mcp-server"]
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "shadcn": {
+      "type": "local",
+      "command": ["npx", "-y", "shadcn@latest", "mcp"]
     }
   },
   "permission": {
