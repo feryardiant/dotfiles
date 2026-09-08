@@ -14,8 +14,9 @@
     },
     "default_profile": "ask",
     "default_model": {
-      "provider": "openrouter",
-      "model": "~deepseek/deepseek-v4-flash-latest",
+      "effort": "high",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
       "enable_thinking": true
     },
     "favorite_models": [],
