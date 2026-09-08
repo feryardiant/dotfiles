@@ -15,4 +15,7 @@ window-save-state = always
 window-width = 100
 window-height = 32
 
-working-directory = /Users/fery/Workspace
+working-directory = ~/Workspace
+window-inherit-working-directory = false
+tab-inherit-working-directory = false
+split-inherit-working-directory = true
