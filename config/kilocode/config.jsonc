@@ -4,7 +4,12 @@
   "instructions": [
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
-  "mcp": {},
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest"]
+    }
+  },
   "permission": {
     "bash": "allow"
   },
