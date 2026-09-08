@@ -120,6 +120,12 @@
     },
   },
   "agent_servers": {
+    "antigravity-acp": {
+      "default_config_options": {
+        "model": "gemini-3.7-flash-medium"
+      },
+      "type": "registry"
+    },
     "OpenCode": {
       "default_config_options": {
         "mode": "plan"
