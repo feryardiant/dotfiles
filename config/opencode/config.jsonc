@@ -18,11 +18,11 @@
         "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
       }
     },
-    "context7": {
-      "type": "local",
-      "enabled": true,
-      "command": ["npx", "-y", "@upstash/context7-mcp"],
-    },
+    // "context7": {
+    //   "type": "local",
+    //   "enabled": true,
+    //   "command": ["npx", "-y", "@upstash/context7-mcp"],
+    // },
     "context-mode": {
       "type": "local",
       "enabled": true,
