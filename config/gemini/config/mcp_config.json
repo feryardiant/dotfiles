@@ -1,25 +1,35 @@
 {
   "mcpServers": {
     "chrome-devtools": {
+      "enabled": false,
       "command": "npx",
       "args": ["-y", "chrome-devtools-mcp@latest"],
       "env": {
         "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": true
       }
     },
+    "context7": {
+      "enabled": false,
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
     "context-mode": {
+      "enabled": true,
       "command": "npx",
       "args": ["-y", "context-mode@latest"]
     },
     "dbx": {
+      "enabled": false,
       "command": "npx",
       "args": ["-y", "@dbx-app/mcp-server"]
     },
     "sequential-thinking": {
+      "enabled": false,
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "shadcn": {
+      "enabled": false,
       "command": "npx",
       "args": ["-y", "shadcn@latest", "mcp"]
     }

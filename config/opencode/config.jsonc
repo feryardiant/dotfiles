@@ -13,16 +13,17 @@
   "mcp": {
     "chrome-devtools": {
       "type": "local",
+      "enabled": false,
       "command": ["npx","-y", "chrome-devtools-mcp@latest"],
       "environment": {
         "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
       }
     },
-    // "context7": {
-    //   "type": "local",
-    //   "enabled": true,
-    //   "command": ["npx", "-y", "@upstash/context7-mcp"],
-    // },
+    "context7": {
+      "type": "local",
+      "enabled": false,
+      "command": ["npx", "-y", "@upstash/context7-mcp"],
+    },
     "context-mode": {
       "type": "local",
       "enabled": true,
@@ -30,14 +31,17 @@
     },
     "dbx": {
       "type": "local",
+      "enabled": false,
       "command": ["npx", "-y", "@dbx-app/mcp-server"]
     },
     "sequential-thinking": {
       "type": "local",
+      "enabled": false,
       "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "shadcn": {
       "type": "local",
+      "enabled": false,
       "command": ["npx", "-y", "shadcn@latest", "mcp"]
     }
   },
