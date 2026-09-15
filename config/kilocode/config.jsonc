@@ -40,7 +40,13 @@
     }
   },
   "permission": {
-    "bash": "allow"
+    "bash": "allow",
+    "context-mode_ctx_fetch_and_index": {
+      "*": "allow"
+    },
+    "context-mode_ctx_search": {
+      "*": "allow"
+    }
   },
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git"
