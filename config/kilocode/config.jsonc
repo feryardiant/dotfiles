@@ -46,6 +46,9 @@
     },
     "context-mode_ctx_search": {
       "*": "allow"
+    },
+    "read": {
+      "*": "allow"
     }
   },
   "plugin": [
