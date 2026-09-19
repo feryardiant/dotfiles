@@ -5,7 +5,7 @@ adjust-underline-position = 3
 background-opacity = 0.95
 background-blur-radius = 25
 
-macos-titlebar-style = tabs
+# macos-titlebar-style = tabs
 macos-option-as-alt = left
 
 shell-integration-features = ssh-env,ssh-terminfo
