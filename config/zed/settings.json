@@ -146,8 +146,9 @@
   "context_servers": {
     "chrome-devtools": {
       "enabled": false,
-      "command": "npx",
-      "args": ["-y", "chrome-devtools-mcp@latest"],
+      "command": "chrome-devtools",
+      // "command": "npx",
+      // "args": ["-y", "chrome-devtools-mcp@latest"],
       "env": {
         "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
       }
@@ -159,8 +160,9 @@
     },
     "context-mode": {
       "enabled": true,
-      "command": "npx",
-      "args": ["-y", "context-mode@latest"]
+      "command": "context-mode",
+      // "command": "npx",
+      // "args": ["-y", "context-mode@latest"]
     },
     "dbx": {
       "enabled": false,
