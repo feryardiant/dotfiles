@@ -12,17 +12,17 @@
     "auto_compact": {
       "threshold": "70%"
     },
-    "default_profile": "ask",
+    "default_profile": "write",
     "default_model": {
-      "effort": "high",
-      "provider": "deepseek",
-      "model": "deepseek-v4-flash",
+      "effort": "low",
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4-flash-0731:free",
       "enable_thinking": true
     },
     "favorite_models": [],
     "inline_assistant_model": {
       "provider": "openrouter",
-      "model": "deepseek/deepseek-v4-flash-latest",
+      "model": "deepseek/deepseek-v4-flash-0731:free",
       "enable_thinking": false
     },
     "model_parameters": [],
@@ -40,7 +40,7 @@
           "default": "allow"
         },
         "terminal": {
-          "default": "confirm",
+          "default": "allow",
           "always_allow": [
             {
               "pattern": "^bun\\b"
@@ -113,7 +113,16 @@
             },
             {
               "pattern": "^log\\s+show(\\s|$)"
-            }
+            },
+            {
+              "pattern": "^curl\\b"
+            },
+            {
+              "pattern": "^git\\s+add(\\s|$)"
+            },
+            {
+              "pattern": "^GIT_EDITOR=true\\s+git\\s+commit(\\s|$)"
+            },
           ]
         },
       }
@@ -381,7 +390,6 @@
         {
           "paths": [
             "~/containers",
-            "/opt/stacks",
           ]
         }
       ]

@@ -1,6 +1,6 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "model": "kilo/kilo-auto/free",
+  "model": "kilo/deepseek/deepseek-v4-flash-0731:free",
   "instructions": [
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
@@ -53,13 +53,17 @@
     "context-mode_ctx_search": {
       "*": "allow"
     },
+    "external_directory": {
+      "/Users/fery/Config/*": "allow",
+      "/tmp/*": "allow"
+    },
     "read": {
       "*": "allow"
     }
   },
   "plugin": [
-    "context-mode@git+https://github.com/mksglu/context-mode.git",
-    "ponytail@git+https://github.com/DietrichGebert/ponytail.git",
+    // "context-mode@git+https://github.com/mksglu/context-mode.git",
+    // "ponytail@git+https://github.com/DietrichGebert/ponytail.git",
     // "superpowers@git+https://github.com/obra/superpowers.git",
   ],
   "provider": {}
