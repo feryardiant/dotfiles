@@ -10,6 +10,7 @@ macos-option-as-alt = left
 
 shell-integration-features = ssh-env,ssh-terminfo
 
+window-padding-balance = true
 window-step-resize = true
 window-save-state = always
 window-width = 100
