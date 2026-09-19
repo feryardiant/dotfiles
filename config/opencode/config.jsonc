@@ -53,6 +53,9 @@
     "context-mode_ctx_search": {
       "*": "allow"
     },
+    "read": {
+      "*": "allow"
+    },
   },
   "plugin": [
     // "context-mode@git+https://github.com/mksglu/context-mode.git",
