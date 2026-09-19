@@ -8,7 +8,7 @@
     "chrome-devtools": {
       "type": "local",
       "enabled": false,
-      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+      "command": ["chrome-devtools-mcp"],
       "environment": {
         "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
       }
@@ -21,7 +21,7 @@
     "context-mode": {
       "type": "local",
       "enabled": true,
-      "command": ["npx", "-y", "context-mode@latest"],
+      "command": ["context-mode"],
     },
     "dbx": {
       "type": "local",
@@ -49,8 +49,9 @@
     }
   },
   "plugin": [
+    "context-mode@git+https://github.com/mksglu/context-mode.git",
+    "ponytail@git+https://github.com/DietrichGebert/ponytail.git",
     // "superpowers@git+https://github.com/obra/superpowers.git",
-    // "@dietrichgebert/ponytail",
   ],
   "provider": {}
 }
