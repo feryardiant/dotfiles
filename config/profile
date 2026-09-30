@@ -47,7 +47,7 @@ export DOTFILES_DIR=~/Config/dotfiles
 if [[ -d $DOTFILES_DIR ]]; then
     [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
 
-    for _base in $DOTFILES_DIR/home/*.sh; do
+    for _base in $DOTFILES_DIR/config/*.sh; do
         [[ -r $_base ]] && source $_base
     done
 
