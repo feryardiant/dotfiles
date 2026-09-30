@@ -211,7 +211,7 @@
     ]
   },
   "git": {
-    "worktree_directory": ".git/zed-worktrees"
+    "worktree_directory": "/Users/fery/Workspace/Worktrees"
   },
   "git_panel": {
     "file_icons": true,
