@@ -4,31 +4,30 @@ Personal dotfiles managed via `install.sh`. Cross-platform (macOS via Homebrew, 
 
 ## Structure
 
-- `install.sh` — main installer. Flags: `--with-zsh`, `--with-neovim`. Symlinks shell dotfiles, copies `.gitconfig`, backs up existing files to `dotfiles.old/<timestamp>`. Sources `scripts/util.sh`.
-- Root-level: `.aliases`, `.exports`, `.functions`, `.profile`, `.zshrc`, `.bashrc`, `.gitconfig`, `.gitignore`, `.editorconfig`
-- `config/` — tool configs (vim, zed, ghostty, tmux, lazygit, starship, opencode, kilocode, gemini)
-- `scripts/` — apt-based tool installers (git, tmux, zsh, nginx, php, etc.)
-- `.env` — **contains real API keys. Do not commit or expose. In gitignore.** Uses `.env.sample` as template.
+- `install.sh` — main installer (currently disabled pending a rewrite that reads config frontmatter). Flags: `--with-zsh`, `--with-neovim`. Sources `scripts/util.sh`.
+- `config/` — everything mappable: tool configs, plus the shell files (`zshrc`, `bashrc`, `profile`) and repo-sourced `aliases.sh` / `exports.sh` / `functions.sh`. Every dir has a `README.md` whose `maps:` frontmatter defines its mappings — schema: [`config/README.md`](config/README.md).
+- `scripts/` — tool installers and hooks (e.g. `php.sh` is a mise postinstall hook).
+- Repo-only, never mapped: `.editorconfig`, `.gitignore`, `.gitmodules`, `.env.sample`.
+- `.env` — **contains real API keys. Do not commit or expose.** In gitignore. Uses `.env.sample` as template.
 
-### Paths Mapping
+### Config Index
 
-For `.aliases`, `.bashrc`, `.exports`, `.functions`, `.profile` and `.zshrc` symlinked to `~/` directly
+Mappings live in each config's `README.md` frontmatter; schema: [`config/README.md`](config/README.md).
 
-- `./config/ai/` — shared AI directory across multiple agents.
-  - `agents/` — symlinked to `~/.config/kilo/agents/`, `~/.config/opencode/agents/`
-  - `instructions/global.md` — shared global instructions
-  - `skills/` — symlinked to `~/.config/kilo/skills/`, `~/.config/opencode/skills/`, `~/.gemini/skills/`
-- `./config/gemini/` — Google Gemini CLI config directory.
-  - `policies/` — symlinked to `~/.gemini/policies/`
-  - `settings.json` — symlinked to `~/.gemini/settings.json`
-- `./config/ghostty/` — Ghostty config directory.
-  - `config/` — symlinked to `~/.config/ghostty/config/`
-- `./config/kilocode/` — KiloCode CLI config directory.
-  - `config.json` — symlinked to `~/.config/kilo/kilo.json`
-- `./config/tmux/` — TMUX config directory.
-  - `tmux.conf` — symlinked to `~/.config/tmux/tmux.conf`
-- `./config/vim/` — VIM config directory.
-  - `vimrc` — symlinked to `~/.config/vim/vimrc`
-- `./config/zed/` — Zed config directory.
-  - `keymap.json` — symlinked to `~/.config/zed/keymap.json`
-  - `settings.json` — symlinked to `~/.config/zed/settings.json`
+| Config | Target |
+|---|---|
+| `config/zshrc`, `config/bashrc`, `config/profile` | `~/` |
+| [`config/agents/`](config/agents/README.md) | `~/.agents/` + Zed `AGENTS.md`; skills → kilo, opencode, `~/.agents/skills` |
+| [`config/gemini/`](config/gemini/README.md) | `~/.gemini/` (antigravity-cli + MCP) |
+| [`config/ghostty/`](config/ghostty/README.md) | `~/Library/...` (macOS) / `~/.config/ghostty/config` (Linux) |
+| [`config/git/`](config/git/README.md) | `~/.gitconfig` (`copy: true`) |
+| [`config/kilocode/`](config/kilocode/README.md) | `~/.config/kilo/kilo.jsonc` |
+| [`config/lazygit/`](config/lazygit/README.md) | `~/.config/lazygit/config.yml` |
+| [`config/mise/`](config/mise/README.md) | `~/.config/mise/config.toml` |
+| [`config/opencode/`](config/opencode/README.md) | `~/.config/opencode/opencode.jsonc` |
+| [`config/php/`](config/php/README.md) | — (mise postinstall hook) |
+| [`config/starship/`](config/starship/README.md) | `~/.config/starship.toml` |
+| [`config/tmux/`](config/tmux/README.md) | `~/.config/tmux/tmux.conf` |
+| [`config/vim/`](config/vim/README.md) | `~/.vimrc` |
+| [`config/wakatime/`](config/wakatime/README.md) | `~/.wakatime.cfg` (local `private.cfg`) |
+| [`config/zed/`](config/zed/README.md) | `~/.config/zed/` |
