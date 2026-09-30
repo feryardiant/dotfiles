@@ -1,6 +1,6 @@
 ---
 maps:
-  ~/.config/startship.toml: startship.toml
+  ~/.config/starship.toml: starship.toml
 ---
 
-# Startship Config
+# Starship Config
