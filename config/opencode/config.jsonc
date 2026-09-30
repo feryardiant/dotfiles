@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "kilo/deepseek/deepseek-v4-flash-0731:free",
+  "model": "opencode/mimo-v2.6-flash-free",
   "instructions": [
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
