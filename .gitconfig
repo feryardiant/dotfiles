@@ -16,10 +16,14 @@
 	trustctime = false
 	autocrlf = input
 
+[extensions]
+	worktreeconfig = true
+
 # [credential]
 # 	helper = manager
 
 [diff]
+    # Require difftastic - https://github.com/Wilfred/difftastic
 	external = difft
 	tool = nvim
 
