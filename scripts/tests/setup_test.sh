@@ -9,12 +9,12 @@ bash -n "$ROOT/scripts/setup.d/system.sh"     && t syntax 'parses `system.sh`' 0
 bash -n "$ROOT/scripts/setup.d/oh-my-zsh.sh"  && t syntax 'parses `oh-my-zsh.sh`' 0 0  || t syntax 'parses `oh-my-zsh.sh`' 0 1
 
 # system: seed dirs + .env, idempotent merge, user keys preserved
-# (fixture repo holds .env.sample/.env so the real $DOTFILES_DIR/.env is never touched)
+# (fixture repo holds .env.example/.env so the real $DOTFILES_DIR/.env is never touched)
 mkdir -p "$FIX/repo"
-cp "$ROOT/.env.sample" "$FIX/repo/.env.sample"
+cp "$ROOT/.env.example" "$FIX/repo/.env.example"
 HOME="$FIX/h" DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
 t system 'creates the XDG state dir' "1" "$([ -d "$FIX/h/.local/state" ] && echo 1)"
-t system 'seeds `.env` from `.env.sample`' "1" "$(grep -c "export DOTFILES_DIR='$FIX/repo'" "$FIX/repo/.env")"
+t system 'seeds `.env` from `.env.example`' "1" "$(grep -c "export DOTFILES_DIR='$FIX/repo'" "$FIX/repo/.env")"
 echo "MY_KEY=preserved" >> "$FIX/repo/.env"
 before=$(md5 -q "$FIX/repo/.env" 2>/dev/null || md5sum "$FIX/repo/.env" | cut -d' ' -f1)
 HOME="$FIX/h" DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
@@ -24,7 +24,7 @@ t system 'keeps user keys across the merge' "1" "$(grep -c 'MY_KEY=preserved' "$
 
 # system dry-run: nothing created
 mkdir -p "$FIX/repo2"
-cp "$ROOT/.env.sample" "$FIX/repo2/.env.sample"
+cp "$ROOT/.env.example" "$FIX/repo2/.env.example"
 HOME="$FIX/h2" DOTFILES_DIR="$FIX/repo2" DOTFILES_DRY_RUN=1 bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
 t system 'dry-run creates no `.env`' "0" "$([ -f "$FIX/repo2/.env" ] && echo 1 || echo 0)"
 

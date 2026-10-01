@@ -18,8 +18,8 @@ env_file="$DOTFILES_DIR/.env"
 
 if [ ! -f "$env_file" ]; then
   sed "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$DOTFILES_DIR'@g" \
-    "$DOTFILES_DIR/.env.sample" > "$env_file"
-  echo "  created $env_file from .env.sample" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
+    "$DOTFILES_DIR/.env.example" > "$env_file"
+  echo "  created $env_file from .env.example" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
 else
   # append any sample line not already present
   while IFS= read -r line; do
@@ -31,7 +31,7 @@ else
 
     key="${line%%=*}"
     grep -qF "$key" "$env_file" || printf '%s\n' "$line" >> "$env_file"
-  done < "$DOTFILES_DIR/.env.sample"
+  done < "$DOTFILES_DIR/.env.example"
 
   # refresh the DOTFILES_DIR export
   if grep -q "^export DOTFILES_DIR=" "$env_file"; then
