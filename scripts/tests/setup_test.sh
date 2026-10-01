@@ -22,6 +22,12 @@ after=$(md5 -q "$FIX/repo/.env" 2>/dev/null || md5sum "$FIX/repo/.env" | cut -d'
 t system 'reruns leave `.env` byte-identical' "$before" "$after"
 t system 'keeps user keys across the merge' "1" "$(grep -c 'MY_KEY=preserved' "$FIX/repo/.env")"
 
+# a sample key must append even when .env holds a longer key sharing its prefix
+echo "export EXISTING_X='prefix'" >> "$FIX/repo/.env"
+echo "export EXISTING='sample'"   >> "$FIX/repo/.env.example"
+HOME="$FIX/h" DOTFILES_OS=Darwin DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
+t system 'appends a sample key behind a prefix collision' "1" "$(grep -c "^export EXISTING='sample'" "$FIX/repo/.env")"
+
 # system dry-run: nothing created
 mkdir -p "$FIX/repo2"
 cp "$ROOT/.env.example" "$FIX/repo2/.env.example"

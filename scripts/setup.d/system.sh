@@ -30,7 +30,13 @@ else
     esac
 
     key="${line%%=*}"
-    grep -qF "$key" "$env_file" || printf '%s\n' "$line" >> "$env_file"
+    if [ "$key" != "$line" ]; then
+      # assignment: presence = an actual `key=` line (bare substring matches miscount longer keys)
+      grep -q "^$key=" "$env_file" || printf '%s\n' "$line" >> "$env_file"
+    else
+      # comment / plain text: presence = the literal line
+      grep -qxF "$line" "$env_file" || printf '%s\n' "$line" >> "$env_file"
+    fi
   done < "$DOTFILES_DIR/.env.example"
 
   # refresh the DOTFILES_DIR export
