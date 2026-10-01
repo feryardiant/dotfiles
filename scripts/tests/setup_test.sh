@@ -37,5 +37,26 @@ HOME="$FIX/h3" ZSH= PATH="$FIX/bin:$PATH" DOTFILES_DIR="$ROOT" bash "$ROOT/scrip
 ck "omz: idempotent" "1" "$p"
 ck "omz: no second clone" "1" "$(grep -c CLONED "$FIX/h3/omz.log")"
 
+# mise — stub brew (mac) and curl|sh (linux); CLEAN PATH hides the host's real mise
+CLEAN="$FIX/bin:/usr/bin:/bin"
+cat > "$FIX/bin/brew" <<'STUB'
+#!/usr/bin/env bash
+[ "$1" = list ] && exit 1
+[ "$1" = install ] && { echo "BREW $2" >> "$HOME/mise.log"; mkdir -p "$HOME/.local/bin"; printf '#!/bin/sh\n' > "$HOME/.local/bin/mise"; chmod +x "$HOME/.local/bin/mise"; }
+STUB
+cat > "$FIX/bin/curl" <<'STUB'
+#!/usr/bin/env bash
+echo 'mkdir -p "$HOME/.local/bin"; printf "#!/bin/sh\n" > "$HOME/.local/bin/mise"; chmod +x "$HOME/.local/bin/mise"; echo RAN >> "$HOME/mise.log"'
+STUB
+chmod +x "$FIX/bin/brew" "$FIX/bin/curl"
+mkdir -p "$FIX/h5"
+HOME="$FIX/h5" PATH="$CLEAN" DOTFILES_OS=Darwin DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/mise.sh" >/dev/null
+ck "mise mac: via brew" "1" "$(grep -c 'BREW mise' "$FIX/h5/mise.log" 2>/dev/null || echo 0)"
+rm -f "$FIX/h5/.local/bin/mise"; : > "$FIX/h5/mise.log"
+HOME="$FIX/h5" PATH="$CLEAN" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/mise.sh" >/dev/null
+ck "mise linux: official installer" "1" "$(grep -c RAN "$FIX/h5/mise.log" 2>/dev/null || echo 0)"
+HOME="$FIX/h5" PATH="$CLEAN" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/mise.sh" | grep -q present && p=1 || p=0
+ck "mise: idempotent" "1" "$p"
+
 printf '\nsetup_test: %d failures\n' "$FAILS"
 [ "$FAILS" -eq 0 ]
