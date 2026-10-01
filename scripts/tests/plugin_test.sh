@@ -37,12 +37,18 @@ exec "$@"
 STUB
 chmod +x "$FIX/bin/"*
 
+# fixture-only PATH: the utilities scripts need (shebang env resolves bash here),
+# but no real installs — hides the host's tools and anything apt put in /usr/bin
+for u in bash sh env dirname uname mkdir rm cp ln chmod tar sed grep cat install touch; do
+  ln -sf "$(command -v "$u")" "$FIX/bin/$u"
+done
+
 for t in starship eza fzf zoxide; do
   bash -n "$ROOT/scripts/setup.d/$t.sh" && ck "bash -n $t" 0 0 || ck "bash -n $t" 0 1
 done
 
-# mac path: all four via brew (CLEAN PATH hides host's real installs)
-CLEAN="$FIX/bin:/usr/bin:/bin"
+# mac path: all four via brew
+CLEAN="$FIX/bin"
 mkdir -p "$FIX/h"
 HOME="$FIX/h" PATH="$CLEAN" DOTFILES_OS=Darwin DOTFILES_DIR="$ROOT" \
   bash -c 'for t in starship eza fzf zoxide; do bash "'"$ROOT"'/scripts/setup.d/$t.sh"; done' >/dev/null
@@ -58,30 +64,11 @@ out=$(HOME="$FIX/h2" PATH="$FIX/h2/.local/bin:$CLEAN" DOTFILES_OS=Darwin DOTFILE
   bash "$ROOT/scripts/setup.d/starship.sh")
 ck "present: skip" "  starship... done" "$out"
 
-# linux path: fzf + zoxide via apt (2 markers), starship + eza via curl installers
+# linux path: all four via apt (starship, eza, fzf, zoxide)
 mkdir -p "$FIX/h3"
-cat > "$FIX/bin/curl" <<'STUB'
-#!/usr/bin/env bash
-# piped installers execute our stdout; -o downloads are recorded directly
-out=""; prev=""
-for a in "$@"; do
-  if [ "$prev" = "-o" ]; then
-    out="$a"
-  fi
-  prev="$a"
-done
-if [ -n "$out" ]; then
-  printf 'stub payload\n' > "$out"
-  echo SHERAN >> "$HOME/p.log"
-else
-  echo 'echo SHERAN >> "$HOME/p.log"'
-fi
-STUB
-chmod +x "$FIX/bin/curl"
 HOME="$FIX/h3" PATH="$CLEAN" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" \
   bash -c 'for t in starship eza fzf zoxide; do bash "'"$ROOT"'/scripts/setup.d/$t.sh"; done' >/dev/null 2>&1 || true
-ck "linux: apt install calls (fzf+zoxide)" "2" "$(grep -c 'APT_CALL_MARKER' "$FIX/h3/p.log" 2>/dev/null || echo 0)"
-ck "linux: curl installers ran (starship+eza)" "2" "$(grep -c SHERAN "$FIX/h3/p.log" 2>/dev/null || echo 0)"
+ck "linux: apt install calls (all four)" "4" "$(grep -c 'APT_CALL_MARKER' "$FIX/h3/p.log" 2>/dev/null || echo 0)"
 
 printf '\nplugin_test: %d failures\n' "$FAILS"
 [ "$FAILS" -eq 0 ]

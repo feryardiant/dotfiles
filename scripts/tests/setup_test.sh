@@ -107,41 +107,27 @@ c2=$(grep -c CURL "$FIX/h6/v.log" 2>/dev/null || echo 0)
 ck "vim-plug: fetched once" "$c1" "$c2"
 ck "vim-plug: autoload linked" "1" "$([ -L "$FIX/h6/.vim/autoload/plug.vim" ] && echo 1)"
 
-# lazygit linux: stub curl (version JSON + tarball via -o position) + tar (extracts to -C dir)
-mkdir -p "$FIX/h7"
-cat > "$FIX/bin2/curl" <<'STUB'
+# lazygit linux: apt package — fixture-only PATH (stubs + utils) hides any real install
+mkdir -p "$FIX/h7" "$FIX/base"
+cat > "$FIX/base/apt-get" <<'STUB'
 #!/usr/bin/env bash
-echo CURL_LAZYGIT >> "$HOME/l.log"
-prev=""
-for a in "$@"; do
-  case $prev in
-    -o) echo FAKE > "$a" ;;
-  esac
-  prev="$a"
-done
-echo '{"tag_name": "v0.44.0"}'
+[ "$1" = install ] && echo APT_LAZYGIT "$*" >> "$HOME/l.log"
+exit 0
 STUB
-cat > "$FIX/bin2/tar" <<'STUB'
+cat > "$FIX/base/dpkg" <<'STUB'
 #!/usr/bin/env bash
-dir=""
-out=""
-while [ $# -gt 0 ]; do
-  case $1 in
-    -C)    dir="$2"; shift 2 ;;
-    -*)    shift ;;
-    *)     out="$1"; shift ;;
-  esac
-done
-if [ -n "$out" ]; then
-  dir="${dir:-/tmp}"
-  mkdir -p "$dir"
-  echo lg > "$dir/$out"; chmod +x "$dir/$out"
-fi
+exit 1   # -s probe: not installed
 STUB
-chmod +x "$FIX/bin2/curl" "$FIX/bin2/tar"
-# clean base PATH — the host's real lazygit would trip the present-check
-HOME="$FIX/h7" PATH="$FIX/bin2:/usr/bin:/bin" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/lazygit.sh" >/dev/null 2>&1 || true
-ck "lazygit linux: binary installed" "1" "$([ -x "$FIX/h7/.local/bin/lazygit" ] && echo 1)"
+cat > "$FIX/base/sudo" <<'STUB'
+#!/usr/bin/env bash
+exec "$@"
+STUB
+chmod +x "$FIX/base/"*
+for u in bash sh env dirname uname mkdir rm cp ln chmod tar sed grep cat install touch; do
+  ln -sf "$(command -v "$u")" "$FIX/base/$u"
+done
+HOME="$FIX/h7" PATH="$FIX/base" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/lazygit.sh" >/dev/null 2>&1 || true
+ck "lazygit linux: apt install called" "1" "$(grep -c APT_LAZYGIT "$FIX/h7/l.log" 2>/dev/null || echo 0)"
 
 printf '\nsetup_test: %d failures\n' "$FAILS"
 [ "$FAILS" -eq 0 ]
