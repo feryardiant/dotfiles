@@ -8,6 +8,8 @@ c_err='41'
 c_inf='33'
 c_suc='32'
 c_rst='37'
+c_red='31'    # fail status
+c_hl='1;33'   # yellow-bold highlight for names
 
 e() {
 	printf '\e[%sm%s\e[0m' "$@"
@@ -17,16 +19,32 @@ _err() {
 	e $c_err "$1" | cat - 1>&2
 }
 
-_has_pkg() {
-	command -v $1 >/dev/null 2>&1
+# _c <color> <text> — colored on a TTY, plain otherwise (keeps test captures assertion-friendly)
+_c() {
+	if [ -t 1 ]; then e "$1" "$2"; else printf '%s' "$2"; fi
 }
 
-_resque() {
-	if [ -f $1 ]; then
-		if [ -L $1 ]; then
-			rm -f $1
-		else
-			mv -f $1 $backup_dir/
-		fi
+# One-line status protocol (console):
+#   msg_begin [label] <name>  ->  '  [label ]<name>... '   (yellow-bold name, no newline)
+#   msg_end   done|warn|fail  ->  colored status + newline
+#   msg_hint  <file>          ->  '    See <file> for more info'
+msg_begin() {
+	if [ $# -eq 1 ]; then
+		printf '  %s... ' "$(_c "$c_hl" "$1")"
+	else
+		printf '  %s %s... ' "$1" "$(_c "$c_hl" "$2")"
 	fi
+}
+
+msg_end() {
+	case "$1" in
+		done) printf '%s\n' "$(_c "$c_suc" done)" ;;
+		warn) printf '%s\n' "$(_c "$c_inf" warn)" ;;
+		fail) printf '%s\n' "$(_c "$c_red" fail)" ;;
+		*)    printf '%s\n' "$1" ;;
+	esac
+}
+
+msg_hint() {
+	printf '    See %s for more info\n' "$1"
 }

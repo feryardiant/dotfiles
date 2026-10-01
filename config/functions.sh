@@ -97,7 +97,7 @@ function extract() {
 
 # PHP Server
 function phpserv() {
-	if ! _has_pkg 'php'; then
+	if ! command -v php >/dev/null 2>&1; then
 		_err "Your system does not have PHP binnary installed"$'\n'
 		return 1;
 	fi
@@ -143,7 +143,7 @@ function evalssh() {
 function clipboard() {
 	case "$OSTYPE" in
 		linux-gnu)
-			if ! _has_pkg 'xclip'; then
+			if ! command -v xclip >/dev/null 2>&1; then
 				_err "This command require xclip to be installed"$'\n'
 				return 1
 			fi
