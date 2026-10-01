@@ -290,17 +290,25 @@ run usermod -aG adm,root,sudo,www-data "$TARGET"
 run sh -c "printf '%s ALL=(ALL) NOPASSWD: ALL\n' '$TARGET' > /etc/sudoers.d/90-admin-users"
 KEYS_INSTALLED=0
 KEYS_SRC=''
-if [ -s /root/.ssh/authorized_keys ]; then
-  KEYS_SRC=/root/.ssh/authorized_keys
+ROOT_KEYS="${ROOT_KEYS:-/root/.ssh/authorized_keys}"
+HOME_DIR=''
+if command -v getent >/dev/null 2>&1; then
+  HOME_DIR=$(getent passwd "$TARGET" | cut -d: -f6)
+fi
+if [ -s "$HOME_DIR/.ssh/authorized_keys" ]; then
+  KEYS_SRC="$HOME_DIR/.ssh/authorized_keys"
+elif [ -s "$ROOT_KEYS" ]; then
+  KEYS_SRC="$ROOT_KEYS"
 elif [ -n "${SUDO_USER:-}" ]; then
   SUDO_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
   [ -s "$SUDO_HOME/.ssh/authorized_keys" ] && KEYS_SRC="$SUDO_HOME/.ssh/authorized_keys"
 fi
 if [ -n "$KEYS_SRC" ]; then
-  HOME_DIR=$(getent passwd "$TARGET" | cut -d: -f6)
   run mkdir -p "$HOME_DIR/.ssh"
   if [ "$KEYS_SRC" != "$HOME_DIR/.ssh/authorized_keys" ]; then
-    run cp "$KEYS_SRC" "$HOME_DIR/.ssh/authorized_keys"
+    # copy through sed rather than cp: drops cloud-init's forced-command
+    # wrapper so a fallback key is a working key, never a login redirect
+    run bash -c "sed -E -e 's/^command=\"([^\"]|\\\\.)*\"[[:space:]]?//' -e 's/,command=\"([^\"]|\\\\.)*\"//' '$KEYS_SRC' > '$HOME_DIR/.ssh/authorized_keys'"
   fi
   run chown -R "$TARGET:$TARGET" "$HOME_DIR/.ssh"
   run chmod 700 "$HOME_DIR/.ssh"

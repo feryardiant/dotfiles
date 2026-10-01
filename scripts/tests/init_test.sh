@@ -228,6 +228,37 @@ STUB
   t admin 'admin fallback: store file is mode 600' "1" "$(ls -l "$FIX/adm/h/.init-password" 2>/dev/null | grep -c '^-rw-------')"
   t admin 'admin fallback: store file holds the password' "1" "$(grep -c '^TestPW+abc123xyz$' "$FIX/adm/h/.init-password" 2>/dev/null || true)"
 
+  # --- root keys: the account's own keys win; command= wrappers are stripped ---
+  mkdir -p "$FIX/rk/h/.ssh"
+  printf '#!/bin/sh\necho "1000 testuser"\n' > "$FIX/rk/awk"
+  printf '#!/bin/sh\necho "testuser:x:1000:1000::%s:/bin/bash"\n' "$FIX/rk/h" > "$FIX/rk/getent"
+  cat > "$FIX/rk/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+  for c in locale-gen update-locale dpkg-reconfigure ln apt-get systemctl timedatectl \
+    usermod sh chown chmod add-apt-repository update-alternatives; do
+    printf '#!/bin/sh\nexit 0\n' > "$FIX/rk/$c"
+  done
+  chmod +x "$FIX/rk/"*
+  printf 'ssh-ed25519 own-key-of-user\n' > "$FIX/rk/h/.ssh/authorized_keys"
+  printf 'command="echo \\"Please login as the user\\"; exit 142" ssh-ed25519 cloud-instance-key\n' > "$FIX/rk-rootkeys"
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" SUDO_USER=testuser HOME="$FIX/rk/h" \
+    ROOT_KEYS="$FIX/rk-rootkeys" PATH="$FIX/rk:$PATH" bash "$INIT" 2>&1)
+  t keys 'own keys: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
+  t keys 'own keys: preserved over the root fallback' "1" "$(grep -c '^ssh-ed25519 own-key-of-user$' "$FIX/rk/h/.ssh/authorized_keys" 2>/dev/null || true)"
+  t keys 'own keys: root wrapper never lands' "0" "$(grep -c 'cloud-instance-key' "$FIX/rk/h/.ssh/authorized_keys" 2>/dev/null || true)"
+
+  cp -R "$FIX/rk" "$FIX/rk2"
+  rm -f "$FIX/rk2/h/.ssh/authorized_keys"
+  printf '#!/bin/sh\necho "testuser:x:1000:1000::%s:/bin/bash"\n' "$FIX/rk2/h" > "$FIX/rk2/getent"
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" SUDO_USER=testuser HOME="$FIX/rk2/h" \
+    ROOT_KEYS="$FIX/rk-rootkeys" PATH="$FIX/rk2:$PATH" bash "$INIT" 2>&1)
+  t keys 'keyless target: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
+  t keys 'keyless target: plain key lands' "1" "$(grep -c '^ssh-ed25519 cloud-instance-key$' "$FIX/rk2/h/.ssh/authorized_keys" 2>/dev/null || true)"
+  t keys 'keyless target: command wrapper stripped' "0" "$(grep -c 'command=' "$FIX/rk2/h/.ssh/authorized_keys" 2>/dev/null || true)"
+
 fi
 
 finish init
