@@ -83,6 +83,12 @@ msg_hint() { printf '    %s\n' "$1"; }
 on_err() { msg_end error; msg_hint "$BASH_COMMAND failed (line $LINENO)"; exit 1; }
 trap on_err ERR
 run() { [ "${DRY_RUN:-0}" = 1 ] && return 0; "$@"; }
+# run_quiet: same as run but drops the command's chatter (both streams —
+# locale-gen/dpkg-reconfigure print progress on stderr) so protocol lines stay
+# atomic (`  [TYPE] step... status`). Failures are still visible: on_err prints
+# the `error` status and the failing command; unlike init-lxc, the script stops
+# there instead of carrying on silently.
+run_quiet() { [ "${DRY_RUN:-0}" = 1 ] && return 0; "$@" >/dev/null 2>&1; }
 
 write_vimrc() {
   mkdir -p /etc/vim
@@ -124,14 +130,14 @@ VIMRC
 }
 
 msg_begin CONF 'locale settings'
-run locale-gen "$LANG"
+run_quiet locale-gen "$LANG"
 run update-locale "LC_ALL=$LC_ALL" "LANG=$LANG"
-run dpkg-reconfigure --frontend noninteractive locales
+run_quiet dpkg-reconfigure --frontend noninteractive locales
 msg_end done
 
 msg_begin CONF timezone
 run ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-run dpkg-reconfigure --frontend noninteractive tzdata
+run_quiet dpkg-reconfigure --frontend noninteractive tzdata
 msg_end done
 
 msg_begin UPDT repositories
@@ -139,7 +145,7 @@ run apt-get update -qq
 msg_end done
 
 msg_begin UPDT 'system packages'
-run apt-get dist-upgrade -yqq
+run_quiet apt-get dist-upgrade -yqq
 msg_end done
 
 if [ "$PROFILE" = lxc ]; then
@@ -149,14 +155,14 @@ else
 fi
 msg_begin INST "basic tools ($PROFILE)"
 # shellcheck disable=SC2086 -- PKGS is deliberately word-split
-run apt-get install -yqq --no-install-recommends $PKGS
+run_quiet apt-get install -yqq --no-install-recommends $PKGS
 msg_end done
 
 msg_begin CONF 'default user'
 TARGET=$(awk -F: '$3 >= 1000 && $3 < 65534 && $7 !~ /(nologin|false)$/ { print $3, $1 }' /etc/passwd | sort -n | head -1 | cut -d' ' -f2)
 if [ -z "$TARGET" ]; then
   TARGET=admin
-  run adduser --disabled-password --gecos '' admin
+  run_quiet adduser --disabled-password --gecos '' admin
   run bash -c 'echo "admin:password" | chpasswd'
 fi
 run usermod -aG adm,root,sudo,www-data "$TARGET"
@@ -210,8 +216,8 @@ fi
 
 msg_begin UPDT cleanup
 run apt-get clean
-run apt-get autoclean
-run apt-get autoremove -y
+run_quiet apt-get autoclean
+run_quiet apt-get autoremove -y
 msg_end done
 SCRIPT
 )

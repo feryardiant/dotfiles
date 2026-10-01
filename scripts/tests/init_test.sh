@@ -98,4 +98,48 @@ out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT" 2>&1)
 t priv 'sudo -v failure prints the root-required message' "1" "$(printf '%s' "$out" | grep -c 'root required')"
 t priv 'sudo -v failure runs zero steps' "0" "$(printf '%s' "$out" | grep -c '\[CONF\] locale')"
 
+# --- protocol atomicity: chatty commands must not split the step line ---
+mkdir -p "$FIX/chatty"
+cat > "$FIX/chatty/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+cat > "$FIX/chatty/locale-gen" <<'STUB'
+#!/usr/bin/env bash
+echo "Generating locales (this might take a while)..."
+echo "  en_US.UTF-8... done"
+echo "locale-gen: stderr chatter" >&2
+exit 1
+STUB
+chmod +x "$FIX/chatty/sudo" "$FIX/chatty/locale-gen"
+out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/chatty:$PATH" bash "$INIT" 2>&1)
+t protocol 'chatty stdout is suppressed' "0" "$(printf '%s' "$out" | grep -c 'Generating locales')"
+t protocol 'chatty stderr is suppressed' "0" "$(printf '%s' "$out" | grep -c 'stderr chatter')"
+t protocol 'step line stays atomic despite chatter' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
+
+# apt's dpkg progress on fresh hosts must not split step lines either
+mkdir -p "$FIX/apt"
+for c in locale-gen update-locale dpkg-reconfigure ln; do printf '#!/bin/sh\nexit 0\n' > "$FIX/apt/$c"; done
+cat > "$FIX/apt/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+cat > "$FIX/apt/apt-get" <<'STUB'
+#!/bin/sh
+case "$1" in
+  dist-upgrade|install)
+    echo "(Reading database… 5%)"
+    echo "Setting up package..." >&2
+    ;;
+esac
+exit 0
+STUB
+chmod +x "$FIX/apt/"*
+out=$(DRY_RUN=0 PROFILE=lxc HOME="$FIX/h" PATH="$FIX/apt:$PATH" bash "$INIT" 2>&1)
+t protocol 'apt progress is suppressed' "0" "$(printf '%s' "$out" | grep -c 'Reading database')"
+t protocol 'upgrade step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'system packages... done')"
+t protocol 'install step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'basic tools (lxc)... done')"
+
 finish init
