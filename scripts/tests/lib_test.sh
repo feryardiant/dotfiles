@@ -223,10 +223,28 @@ STUB
 cat > "$FIX/bin/apt-get" <<'STUB'
 #!/usr/bin/env bash
 echo "APT_CALL $* DEBIAN_FRONTEND=${DEBIAN_FRONTEND:-}" >> "${APT_LOG:?}"
+if [ "$1" = update ] && [ -f "${PPA_MARKER:-/nonexistent}" ]; then
+  exit 100
+fi
 STUB
 cat > "$FIX/bin/sudo" <<'STUB'
 #!/usr/bin/env bash
 exec "$@"
+STUB
+cat > "$FIX/bin/add-apt-repository" <<'STUB'
+#!/usr/bin/env bash
+echo "PPA_CALL $*" >> "${PPA_LOG:?}"
+case " $* " in
+  *" -r "*)
+    rm -f "${PPA_MARKER:?}"
+    ;;
+  *)
+    if [ "${PPA_BROKEN:-0}" = 1 ]; then
+      touch "${PPA_MARKER:?}"
+    fi
+    ;;
+esac
+exit 0
 STUB
 chmod +x "$FIX/bin/"*
 PATH_SAVE2="$PATH"
@@ -251,6 +269,40 @@ t "apt: installs issued"    "2" "$(grep -c 'APT_CALL install' "$APT_LOG")"
 t "apt: noninteractive"     "2" "$(grep -c 'APT_CALL install.*DEBIAN_FRONTEND=noninteractive' "$APT_LOG")"
 x  "apt guard on macos" 1 bash -c 'DOTFILES_OS=Darwin; . "$1"; apt_install havepkg' bash "$LIB"
 PATH="$PATH_SAVE2"; unset APT_LOG
+
+# ppa_install: prefer the PPA; drop it and use the OS repo when it can't be used
+export APT_LOG="$FIX/apt.log" PPA_LOG="$FIX/ppa.log" PPA_MARKER="$FIX/ppa.marker"
+: > "$APT_LOG"; : > "$PPA_LOG"; rm -f "$PPA_MARKER"
+PATH="$FIX/bin:$PATH_SAVE2"
+
+# happy path: repo added, nothing removed, package installed
+out=$(DOTFILES_OS=Linux DOTFILES_SETUP_LOG="$FIX/ppa.out" ppa_install ppa:good/ppa pkg-ppa-good)
+t "ppa: repo added"        "1" "$(grep -c 'PPA_CALL -y ppa:good/ppa' "$PPA_LOG")"
+t "ppa: never removes"     "0" "$(grep -c 'PPA_CALL -r' "$PPA_LOG")"
+t "ppa: package installed" "  installing (apt): pkg-ppa-good... done" "$out"
+
+# no build for this release: refresh fails rc=100 -> repo dropped, install continues
+: > "$APT_LOG"; : > "$PPA_LOG"; rm -f "$PPA_MARKER"
+export PPA_BROKEN=1
+out=$(DOTFILES_OS=Linux DOTFILES_SETUP_LOG="$FIX/ppa.out" ppa_install ppa:dead/ppa pkg-ppa-dead)
+unset PPA_BROKEN
+t "ppa: broken repo removed"   "1" "$(grep -c 'PPA_CALL -r -y ppa:dead/ppa' "$PPA_LOG")"
+t "ppa: fallback install runs" "1" "$(grep -c 'installing (apt): pkg-ppa-dead... done' <<<"$out")"
+t "ppa: fallback noted in log" "1" "$(grep -c 'no build for this release' "$FIX/ppa.out")"
+
+# no add-apt-repository on the box: install the machinery first, never die
+# (hermetic hosts only — skipped where the real tool exists in the system PATH)
+if ! ( PATH="$PATH_SAVE2"; command -v add-apt-repository >/dev/null 2>&1 ); then
+  mv "$FIX/bin/add-apt-repository" "$FIX/bin/_apr.hidden"
+  : > "$APT_LOG"; : > "$PPA_LOG"
+  out=$(DOTFILES_OS=Linux DOTFILES_SETUP_LOG="$FIX/ppa.out" ppa_install ppa:good/ppa pkg-ppa-notool)
+  mv "$FIX/bin/_apr.hidden" "$FIX/bin/add-apt-repository"
+  t "ppa: ensures the tool" "1" "$(grep -c 'APT_CALL install.*software-properties-common' "$APT_LOG")"
+  t "ppa: still installs"   "1" "$(grep -c 'installing (apt): pkg-ppa-notool... done' <<<"$out")"
+fi
+
+x  "ppa guard on macos" 1 bash -c 'DOTFILES_OS=Darwin; . "$1"; ppa_install ppa:x/y pkg' bash "$LIB"
+PATH="$PATH_SAVE2"; unset APT_LOG PPA_LOG PPA_MARKER
 
 printf '\n%d tests, %d failures\n' "$TESTS_RUN" "$TESTS_FAIL"
 [ "$TESTS_FAIL" -eq 0 ]

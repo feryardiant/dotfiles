@@ -286,3 +286,36 @@ apt_install() {
     return 1
   fi
 }
+
+# ppa_install <ppa> <pkg...> — Linux only; prefer <ppa>, fall back to the OS repo.
+# A PPA without a build for this release breaks apt itself (refresh rc=100), so a
+# failed refresh drops the repo again before installing.
+ppa_install() {
+  if ! is_linux; then
+    echo "ppa_install: not Linux ($*), refusing" >&2
+    return 1
+  fi
+
+  local ppa="$1"
+  shift
+
+  # stock images ship no add-apt-repository (it lives in software-properties-common)
+  command -v add-apt-repository >/dev/null 2>&1 || apt_install software-properties-common
+
+  if sudo add-apt-repository -y "$ppa" >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 &&
+    sudo apt-get update -qq >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1; then
+    APT_UPDATED=1
+    export APT_UPDATED
+  else
+    sudo add-apt-repository -r -y "$ppa" >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || true
+
+    if sudo apt-get update -qq >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1; then
+      APT_UPDATED=1
+      export APT_UPDATED
+    fi
+
+    echo "  $ppa has no build for this release — using the OS repo" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
+  fi
+
+  apt_install "$@"
+}
