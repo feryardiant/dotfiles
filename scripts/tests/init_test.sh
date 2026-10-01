@@ -202,6 +202,32 @@ STUB
   t adopt 'adopted user keys: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
   t adopt 'adopted user keys: no identical-file copy error' "0" "$(printf '%s' "$out" | grep -cE 'identical|same file')"
 
+  # --- admin fallback: openssl-random password, hinted and stored mode 600 ---
+  mkdir -p "$FIX/adm/h"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/adm/awk"
+  printf '#!/bin/sh\necho "admin:x:1001:1001::%s:/bin/bash"\n' "$FIX/adm/h" > "$FIX/adm/getent"
+  printf '#!/bin/sh\nprintf called > "%s/adduser.called"\n' "$FIX/adm" > "$FIX/adm/adduser"
+  printf '#!/bin/sh\ncat > "%s/chpasswd.stdin"\n' "$FIX/adm" > "$FIX/adm/chpasswd"
+  printf '#!/bin/sh\nprintf %%s "TestPW+abc123xyz"\n' > "$FIX/adm/openssl"
+  for c in locale-gen update-locale dpkg-reconfigure ln apt-get timedatectl usermod sh \
+    chown chmod add-apt-repository sed update-alternatives; do
+    printf '#!/bin/sh\nexit 0\n' > "$FIX/adm/$c"
+  done
+  cat > "$FIX/adm/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+  chmod +x "$FIX/adm/"*
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/adm/h" PATH="$FIX/adm:$PATH" bash "$INIT" 2>&1)
+  t admin 'admin fallback: creates the account' "1" "$(grep -c called "$FIX/adm/adduser.called" 2>/dev/null || true)"
+  t admin 'admin fallback: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
+  t admin 'admin fallback: chpasswd receives the generated password' "1" "$(grep -c '^admin:TestPW+abc123xyz$' "$FIX/adm/chpasswd.stdin" 2>/dev/null || true)"
+  t admin 'admin fallback: hint prints the generated password' "1" "$(printf '%s' "$out" | grep -c 'initial password: TestPW+abc123xyz')"
+  t admin 'admin fallback: hint names the store file' "1" "$(printf '%s' "$out" | grep -c '\.init-password')"
+  t admin 'admin fallback: store file is mode 600' "1" "$(ls -l "$FIX/adm/h/.init-password" 2>/dev/null | grep -c '^-rw-------')"
+  t admin 'admin fallback: store file holds the password' "1" "$(grep -c '^TestPW+abc123xyz$' "$FIX/adm/h/.init-password" 2>/dev/null || true)"
+
 fi
 
 finish init

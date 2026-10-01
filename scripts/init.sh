@@ -257,9 +257,9 @@ run apt-get dist-upgrade -yqq
 msg_end done
 
 if [ "$PROFILE" = lxc ]; then
-  PKGS='gpg vim htop tree curl openssh-server net-tools git unzip zip'
+  PKGS='gpg vim htop tree curl openssh-server openssl net-tools git unzip zip'
 else
-  PKGS='gpg vim htop tree curl openssh-server net-tools git unzip zip zsh bat eza fzf ripgrep starship'
+  PKGS='gpg vim htop tree curl openssh-server openssl net-tools git unzip zip zsh bat eza fzf ripgrep starship'
 fi
 msg_begin INST "basic tools ($PROFILE)"
 # shellcheck disable=SC2086 -- PKGS is deliberately word-split
@@ -271,7 +271,20 @@ TARGET=$(awk -F: '$3 >= 1000 && $3 < 65534 && $7 !~ /(nologin|false)$/ { print $
 if [ -z "$TARGET" ]; then
   TARGET=admin
   run adduser --disabled-password --gecos '' admin
-  run bash -c 'echo "admin:password" | chpasswd'
+  # known-credential backdoor (CWE-798) removed: random per-bootstrap secret,
+  # hinted below and kept mode 600 in the account's home as an emergency copy
+  ADMIN_PW=''
+  if command -v openssl >/dev/null 2>&1; then
+    ADMIN_PW=$(openssl rand -base64 12)
+  fi
+  if [ -n "$ADMIN_PW" ]; then
+    run bash -c "printf '%s:%s\n' '$TARGET' '$ADMIN_PW' | chpasswd"
+    ADMIN_HOME=''
+    if command -v getent >/dev/null 2>&1; then
+      ADMIN_HOME=$(getent passwd "$TARGET" | cut -d: -f6)
+    fi
+    run bash -c "umask 177 && printf '%s\n' '$ADMIN_PW' > '$ADMIN_HOME/.init-password' && chown '$TARGET:' '$ADMIN_HOME/.init-password'"
+  fi
 fi
 run usermod -aG adm,root,sudo,www-data "$TARGET"
 run sh -c "printf '%s ALL=(ALL) NOPASSWD: ALL\n' '$TARGET' > /etc/sudoers.d/90-admin-users"
@@ -296,6 +309,9 @@ if [ -n "$KEYS_SRC" ]; then
 fi
 msg_end done
 msg_hint 'group changes apply at next login'
+if [ -n "${ADMIN_PW:-}" ]; then
+  msg_hint "initial password: $ADMIN_PW (saved to $ADMIN_HOME/.init-password)"
+fi
 
 msg_begin CONF 'sshd hardening'
 run sed -iE 's~#PermitRootLogin .*~PermitRootLogin prohibit-password~' /etc/ssh/sshd_config
