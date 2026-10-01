@@ -69,7 +69,7 @@ fm_entries() {
       } else if (line ~ /^[A-Za-z_][A-Za-z0-9_]*:/) {   # root key
         flush()
         i=index(line,":"); key=substr(line,1,i-1); val=substr(line,i+1); sub(/^[ \t]+/,"",val)
-        if (key=="maps") { if (val!="") e("maps: takes no inline value"); hasmaps=1 }
+        if (key=="maps") { if (val!="" && val!="{}") e("maps: takes no inline value (or {})"); hasmaps=1 }
         else if (key=="when") {
           if (val=="" || val ~ /[][]/) e("root when must be a scalar command: " val)
           rootwhen=1
@@ -124,6 +124,13 @@ _resque() {
   mv -f "$1" "$target"
 }
 
+# _cfg_ignoring_user <a> <b> — equal modulo the machine-local [user] section
+# (identity is per-machine state; only the rest counts as file drift)
+_cfg_ignoring_user() {
+  [ "$(awk '/^\[user\][ \t]*$/ {skip=1; next} skip && /^\[/ {skip=0} !skip' "$1")" = \
+    "$(awk '/^\[user\][ \t]*$/ {skip=1; next} skip && /^\[/ {skip=0} !skip' "$2")" ]
+}
+
 # link_apply <dest> <abs_src> <os> <copy> <when> <root_when>
 #   gates: os → root when → dest when → dry-run → noop → backup → apply
 #   sets LINK_RESULT=linked|noop|gated|would|failed ; returns 1 only on failed
@@ -132,6 +139,7 @@ link_apply() {
   local full="${LINK_ROOT:-$HOME}${dest#\~}" cur="" name="" email=""
 
   if [ -n "$os" ]; then
+    os=${os#\[}; os=${os%\]}; os=${os// /}   # fm_entries keeps "[macos, linux]" raw
     if is_macos; then cur=macos; else cur=linux; fi
     case ",$os," in
       *",$cur,"*) ;;
@@ -147,8 +155,14 @@ link_apply() {
   if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then
     LINK_RESULT=would; printf '  would   %s\n' "$dest"; return 0
   fi
-  if [ "${DOTFILES_FORCE:-0}" != 1 ] && [ -L "$full" ] && [ "$(readlink "$full")" = "$src" ]; then
-    LINK_RESULT=noop; printf '  in place %s\n' "$dest"; return 0
+  if [ "${DOTFILES_FORCE:-0}" != 1 ]; then
+    if [ -L "$full" ] && [ "$(readlink "$full")" = "$src" ]; then
+      LINK_RESULT=noop; printf '  in place %s\n' "$dest"; return 0
+    fi
+    # copy dest: equal modulo [user] → true no-op (no backup churn per run)
+    if [ "$copy" = "true" ] && [ -f "$full" ] && _cfg_ignoring_user "$src" "$full"; then
+      LINK_RESULT=noop; printf '  in place %s\n' "$dest"; return 0
+    fi
   fi
   # capture git identity from a file we are about to replace (copy: true)
   if [ "$copy" = "true" ] && [ -f "$full" ]; then

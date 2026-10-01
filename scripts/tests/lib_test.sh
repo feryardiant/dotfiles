@@ -100,6 +100,8 @@ t "block dest 2 when"  "ghostty" "$(fm_entries "$FIX/blocks.md" | sed -n 2p | cu
 t "block os list"   "[linux]" "$(fm_entries "$FIX/blocks.md" | sed -n 2p | cut -f3)"
 t "copy flag"       "true"    "$(fm_entries "$FIX/blocks.md" | sed -n 3p | cut -f4)"
 t "body not parsed" "1"       "$(fm_entries "$FIX/string.md" | wc -l | tr -d ' ')"
+printf -- '---\nmaps: {}\n---\n' > "$FIX/emptymaps.md"
+t "maps:{} accepted" "0"      "$(fm_entries "$FIX/emptymaps.md" | wc -l | tr -d ' ')"
 
 # --- fm_entries: violations → exit 1 ---
 x "inline form rejected"     1 fm_entries "$FIX/inline.md"
