@@ -42,7 +42,7 @@ if [ -n "$SKIP" ]; then
   case "$ALL_TOOLS" in *" $SKIP "*) ;; *) echo "unknown tool: $SKIP" >&2; exit 1 ;; esac
 fi
 
-trap 'echo; e "$c_inf" "interrupted — backups (if any): ${BACKUP_DIR}"; exit 130' INT TERM
+trap 'echo; _c "$c_inf" "interrupted — backups (if any): ${BACKUP_DIR}"; printf "\n"; exit 130' INT TERM
 
 FAILED=()
 ok_count=0
@@ -87,5 +87,5 @@ if [ "$nfail" -gt 0 ]; then
   [ -d "$BACKUP_DIR" ] && printf 'backups: %s\n' "$BACKUP_DIR"
   exit 1
 fi
-e "$c_suc" 'Everything is done ✔'
+_c "$c_suc" 'Everything is done ✔'
 printf '\n'
