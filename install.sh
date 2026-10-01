@@ -13,7 +13,7 @@ export DOTFILES_DIR
 . "${DOTFILES_PHASES_FILE:-$SCRIPTS_DIR/phases.sh}"
 path_setup
 export BACKUP_DIR="$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)"
-LOGS_DIR="$DOTFILES_DIR/scripts/logs"; export LOGS_DIR
+LOGS_DIR="${LOGS_DIR:-$DOTFILES_DIR/scripts/logs}"; export LOGS_DIR
 mkdir -p "$LOGS_DIR"
 
 usage() {

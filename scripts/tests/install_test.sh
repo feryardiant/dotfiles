@@ -29,7 +29,7 @@ STUB
 
 run() { # run <home> [args...] — captures output in $OUT, code in $RC
   local h="$1"; shift
-  OUT=$(HOME="$h" DOTFILES_DIR="$FIX/repo" DOTFILES_SCRIPTS_DIR="$FIX/scripts" \
+  OUT=$(HOME="$h" LOGS_DIR="$FIX/logs" DOTFILES_DIR="$FIX/repo" DOTFILES_SCRIPTS_DIR="$FIX/scripts" \
         DOTFILES_PHASES_FILE="$FIX/phases.sh" bash "$ROOT/install.sh" "$@" 2>&1)
   RC=$?
 }
