@@ -67,9 +67,11 @@ bash scripts/tests/lib_test.sh
 Run all six:
 
 ```bash
+fail=0
 for t in lib link setup plugin install init; do
-  bash "scripts/tests/${t}_test.sh" || echo "FAILED: $t"
+  bash "scripts/tests/${t}_test.sh" || fail=1
 done
+[ "$fail" = 0 ]
 ```
 
 | Suite | Covers |
