@@ -28,21 +28,27 @@ _c() {
 #   msg_begin [label] <name>  ->  '  [label ]<name>... '   (yellow-bold name, no newline)
 #   msg_end   done|warn|fail  ->  colored status + newline
 #   msg_hint  <file>          ->  '    See <file> for more info'
+# _c is called at top level (never inside $(), where stdout is a pipe and
+# [ -t 1 ] would never be true).
 msg_begin() {
+	printf '  '
 	if [ $# -eq 1 ]; then
-		printf '  %s... ' "$(_c "$c_hl" "$1")"
+		_c "$c_hl" "$1"
 	else
-		printf '  %s %s... ' "$1" "$(_c "$c_hl" "$2")"
+		printf '%s ' "$1"
+		_c "$c_hl" "$2"
 	fi
+	printf '... '
 }
 
 msg_end() {
 	case "$1" in
-		done) printf '%s\n' "$(_c "$c_suc" "done")" ;;
-		warn) printf '%s\n' "$(_c "$c_inf" warn)" ;;
-		fail) printf '%s\n' "$(_c "$c_red" fail)" ;;
-		*)    printf '%s\n' "$1" ;;
+		done) _c "$c_suc" "done" ;;
+		warn) _c "$c_inf" warn ;;
+		fail) _c "$c_red" fail ;;
+		*)    printf '%s' "$1" ;;
 	esac
+	printf '\n'
 }
 
 msg_hint() {
