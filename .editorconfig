@@ -9,9 +9,4 @@ indent_style = space
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
-
-[*.{json,yml,sh}]
-indent_size = 2
-
-[{vimrc,*.lua}]
 indent_size = 2
