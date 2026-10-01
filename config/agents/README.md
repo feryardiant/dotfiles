@@ -1,9 +1,15 @@
 ---
 maps:
   ~/.agents/global-instructions.md: global-instructions.md
-  ~/.config/zed/AGENTS.md: global-instructions.md
-  ~/.config/kilo/skills: skills
-  ~/.config/opencode/skills: skills
+  ~/.config/zed/AGENTS.md:
+    src: global-instructions.md
+    when: zed
+  ~/.config/kilo/skills:
+    src: skills
+    when: kilo
+  ~/.config/opencode/skills:
+    src: skills
+    when: opencode
   ~/.agents/skills: skills
 ---
 
