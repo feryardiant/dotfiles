@@ -78,6 +78,9 @@ t profile 'unknown profile value explains on stderr' "1" "$(printf '%s' "$err" |
 # Non-dry-run fixtures execute real commands behind their stubs (EACCES being
 # the non-root backstop); as root those commands would touch the host system,
 # so the whole section is skipped instead of run.
+if [ "$(id -u)" -eq 0 ]; then
+  printf '    hint: non-dry-run fixtures skipped when running as root\n'
+fi
 if [ "$(id -u)" -ne 0 ]; then
 
   # --- error path: hermetic stubs, step 1's second command fails chatty ---

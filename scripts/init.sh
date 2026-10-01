@@ -79,7 +79,9 @@ set -Eeuo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 # inlined util.sh-style helpers — self-contained: no repo checkout when piped
-c_suc='32'; c_red='31'; c_hl='1;33'
+c_suc='32'
+c_red='31'
+c_hl='1;33'
 _c() {
   if [ -t 1 ]; then
     printf '\e[%sm%s\e[0m' "$1" "$2"
