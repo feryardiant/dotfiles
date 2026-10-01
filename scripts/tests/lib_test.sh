@@ -111,5 +111,72 @@ x "duplicate dest"           1 fm_entries "$FIX/dup.md"
 x "block missing src"        1 fm_entries "$FIX/nosrc.md"
 x "missing file"             1 fm_entries "$FIX/nope.md"
 
+HOME_SAVE="$HOME"; ROOT_DIR="${DOTFILES_DIR:-}"
+
+# --- predicates ---
+x "is_linux via override" 0 sh -c 'DOTFILES_OS=Linux; . "$1"; is_linux' sh "$LIB"
+x "is_macos via override" 0 sh -c 'DOTFILES_OS=Darwin; . "$1"; is_macos' sh "$LIB"
+x "has_when empty = pass" 0 has_when ""
+x "has_when missing cmd" 1 has_when nosuchcmd-$$
+x "has_when present cmd" 0 has_when sh
+
+# --- path_setup puts ~/.local/bin on PATH (Review Focus 2) ---
+mkdir -p "$FIX/home/.local/bin"; printf '#!/bin/sh\n' > "$FIX/home/.local/bin/fakecmd"; chmod +x "$FIX/home/.local/bin/fakecmd"
+x "path_setup exposes ~/.local/bin" 0 sh -c 'HOME="$1"; PATH=/usr/bin:/bin; . "$2"; path_setup; command -v fakecmd >/dev/null' sh "$FIX/home" "$LIB"
+
+# --- link_apply in a sandbox ---
+export HOME="$FIX/home" LINK_ROOT="$FIX/home" BACKUP_DIR="$FIX/bak"
+export DOTFILES_DIR="$FIX/repo" LOGS_DIR="$FIX/logs"
+mkdir -p "$FIX/src"; echo "content-v1" > "$FIX/src/a.txt"
+
+link_apply "~/a.txt" "$FIX/src/a.txt" "" "" "" ""
+t "link: result" "linked" "$LINK_RESULT"
+t "link: target" "$FIX/src/a.txt" "$(readlink "$FIX/home/a.txt")"
+
+link_apply "~/a.txt" "$FIX/src/a.txt" "" "" "" ""
+t "link: idempotent noop" "noop" "$LINK_RESULT"
+x "noop creates no backup dir" 1 test -d "$FIX/bak"
+
+DOTFILES_FORCE=1 link_apply "~/a.txt" "$FIX/src/a.txt" "" "" "" ""
+t "link: force re-links" "linked" "$LINK_RESULT"
+unset DOTFILES_FORCE
+rm -rf "$FIX/bak"
+
+# os gate (this test machine is macOS)
+link_apply "~/b.txt" "$FIX/src/a.txt" "linux" "" "" ""
+t "os gate: result" "gated" "$LINK_RESULT"
+x "os gate: no file" 1 test -e "$FIX/home/b.txt"
+link_apply "~/b.txt" "$FIX/src/a.txt" "macos,linux" "" "" ""
+t "os multi-token matches" "linked" "$LINK_RESULT"
+rm -f "$FIX/home/b.txt"
+
+# when gates
+link_apply "~/c.txt" "$FIX/src/a.txt" "" "" "nosuchcmd-$$" ""
+t "dest when: gated" "gated" "$LINK_RESULT"
+link_apply "~/c.txt" "$FIX/src/a.txt" "" "" "" "nosuchcmd-$$"
+t "root when: gated" "gated" "$LINK_RESULT"
+link_apply "~/c.txt" "$FIX/src/a.txt" "" "" "sh" "sh"
+t "both when pass" "linked" "$LINK_RESULT"
+rm -f "$FIX/home/c.txt"
+
+# dry run
+DOTFILES_DRY_RUN=1 link_apply "~/d.txt" "$FIX/src/a.txt" "" "" "" ""
+t "dry-run result" "would" "$LINK_RESULT"
+x "dry-run writes nothing" 1 test -e "$FIX/home/d.txt"
+unset DOTFILES_DRY_RUN
+
+# copy + git identity preservation + backup (Review Focus 3)
+printf '[user]\n\tname = Fery\n\temail = old@example.com\n' > "$FIX/home/.gitconfig"
+echo "src-identity" > "$FIX/src/gitconfig"
+link_apply "~/.gitconfig" "$FIX/src/gitconfig" "" "true" "" ""
+t "copy: result" "linked" "$LINK_RESULT"
+t "copy: content replaced" "src-identity" "$(head -1 "$FIX/home/.gitconfig")"
+t "copy: name preserved" "Fery" "$(git config --file "$FIX/home/.gitconfig" user.name)"
+t "copy: email preserved" "old@example.com" "$(git config --file "$FIX/home/.gitconfig" user.email)"
+t "copy: old file backed up" "1" "$(grep -c '\[user\]' "$FIX/bak/.gitconfig" 2>/dev/null || echo 0)"
+
+unset LINK_ROOT BACKUP_DIR
+export HOME="$HOME_SAVE" DOTFILES_DIR="$ROOT_DIR"
+
 printf '\n%d tests, %d failures\n' "$TESTS_RUN" "$TESTS_FAIL"
 [ "$TESTS_FAIL" -eq 0 ]

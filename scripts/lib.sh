@@ -85,3 +85,84 @@ fm_entries() {
     }
   ' "$1"
 }
+
+# ---------------------------------------------------------------------------
+# Predicates, output, backup, linking
+# ---------------------------------------------------------------------------
+
+is_macos() { [ "${DOTFILES_OS:-$(uname -s)}" = "Darwin" ]; }
+is_linux() { [ "${DOTFILES_OS:-$(uname -s)}" = "Linux" ]; }
+
+# has_when <cmd> — empty = unconditional pass; else command -v probe
+has_when() { [ -z "$1" ] || command -v "$1" >/dev/null 2>&1; }
+
+# Non-login shells miss ~/.local/bin (agy, kilo, mise live there) — fix PATH once.
+path_setup() {
+  case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) PATH="$HOME/.local/bin:$PATH"; export PATH ;;
+  esac
+}
+
+c_err='41;37'; c_inf='33'; c_suc='32'; c_rst='37'
+e() { printf '\e[%sm%s\e[0m' "$@"; }
+
+log() { # log <tool> <message>
+  mkdir -p "${LOGS_DIR:-$DOTFILES_DIR/logs}"
+  printf '%s %s\n' "$(date '+%F %T')" "$2" >> "${LOGS_DIR:-$DOTFILES_DIR/logs}/$1.log"
+}
+
+# _resque <abs path> — move existing file/symlink aside, mirroring its path
+# under $BACKUP_DIR (created lazily, once per run).
+_resque() {
+  { [ -e "$1" ] || [ -L "$1" ]; } || return 0
+  BACKUP_DIR="${BACKUP_DIR:-$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)}"
+  local root="${LINK_ROOT:-$HOME}" rel="$1" target
+  case "$rel" in "$root"/*) rel="${rel#"$root"}" ;; esac
+  target="$BACKUP_DIR$rel"
+  mkdir -p "$(dirname "$target")"
+  mv -f "$1" "$target"
+}
+
+# link_apply <dest> <abs_src> <os> <copy> <when> <root_when>
+#   gates: os → root when → dest when → dry-run → noop → backup → apply
+#   sets LINK_RESULT=linked|noop|gated|would|failed ; returns 1 only on failed
+link_apply() {
+  local dest="$1" src="$2" os="$3" copy="$4" when="$5" root_when="$6"
+  local full="${LINK_ROOT:-$HOME}${dest#\~}" cur="" name="" email=""
+
+  if [ -n "$os" ]; then
+    if is_macos; then cur=macos; else cur=linux; fi
+    case ",$os," in
+      *",$cur,"*) ;;
+      *) LINK_RESULT=gated; printf '  gated   %s (os: %s, this: %s)\n' "$dest" "$os" "$cur"; return 0 ;;
+    esac
+  fi
+  if ! has_when "$root_when"; then
+    LINK_RESULT=gated; printf '  gated   %s (when: %s)\n' "$dest" "$root_when"; return 0
+  fi
+  if ! has_when "$when"; then
+    LINK_RESULT=gated; printf '  gated   %s (when: %s)\n' "$dest" "$when"; return 0
+  fi
+  if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then
+    LINK_RESULT=would; printf '  would   %s\n' "$dest"; return 0
+  fi
+  if [ "${DOTFILES_FORCE:-0}" != 1 ] && [ -L "$full" ] && [ "$(readlink "$full")" = "$src" ]; then
+    LINK_RESULT=noop; printf '  in place %s\n' "$dest"; return 0
+  fi
+  # capture git identity from a file we are about to replace (copy: true)
+  if [ "$copy" = "true" ] && [ -f "$full" ]; then
+    name=$(git config --file "$full" user.name 2>/dev/null || true)
+    email=$(git config --file "$full" user.email 2>/dev/null || true)
+  fi
+  _resque "$full"
+  mkdir -p "$(dirname "$full")"
+  if [ "$copy" = "true" ]; then
+    cp -f "$src" "$full" || { LINK_RESULT=failed; printf '  FAILED  %s\n' "$dest"; return 1; }
+    [ -n "$name" ] && git config --file "$full" user.name "$name"
+    [ -n "$email" ] && git config --file "$full" user.email "$email"
+    LINK_RESULT=linked; printf '  copied  %s\n' "$dest"; return 0
+  fi
+  ln -sf "$src" "$full" || { LINK_RESULT=failed; printf '  FAILED  %s\n' "$dest"; return 1; }
+  LINK_RESULT=linked; printf '  linked  %s\n' "$dest"; return 0
+}
