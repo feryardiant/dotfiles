@@ -12,7 +12,8 @@ export DOTFILES_DIR
 . "${DOTFILES_PHASES_FILE:-$SCRIPTS_DIR/phases.sh}"
 path_setup
 export BACKUP_DIR="$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)"
-LOGS_DIR="$DOTFILES_DIR/logs"; export LOGS_DIR
+LOGS_DIR="$DOTFILES_DIR/scripts/logs"; export LOGS_DIR
+mkdir -p "$LOGS_DIR"
 
 usage() {
   sed -n '2,6s/^# //p' "${BASH_SOURCE[0]}"
@@ -54,10 +55,12 @@ run_phase() { # run_phase <label> <names...>
     [ -n "$SKIP" ] && [ "$name" = "$SKIP" ] && { echo "  skipped (--skip): $name"; continue; }
     [ -n "$ONLY" ] && [ "$name" != "$ONLY" ] && continue
     if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then echo "  would run: setup.d/$name.sh"; continue; fi
+    DOTFILES_SETUP_LOG="$LOGS_DIR/setup-$name.txt"; export DOTFILES_SETUP_LOG
+    : > "$DOTFILES_SETUP_LOG"   # fresh log per child per run
     if bash "$SCRIPTS_DIR/setup.d/$name.sh"; then
-      echo "  ok: $name"; ok_count=$((ok_count+1))
+      ok_count=$((ok_count+1))
     else
-      echo "  FAILED: $name"; FAILED+=("$name")
+      msg_hint "$DOTFILES_SETUP_LOG"; FAILED+=("$name")
     fi
   done
 }

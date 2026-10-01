@@ -40,8 +40,10 @@ run "$FIX/h1"
 ck "run: exit nonzero" "1" "$([ "$RC" -ne 0 ] && echo 1 || echo 0)"
 ck "run: ok executed" "1" "$([ -f "$FIX/h1/ran-ok" ] && echo 1 || echo 0)"
 ck "run: fail executed (continues)" "1" "$([ -f "$FIX/h1/ran-fail" ] && echo 1 || echo 0)"
-printf '%s' "$OUT" | grep -q "FAILED: fail" && f=1 || f=0
-ck "run: failure named in output" "1" "$f"
+printf '%s' "$OUT" | grep -q "See .*setup-fail.txt for more info" && f=1 || f=0
+ck "run: failure shows log hint" "1" "$f"
+printf '%s' "$OUT" | grep -q "failed: fail" && fl=1 || fl=0
+ck "run: failure named in summary" "1" "$fl"
 printf '%s' "$OUT" | grep -q "== link ==" && l=1 || l=0
 ck "run: link phase still ran" "1" "$l"
 
