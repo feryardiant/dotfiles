@@ -4,7 +4,7 @@ Personal dotfiles managed via `install.sh`. Cross-platform (macOS via Homebrew, 
 
 ## Structure
 
-- `install.sh` — frontmatter-driven installer: runs `scripts/phases.sh` bootstrappers, then applies all `maps:` via `scripts/link.sh`. Flags: `--only <tool>`, `--skip <tool>`, `--link-only`, `--force`, `--dry-run`.
+- `install.sh` — frontmatter-driven installer: runs `scripts/phases.sh` bootstrappers, then applies all `maps:` via `scripts/link.sh`. Flags: `--only <tool[,tool…]>`, `--skip <tool[,tool…]>`, `--link-only`, `--force`, `--dry-run`.
 - `config/` — everything mappable: tool configs, plus the shell files (`zshrc`, `bashrc`, `profile`) and repo-sourced `aliases.sh` / `exports.sh` / `functions.sh`. Every dir has a `README.md` whose `maps:` frontmatter defines its mappings — schema: [`config/README.md`](config/README.md).
 - `scripts/` — bootstrappers (`setup.d/<tool>.sh`, orchestrated via `phases.sh`), `lib.sh` (shared parser/linker), `link.sh`, `util.sh` (colors + one-line status helpers shared by shell rc, installer, and tests), plus hooks (e.g. `php.sh` is a mise postinstall hook).
 - Output: one status line per tool — `installing (brew|apt): <tool>... done|warn|fail` (colored on a TTY, plain when piped); raw installer output goes to `scripts/logs/setup-{tool}.txt`, and a failed tool prints `See <log> for more info`.

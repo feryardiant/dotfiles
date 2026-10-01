@@ -14,7 +14,7 @@ ck() {
 }
 
 # fixture scripts dir: real lib + link, stub children + phases
-mkdir -p "$FIX/scripts/setup.d" "$FIX/repo/config" "$FIX/h1" "$FIX/h2" "$FIX/h3" "$FIX/h4" "$FIX/h5" "$FIX/h6" "$FIX/h7"
+mkdir -p "$FIX/scripts/setup.d" "$FIX/repo/config" "$FIX/h1" "$FIX/h2" "$FIX/h3" "$FIX/h4" "$FIX/h5" "$FIX/h6" "$FIX/h7" "$FIX/h8" "$FIX/h9" "$FIX/h10" "$FIX/h11" "$FIX/h12" "$FIX/h13"
 ln -s "$ROOT/scripts/lib.sh" "$FIX/scripts/lib.sh"
 ln -s "$ROOT/scripts/util.sh" "$FIX/scripts/util.sh"
 ln -s "$ROOT/scripts/link.sh" "$FIX/scripts/link.sh"
@@ -81,6 +81,34 @@ ck "unknown --only name: exit 1" "1" "$RC"
 run "$FIX/h7" --link-only
 ck "link-only: exit 0" "0" "$RC"
 ck "link-only: no child ran" "0" "$([ -f "$FIX/h7/ran-ok" ] && echo 1 || echo 0)"
+
+# 7) comma-separated --only/--skip
+run "$FIX/h8" --only ok,fail
+ck "--only ok,fail: both ran (list parsed)" "1" "$([ -f "$FIX/h8/ran-ok" ] && [ -f "$FIX/h8/ran-fail" ] && echo 1 || echo 0)"
+ck "--only ok,fail: exit nonzero (fail tool ran)" "1" "$([ "$RC" -ne 0 ] && echo 1 || echo 0)"
+
+run "$FIX/h9" --only "ok, fail"
+ck "--only with spaces: both ran (list parsed)" "1" "$([ -f "$FIX/h9/ran-ok" ] && [ -f "$FIX/h9/ran-fail" ] && echo 1 || echo 0)"
+ck "--only with spaces: exit nonzero (fail tool ran)" "1" "$([ "$RC" -ne 0 ] && echo 1 || echo 0)"
+
+run "$FIX/h10" --skip ok,fail
+ck "--skip ok,fail: exit 0" "0" "$RC"
+ck "--skip ok,fail: none ran" "0" "$([ -f "$FIX/h10/ran-ok" ] || [ -f "$FIX/h10/ran-fail" ] && echo 1 || echo 0)"
+
+run "$FIX/h11" --only ok,nope
+ck "--only unknown element: exit 1" "1" "$RC"
+printf '%s' "$OUT" | grep -q "unknown tool: nope" && u=1 || u=0
+ck "--only unknown element names it" "1" "$u"
+
+run "$FIX/h12" --only ,
+ck "--only empty list: exit 1" "1" "$RC"
+printf '%s' "$OUT" | grep -q "Usage: install.sh" && g=1 || g=0
+ck "--only empty list: shows usage" "1" "$g"
+
+run "$FIX/h13" --only ok,
+ck "--only trailing comma: exit 0" "0" "$RC"
+ck "--only trailing comma: ok ran" "1" "$([ -f "$FIX/h13/ran-ok" ] && echo 1 || echo 0)"
+ck "--only trailing comma: fail not run" "0" "$([ -f "$FIX/h13/ran-fail" ] && echo 1 || echo 0)"
 
 printf '\ninstall_test: %d failures\n' "$FAILS"
 [ "$FAILS" -eq 0 ]

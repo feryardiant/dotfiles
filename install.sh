@@ -2,7 +2,7 @@
 # Frontmatter-driven dotfiles installer.
 #   1) run scripts/setup.d/<tool>.sh children in phase order (idempotent, isolated)
 #   2) apply all maps: via scripts/link.sh (os/when gated) — linking happens only there
-# Usage: install.sh [--only <name>] [--skip <name>] [--link-only] [--force] [--dry-run]
+# Usage: install.sh [--only <name>[,<name>...]] [--skip <name>[,<name>...]] [--link-only] [--force] [--dry-run]
 
 set -euo pipefail
 
@@ -21,11 +21,11 @@ usage() {
   exit "${1:-1}"
 }
 
-ONLY=""; SKIP=""; LINK_ONLY=0
+ONLY=""; SKIP=""; LINK_ONLY=0; ONLY_SET=0; SKIP_SET=0
 while [ $# -ne 0 ]; do
   case $1 in
-    --only)      [ $# -ge 2 ] || usage; ONLY=$2; shift 2 ;;
-    --skip)      [ $# -ge 2 ] || usage; SKIP=$2; shift 2 ;;
+    --only)      [ $# -ge 2 ] || usage; ONLY=$2; ONLY_SET=1; shift 2 ;;
+    --skip)      [ $# -ge 2 ] || usage; SKIP=$2; SKIP_SET=1; shift 2 ;;
     --link-only) LINK_ONLY=1; shift ;;
     --force)     DOTFILES_FORCE=1; export DOTFILES_FORCE; shift ;;
     --dry-run)   DOTFILES_DRY_RUN=1; export DOTFILES_DRY_RUN; shift ;;
@@ -35,27 +35,39 @@ while [ $# -ne 0 ]; do
   esac
 done
 
-ALL_TOOLS=" ${PHASE_SYSTEM[*]-} ${PHASE_MANAGERS[*]-} ${PHASE_TOOLS[*]-} "
+ALL=(${PHASE_SYSTEM[@]+"${PHASE_SYSTEM[@]}"} ${PHASE_MANAGERS[@]+"${PHASE_MANAGERS[@]}"} ${PHASE_TOOLS[@]+"${PHASE_TOOLS[@]}"})
 
-if [ -n "$ONLY" ]; then
-  case "$ALL_TOOLS" in
-    *" $ONLY "*) ;;
-    *)
-      echo "unknown tool: $ONLY" >&2
-      exit 1
-      ;;
-  esac
-fi
+split_words() { # split_words <raw> — fills SPLIT: comma-split, trimmed, empties dropped
+  SPLIT=()
+  local item rest=$1
+  while [ -n "$rest" ]; do
+    item=${rest%%,*}
+    if [ "$rest" = "$item" ]; then rest=""; else rest=${rest#*,}; fi
+    item=${item#"${item%%[![:space:]]*}"}
+    item=${item%"${item##*[![:space:]]}"}
+    [ -n "$item" ] && SPLIT+=("$item")
+  done
+  return 0
+}
 
-if [ -n "$SKIP" ]; then
-  case "$ALL_TOOLS" in
-    *" $SKIP "*) ;;
-    *)
-      echo "unknown tool: $SKIP" >&2
-      exit 1
-      ;;
-  esac
-fi
+in_list() { # in_list <needle> [<hay>...]
+  local needle=$1 x
+  shift
+  for x in "$@"; do [ "$x" = "$needle" ] && return 0; done
+  return 1
+}
+
+split_words "$ONLY"
+[ "$ONLY_SET" -eq 1 ] && [ "${#SPLIT[@]}" -eq 0 ] && usage
+ONLY_LIST=(${SPLIT[@]+"${SPLIT[@]}"})
+split_words "$SKIP"
+[ "$SKIP_SET" -eq 1 ] && [ "${#SPLIT[@]}" -eq 0 ] && usage
+SKIP_LIST=(${SPLIT[@]+"${SPLIT[@]}"})
+
+for _name in ${ONLY_LIST[@]+"${ONLY_LIST[@]}"} ${SKIP_LIST[@]+"${SKIP_LIST[@]}"}; do
+  in_list "$_name" ${ALL[@]+"${ALL[@]}"} || { echo "unknown tool: $_name" >&2; exit 1; }
+done
+unset _name
 
 trap 'echo; _c "$c_inf" "interrupted — backups (if any): ${BACKUP_DIR}"; printf "\n"; exit 130' INT TERM
 
@@ -69,8 +81,8 @@ run_phase() { # run_phase <label> <names...>
   local name
 
   for name in "$@"; do
-    [ -n "$SKIP" ] && [ "$name" = "$SKIP" ] && { echo "  skipped (--skip): $name"; continue; }
-    [ -n "$ONLY" ] && [ "$name" != "$ONLY" ] && continue
+    [ "${#SKIP_LIST[@]}" -gt 0 ] && in_list "$name" ${SKIP_LIST[@]+"${SKIP_LIST[@]}"} && { echo "  skipped (--skip): $name"; continue; }
+    [ "${#ONLY_LIST[@]}" -gt 0 ] && ! in_list "$name" ${ONLY_LIST[@]+"${ONLY_LIST[@]}"} && continue
 
     if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then
       echo "  would run: setup.d/$name.sh"

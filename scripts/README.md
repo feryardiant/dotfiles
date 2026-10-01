@@ -62,7 +62,7 @@ done
 | `link_test.sh` | `link.sh`: full-corpus run with gating, idempotent rerun, parse-error handling |
 | `setup_test.sh` | `setup.d/*`: `bash -n` on every script plus behavior (`.env` seed/merge, nvim caches, vim-plug, lazygit apt path) |
 | `plugin_test.sh` | starship, eza, fzf, zoxide install paths: `brew` on macOS, apt markers on Linux, present-check skip |
-| `install_test.sh` | `install.sh` end-to-end with stubbed phases: failure handling + log hint, `--only`/`--skip`, `--dry-run`, `--link-only`, unknown flags |
+| `install_test.sh` | `install.sh` end-to-end with stubbed phases: failure handling + log hint, `--only`/`--skip` (single or comma lists), `--dry-run`, `--link-only`, unknown flags |
 
 A passing suite prints `ok - ...` lines and ends with `N tests, 0 failures` (exit 0);
 failures are `NOT OK - ...` lines and a non-zero exit.
