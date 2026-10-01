@@ -81,6 +81,12 @@ HOME="$FIX/h8" PATH="$FIX/bin:/usr/bin:/bin" DOTFILES_OS=Darwin DOTFILES_DIR="$R
 t nvim 'creates no config links (deferred)' "0" "$(find "$FIX/h8" -name 'init.vim' 2>/dev/null | wc -l | tr -d ' ')"
 t nvim 'creates the cache dirs' "1" "$([ -d "$FIX/h8/.cache/nvim/swap" ] && echo 1)"
 
+# dry-run with nvim present must not touch the filesystem (guard before the present-branch)
+mkdir -p "$FIX/h9bin" "$FIX/h9"
+printf '#!/bin/sh\n' > "$FIX/h9bin/nvim"; chmod +x "$FIX/h9bin/nvim"
+HOME="$FIX/h9" PATH="$FIX/h9bin:$FIX/bin:/usr/bin:/bin" DOTFILES_DRY_RUN=1 DOTFILES_OS=Darwin DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/nvim.sh" >/dev/null
+t nvim 'dry-run creates no caches when nvim is present' "0" "$([ -d "$FIX/h9/.cache/nvim" ] && echo 1 || echo 0)"
+
 # vim-plug: fetched once (stub curl), autoload linked — h6 must exist so v.log actually records (else both counts are 0 = vacuous pass)
 mkdir -p "$FIX/bin2" "$FIX/h6"
 cat > "$FIX/bin2/curl" <<'STUB'
