@@ -72,4 +72,30 @@ x profile 'unknown profile value exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile
 err=$(DRY_RUN=1 bash "$INIT" --profile windows 2>&1 >/dev/null)
 t profile 'unknown profile value explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown profile')"
 
+# --- error path: hermetic stubs, step 1 fails ---
+mkdir -p "$FIX/bin"
+cat > "$FIX/bin/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+cat > "$FIX/bin/locale-gen" <<'STUB'
+#!/usr/bin/env bash
+exit 1
+STUB
+chmod +x "$FIX/bin/sudo" "$FIX/bin/locale-gen"
+
+x err 'step failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT"
+out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT" 2>&1)
+t err 'step failure prints the `error` status' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
+t err 'step failure hints the command and line' "1" "$(printf '%s' "$out" | grep -c "failed (line")"
+
+# --- sudo credential failure: loud, zero steps ---
+mkdir -p "$FIX/sudo_fail"
+printf '#!/usr/bin/env bash\nexit 1\n' > "$FIX/sudo_fail/sudo"; chmod +x "$FIX/sudo_fail/sudo"
+x priv 'sudo -v failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT"
+out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT" 2>&1)
+t priv 'sudo -v failure prints the root-required message' "1" "$(printf '%s' "$out" | grep -c 'root required')"
+t priv 'sudo -v failure runs zero steps' "0" "$(printf '%s' "$out" | grep -c '\[CONF\] locale')"
+
 finish init

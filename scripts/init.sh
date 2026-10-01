@@ -216,7 +216,14 @@ msg_end done
 SCRIPT
 )
 
-bash -c "$FLOW"
+if [ "$DRY_RUN" = 1 ] || [ "$(id -u)" -eq 0 ]; then
+  bash -c "$FLOW"
+else
+  command -v sudo >/dev/null 2>&1 || { echo 'root required: sudo not found' >&2; exit 1; }
+  sudo -k || true
+  sudo -v || { echo 'root required — run via sudo or "curl … | sudo bash"' >&2; exit 1; }
+  sudo env "LANG=$LANG" "LC_ALL=$LC_ALL" "PROFILE=$PROFILE" "DRY_RUN=$DRY_RUN" bash -c "$FLOW"
+fi
 
 if [ "$DRY_RUN" = 1 ]; then
   printf '    dry-run: no changes were made\n'
