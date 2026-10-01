@@ -20,4 +20,24 @@ t init 'usage: unknown flag explains on stderr' "1" "$(printf '%s' "$err" | grep
 out=$(DRY_RUN=1 bash "$INIT" 2>&1); rc=$?
 t init 'banner: dry run starts with the initializing banner' "1" "$(printf '%s' "$out" | grep -c '^Initializing\.\.\.$')"
 
+# --- step protocol + dry-run flow ---
+x init 'dry-run: exits 0' 0 env DRY_RUN=1 bash "$INIT"
+out=$(DRY_RUN=1 bash "$INIT" 2>&1)
+steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  (\[[A-Z]+\]) (.*)\.\.\..*$/\1 \2/')
+want=$'[CONF] locale settings\n[CONF] timezone\n[UPDT] repositories\n[UPDT] system packages'
+t init 'dry-run: prints the upgrade steps in order' "$want" "$(printf '%s\n' "$steps" | head -4)"
+t init 'dry-run: closes with `All done`' "1" "$(printf '%s' "$out" | grep -c '^All done$')"
+t init 'dry-run: prints the no-changes hint' "1" "$(printf '%s' "$out" | grep -c 'dry-run: no changes were made')"
+
+# tripwire: sudo must never be reachable from a dry run
+mkdir -p "$FIX/tw"
+cat > "$FIX/tw/sudo" <<'STUB'
+#!/usr/bin/env bash
+printf called > "$INIT_TW"
+exit 99
+STUB
+chmod +x "$FIX/tw/sudo"
+INIT_TW="$FIX/tw.called" DRY_RUN=1 PATH="$FIX/tw:$PATH" bash "$INIT" >/dev/null 2>&1
+t init 'dry-run: never invokes sudo' "0" "$([ -f "$FIX/tw.called" ] && echo 1 || echo 0)"
+
 finish init
