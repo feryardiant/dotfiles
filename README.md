@@ -4,9 +4,9 @@ Personal dotfiles managed via `install.sh`. Cross-platform (macOS via Homebrew, 
 
 ## Structure
 
-- `install.sh` — main installer (currently disabled pending a rewrite that reads config frontmatter). Flags: `--with-zsh`, `--with-neovim`. Sources `scripts/util.sh`.
+- `install.sh` — frontmatter-driven installer: runs `scripts/phases.sh` bootstrappers, then applies all `maps:` via `scripts/link.sh`. Flags: `--only <tool>`, `--skip <tool>`, `--link-only`, `--force`, `--dry-run`.
 - `config/` — everything mappable: tool configs, plus the shell files (`zshrc`, `bashrc`, `profile`) and repo-sourced `aliases.sh` / `exports.sh` / `functions.sh`. Every dir has a `README.md` whose `maps:` frontmatter defines its mappings — schema: [`config/README.md`](config/README.md).
-- `scripts/` — tool installers and hooks (e.g. `php.sh` is a mise postinstall hook).
+- `scripts/` — bootstrappers (`setup.d/<tool>.sh`, orchestrated via `phases.sh`), `lib.sh` (shared parser/linker), `link.sh`, plus hooks (e.g. `php.sh` is a mise postinstall hook).
 - Repo-only, never mapped: `.editorconfig`, `.gitignore`, `.gitmodules`, `.env.sample`.
 - `.env` — **contains real API keys. Do not commit or expose.** In gitignore. Uses `.env.sample` as template.
 
