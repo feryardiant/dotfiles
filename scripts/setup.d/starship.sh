@@ -16,9 +16,5 @@ fi
 if is_macos; then
   brew_install starship
 else
-  # official installer (never brew on Linux) — installer output to log
-  msg_begin starship
-  { curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"; } \
-    >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || { msg_end "fail"; exit 1; }
-  msg_end "done"
+  apt_install starship
 fi
