@@ -8,13 +8,14 @@ path_setup
 
 if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then echo "would run: system setup (dirs + ~/.env)"; exit 0; fi
 
+msg_begin system
 mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.local/state"
 
 # ~/.env: seed from sample; merge never duplicates and never drops user keys.
 if [ ! -f "$HOME/.env" ]; then
   sed "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$DOTFILES_DIR'@g" \
     "$DOTFILES_DIR/.env.sample" > "$HOME/.env"
-  echo "  created ~/.env from .env.sample"
+  echo "  created ~/.env from .env.sample" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
 else
   # append any sample line not already present
   while IFS= read -r line; do
@@ -30,11 +31,11 @@ else
   else
     printf "export DOTFILES_DIR='%s'\n" "$DOTFILES_DIR" >> "$HOME/.env"
   fi
-  echo "  ~/.env merged (existing keys preserved)"
+  echo "  ~/.env merged (existing keys preserved)" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
 fi
+msg_end "done"
 
 # Base packages (Ubuntu only — macOS ships curl/git/zsh)
 if is_linux; then
   apt_install curl git zsh build-essential
 fi
-echo "  system setup done"
