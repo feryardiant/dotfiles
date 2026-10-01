@@ -3,6 +3,7 @@
 #   1) run scripts/setup.d/<tool>.sh children in phase order (idempotent, isolated)
 #   2) apply all maps: via scripts/link.sh (os/when gated) — linking happens only there
 # Usage: install.sh [--only <name>] [--skip <name>] [--link-only] [--force] [--dry-run]
+
 set -euo pipefail
 
 DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -35,11 +36,25 @@ while [ $# -ne 0 ]; do
 done
 
 ALL_TOOLS=" ${PHASE_SYSTEM[*]-} ${PHASE_MANAGERS[*]-} ${PHASE_TOOLS[*]-} "
+
 if [ -n "$ONLY" ]; then
-  case "$ALL_TOOLS" in *" $ONLY "*) ;; *) echo "unknown tool: $ONLY" >&2; exit 1 ;; esac
+  case "$ALL_TOOLS" in
+    *" $ONLY "*) ;;
+    *)
+      echo "unknown tool: $ONLY" >&2
+      exit 1
+      ;;
+  esac
 fi
+
 if [ -n "$SKIP" ]; then
-  case "$ALL_TOOLS" in *" $SKIP "*) ;; *) echo "unknown tool: $SKIP" >&2; exit 1 ;; esac
+  case "$ALL_TOOLS" in
+    *" $SKIP "*) ;;
+    *)
+      echo "unknown tool: $SKIP" >&2
+      exit 1
+      ;;
+  esac
 fi
 
 trap 'echo; _c "$c_inf" "interrupted — backups (if any): ${BACKUP_DIR}"; printf "\n"; exit 130' INT TERM
@@ -50,17 +65,26 @@ run_phase() { # run_phase <label> <names...>
   local label="$1"; shift
   [ $# -eq 0 ] && return 0
   printf '\n== %s ==\n' "$label"
+
   local name
+
   for name in "$@"; do
     [ -n "$SKIP" ] && [ "$name" = "$SKIP" ] && { echo "  skipped (--skip): $name"; continue; }
     [ -n "$ONLY" ] && [ "$name" != "$ONLY" ] && continue
-    if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then echo "  would run: setup.d/$name.sh"; continue; fi
+
+    if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then
+      echo "  would run: setup.d/$name.sh"
+      continue
+    fi
+
     DOTFILES_SETUP_LOG="$LOGS_DIR/setup-$name.txt"; export DOTFILES_SETUP_LOG
     : > "$DOTFILES_SETUP_LOG"   # fresh log per child per run
+
     if bash "$SCRIPTS_DIR/setup.d/$name.sh"; then
       ok_count=$((ok_count+1))
     else
-      msg_hint "$DOTFILES_SETUP_LOG"; FAILED+=("$name")
+      msg_hint "$DOTFILES_SETUP_LOG"
+      FAILED+=("$name")
     fi
   done
 }
@@ -75,6 +99,7 @@ printf '\n== link ==\n'
 LINK_ARGS=()
 [ "${DOTFILES_FORCE:-0}" = 1 ] && LINK_ARGS+=(--force)
 [ "${DOTFILES_DRY_RUN:-0}" = 1 ] && LINK_ARGS+=(--dry-run)
+
 if ! bash "$SCRIPTS_DIR/link.sh" ${LINK_ARGS[@]+"${LINK_ARGS[@]}"}; then
   FAILED+=(link)
 fi
@@ -82,6 +107,7 @@ fi
 printf '\n== summary ==\n'
 nfail=${#FAILED[@]}
 printf 'tools: %d ok, %d failed\n' "$ok_count" "$nfail"
+
 if [ "$nfail" -gt 0 ]; then
   printf 'failed: %s\n' "${FAILED[*]}"
   [ -d "$BACKUP_DIR" ] && printf 'backups: %s\n' "$BACKUP_DIR"
