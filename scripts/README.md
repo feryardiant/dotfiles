@@ -64,8 +64,12 @@ done
 | `plugin_test.sh` | starship, eza, fzf, zoxide install paths: `brew` on macOS, apt markers on Linux, present-check skip |
 | `install_test.sh` | `install.sh` end-to-end with stubbed phases: failure handling + log hint, `--only`/`--skip` (single or comma lists), `--dry-run`, `--link-only`, unknown flags |
 
-A passing suite prints `ok - ...` lines and ends with `N tests, 0 failures` (exit 0);
-failures are `NOT OK - ...` lines and a non-zero exit.
+A passing assertion prints `[PASS] <scope> - <aspect>` (status word colored,
+scope bold; `**bold**` and `` `literal` `` markup in aspects renders on a TTY and
+is stripped when piped); a failure prints `[FAIL] <scope> - <aspect>` followed by
+`want:`/`got:` lines and ends the run non-zero. Suites share
+[`tests/harness.sh`](tests/harness.sh) (`t`, `x`, `finish`) and close with
+`<suite>: N tests, 0 failures` (exit 0).
 
 Suites are hermetic: fixtures in `mktemp -d` directories, stubbed `brew`/`apt-get`/`curl`,
 and a fixture-only `PATH` — no network, no writes outside the fixture, safe to run on
