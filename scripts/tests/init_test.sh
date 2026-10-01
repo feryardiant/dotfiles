@@ -258,6 +258,32 @@ STUB
   t leak 'failure output never contains the password' "0" "$(printf '%s' "$out" | grep -c 'LeakPW+abc123xyz')"
   t leak 'failure output is not an argv-style command dump' "0" "$(printf '%s' "$out" | grep -c 'bash -c')"
 
+  # --- urandom fallback: a broken openssl must still yield a 16-char secret ---
+  mkdir -p "$FIX/nr/h"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/nr/awk"
+  printf '#!/bin/sh\necho "admin:x:1001:1001::%s:/bin/bash"\n' "$FIX/nr/h" > "$FIX/nr/getent"
+  printf '#!/bin/sh\nprintf called > "%s/adduser.called"\n' "$FIX/nr" > "$FIX/nr/adduser"
+  printf '#!/bin/sh\ncat > "%s/chpasswd.stdin"\n' "$FIX/nr" > "$FIX/nr/chpasswd"
+  printf '#!/bin/sh\nprintf called > "%s/openssl.called"\nexit 1\n' "$FIX/nr" > "$FIX/nr/openssl"
+  for c in locale-gen update-locale dpkg-reconfigure ln apt-get timedatectl usermod sh \
+    chown chmod add-apt-repository sed update-alternatives systemctl; do
+    printf '#!/bin/sh\nexit 0\n' > "$FIX/nr/$c"
+  done
+  cat > "$FIX/nr/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+  chmod +x "$FIX/nr/"*
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/nr/h" PATH="$FIX/nr:$PATH" bash "$INIT" 2>&1)
+  pw=$(printf '%s' "$out" | sed -nE 's/.*initial password: ([A-Za-z0-9+/]{16}) .*/\1/p' | head -1)
+  t nrand 'openssl is tried before the fallback' "1" "$(grep -c called "$FIX/nr/openssl.called" 2>/dev/null || true)"
+  t nrand 'broken openssl: step still completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
+  t nrand 'fallback hint is a 16-char base64 secret' "1" "$(printf '%s' "$out" | grep -cE 'initial password: [A-Za-z0-9+/]{16} \(')"
+  t nrand 'chpasswd receives the 16-char secret' "1" "$(grep -cE '^admin:[A-Za-z0-9+/]{16}$' "$FIX/nr/chpasswd.stdin" 2>/dev/null || true)"
+  t nrand 'store file is mode 600' "1" "$(ls -l "$FIX/nr/h/.init-password" 2>/dev/null | grep -c '^-rw-------')"
+  t nrand 'store file matches the hinted secret' "1" "$(grep -cFx "$pw" "$FIX/nr/h/.init-password" 2>/dev/null || true)"
+
   # --- root keys: the account's own keys win; command= wrappers are stripped ---
   mkdir -p "$FIX/rk/h/.ssh"
   printf '#!/bin/sh\necho "1000 testuser"\n' > "$FIX/rk/awk"

@@ -282,8 +282,13 @@ if [ -z "$TARGET" ]; then
   # hinted below and kept mode 600 in the account's home as an emergency copy;
   # previews neither generate nor show a secret for a user they never create
   ADMIN_PW=''
-  if [ "${DRY_RUN:-0}" != 1 ] && command -v openssl >/dev/null 2>&1; then
-    ADMIN_PW=$(openssl rand -base64 12)
+  if [ "${DRY_RUN:-0}" != 1 ]; then
+    if command -v openssl >/dev/null 2>&1; then
+      ADMIN_PW=$(openssl rand -base64 12 2>/dev/null) || ADMIN_PW=''
+    fi
+    if [ -z "$ADMIN_PW" ] && command -v base64 >/dev/null 2>&1 && [ -r /dev/urandom ]; then
+      ADMIN_PW=$(head -c 12 /dev/urandom | base64 | tr -d '\n') || ADMIN_PW=''
+    fi
   fi
   if [ -n "$ADMIN_PW" ]; then
     ADMIN_HOME=''
