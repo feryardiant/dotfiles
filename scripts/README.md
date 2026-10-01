@@ -13,8 +13,7 @@ Directories first, then files, alphabetical.
 | `logs/` | Raw installer output — one `setup-{tool}.txt` per tool, fresh each run |
 | `setup.d/` | One bootstrapper per tool: `system`, `oh-my-zsh`, `vim`, `nvim`, `tmux`, `fzf`, `zoxide`, `eza`, `starship`, `lazygit`, `mise`. Present-check + dry-run guard, then `brew` on macOS / `apt_install` on Linux |
 | `tests/` | Self-contained test suites — see [Tests](#tests) |
-| `init-lxc.sh` | One-shot system bootstrap inside an LXC container (locale, timezone, `apt update && dist-upgrade`) |
-| `init.sh` | One-shot system bootstrap for a fresh Linux machine (locale, timezone, `apt update && dist-upgrade`), runs under sudo |
+| `init.sh` | Unified first-boot bootstrap (locale, timezone, upgrade, packages, sudo user, sshd, vim) — cloud-init user-data or `curl … \| bash`; `--profile lxc\|vps`, `--dry-run` |
 | `lib.sh` | Shared library sourced by `install.sh`, `link.sh`, and every `setup.d/` script: `when:`/`maps:` frontmatter parser, `is_macos`/`is_linux`, `link_apply`, `brew_install`/`apt_install`/`ppa_install` |
 | `link.sh` | Standalone applier of every `maps:` entry (os/`when:` gated) — what `--link-only` runs |
 | `phases.sh` | Phase membership and order; each name maps to `setup.d/<name>.sh` |
@@ -40,6 +39,23 @@ Each bootstrapper prints one status line to the console (`installing (brew|apt):
 <tool>... done|warn|fail`); its raw output goes to `scripts/logs/setup-{tool}.txt`,
 and a failure prints `See <log> for more info`.
 
+## First-boot bootstrap
+
+One self-contained script (no repo checkout needed) for fresh Ubuntu hosts —
+runs as cloud-init user-data or piped:
+
+```bash
+sudo ./scripts/init.sh [--profile lxc|vps] [--dry-run]
+curl -fsSL https://raw.githubusercontent.com/feryardiant/dotfiles/main/scripts/init.sh | sudo bash
+curl -fsSL https://raw.githubusercontent.com/feryardiant/dotfiles/main/scripts/init.sh | bash -s -- --profile vps
+```
+
+Profiles: `lxc` (container, lean package set, creates `admin` when no login user
+exists) and `vps` (fuller toolset). Default auto-detects via
+`systemd-detect-virt --container`; `PROFILE=` / `DRY_RUN=1` env vars work where
+args can't be passed (cloud-init `runcmd`). For cloud-init, paste the raw file
+as user-data — it runs as root on first boot.
+
 ## Tests
 
 Run a single suite:
@@ -48,10 +64,10 @@ Run a single suite:
 bash scripts/tests/lib_test.sh
 ```
 
-Run all five:
+Run all six:
 
 ```bash
-for t in lib link setup plugin install; do
+for t in lib link setup plugin install init; do
   bash "scripts/tests/${t}_test.sh" || echo "FAILED: $t"
 done
 ```
@@ -63,6 +79,7 @@ done
 | `setup_test.sh` | `setup.d/*`: `bash -n` on every script plus behavior (`.env` seed/merge, nvim caches, vim-plug, lazygit apt path) |
 | `plugin_test.sh` | starship, eza, fzf, zoxide install paths: `brew` on macOS, apt markers on Linux, present-check skip |
 | `install_test.sh` | `install.sh` end-to-end with stubbed phases: failure handling + log hint, `--only`/`--skip` (single or comma lists), `--dry-run`, `--link-only`, unknown flags |
+| `init_test.sh` | `init.sh`: CLI usage, profile resolution precedence, dry-run sequence + sudo tripwire, step-error/sudo failure paths, protocol line atomicity under chatty commands, bash 3.2 parse gate, adoption self-copy guard (real execution covered by an OrbStack VM run) |
 
 A passing assertion prints `[PASS] <scope> - <aspect>` (status word colored,
 scope bold; `**bold**` and `` `literal` `` markup in aspects renders on a TTY and
@@ -73,4 +90,6 @@ is stripped when piped); a failure prints `[FAIL] <scope> - <aspect>` followed b
 
 Suites are hermetic: fixtures in `mktemp -d` directories, stubbed `brew`/`apt-get`/`curl`,
 and a fixture-only `PATH` — no network, no writes outside the fixture, safe to run on
-macOS and Linux at any time.
+macOS and Linux at any time. The `init` suite's non-dry-run fixtures exercise real
+commands behind their stubs (permission errors being the non-root backstop), so that
+section is skipped when the suite runs as root.
