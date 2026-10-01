@@ -6,13 +6,14 @@ SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)   # scripts/ — ch
 path_setup
 
 if command -v mise >/dev/null 2>&1 && [ "${DOTFILES_FORCE:-0}" != 1 ]; then
-  echo "  present mise"; exit 0
+  msg_begin "mise"; msg_end "done"; exit 0
 fi
 if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then echo "would install mise"; exit 0; fi
 if is_macos; then
   brew_install mise
 else
-  # official one-liner — installs to ~/.local/bin
-  curl -fsSL https://mise.run | sh
+  # official one-liner — installs to ~/.local/bin; installer output to log
+  msg_begin "mise"
+  { curl -fsSL https://mise.run | sh; } >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || { msg_end "fail"; exit 1; }
+  msg_end "done"
 fi
-echo "  mise installed"

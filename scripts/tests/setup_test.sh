@@ -55,7 +55,7 @@ ck "mise mac: via brew" "1" "$(grep -c 'BREW mise' "$FIX/h5/mise.log" 2>/dev/nul
 rm -f "$FIX/h5/.local/bin/mise"; : > "$FIX/h5/mise.log"
 HOME="$FIX/h5" PATH="$CLEAN" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/mise.sh" >/dev/null
 ck "mise linux: official installer" "1" "$(grep -c RAN "$FIX/h5/mise.log" 2>/dev/null || echo 0)"
-HOME="$FIX/h5" PATH="$CLEAN" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/mise.sh" | grep -q present && p=1 || p=0
+HOME="$FIX/h5" PATH="$CLEAN" DOTFILES_OS=Linux DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/mise.sh" | grep -qF "mise... done" && p=1 || p=0
 ck "mise: idempotent" "1" "$p"
 
 # --- tmux/vim/nvim/lazygit ---
