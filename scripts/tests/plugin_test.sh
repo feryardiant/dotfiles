@@ -11,7 +11,7 @@ cat > "$FIX/bin/brew" <<'STUB'
 #!/usr/bin/env bash
 case "$1" in
   list) exit 1 ;;
-  install) echo "BREW $2" >> "$HOME/p.log" ;;
+  install) shift; [ "$1" = -y ] && shift; echo "BREW $*" >> "$HOME/p.log" ;;
 esac
 STUB
 cat > "$FIX/bin/apt-get" <<'STUB'

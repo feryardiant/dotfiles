@@ -42,7 +42,7 @@ CLEAN="$FIX/bin:/usr/bin:/bin"
 cat > "$FIX/bin/brew" <<'STUB'
 #!/usr/bin/env bash
 [ "$1" = list ] && exit 1
-[ "$1" = install ] && { echo "BREW $2" >> "$HOME/mise.log"; mkdir -p "$HOME/.local/bin"; printf '#!/bin/sh\n' > "$HOME/.local/bin/mise"; chmod +x "$HOME/.local/bin/mise"; }
+[ "$1" = install ] && { shift; [ "$1" = -y ] && shift; echo "BREW $*" >> "$HOME/mise.log"; mkdir -p "$HOME/.local/bin"; printf '#!/bin/sh\n' > "$HOME/.local/bin/mise"; chmod +x "$HOME/.local/bin/mise"; }
 STUB
 cat > "$FIX/bin/curl" <<'STUB'
 #!/usr/bin/env bash

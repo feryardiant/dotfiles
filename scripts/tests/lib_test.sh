@@ -186,7 +186,7 @@ cat > "$FIX/bin/brew" <<'STUB'
 #!/usr/bin/env bash
 case "$1" in
   list) [ "$2" = "--versions" ] && [ "$3" = "haveform" ] ;;
-  install) echo "BREW_INSTALL $2" ;;
+  install) shift; echo "BREW_INSTALL $*" ;;
 esac
 STUB
 cat > "$FIX/bin/dpkg" <<'STUB'
@@ -207,7 +207,7 @@ PATH_SAVE2="$PATH"
 # macOS branch
 PATH="$FIX/bin:$PATH_SAVE2"
 out=$(DOTFILES_OS=Darwin brew_install haveform); t "brew: skip installed" "  present haveform" "$out"
-out=$(DOTFILES_OS=Darwin brew_install newform);  t "brew: installs missing" "$(printf '  installing (brew): newform\nBREW_INSTALL newform')" "$out"
+out=$(DOTFILES_OS=Darwin brew_install newform);  t "brew: installs missing" "$(printf '  installing (brew): newform\nBREW_INSTALL -y newform')" "$out"
 x  "brew guard on linux" 1 sh -c 'DOTFILES_OS=Linux; . "$1"; brew_install haveform' sh "$LIB"
 
 # Linux branch, single apt update per run

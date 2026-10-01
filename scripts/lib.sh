@@ -192,7 +192,7 @@ brew_install() {
   for f in "$@"; do brew list --versions "$f" >/dev/null 2>&1 || miss+=("$f"); done
   if [ ${#miss[@]} -eq 0 ]; then printf '  present %s\n' "$*"; return 0; fi
   printf '  installing (brew): %s\n' "${miss[*]}"
-  brew install "${miss[@]}"
+  brew install -y "${miss[@]}"   # -y: never block on brew's ask-mode confirmation (mirrors apt -y)
 }
 
 # apt_install <pkg...> — Linux only; one `apt-get update` per run
