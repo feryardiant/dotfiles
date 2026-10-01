@@ -7,9 +7,9 @@
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
-    colorflag="--color"
+  colorflag="--color"
 else # OS X `ls`
-    colorflag="-G"
+  colorflag="-G"
 fi
 
 # eval $(dircolors -b ~/.dircolors)
@@ -19,7 +19,7 @@ alias egrep='egrep ${colorflag}'
 
 # Always use color output for ls
 if command -v eza >/dev/null 2>&1; then
-    alias ls="eza --color --icons --group-directories-first"
+  alias ls="eza --color --icons --group-directories-first"
 fi
 
 # List all files colorized in long format

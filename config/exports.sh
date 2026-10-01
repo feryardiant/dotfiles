@@ -3,7 +3,7 @@
 # doesn't included in $PATH, I found this issue on WSL
 # ==============================================================================
 # for sbin_dir in {/sbin,/usr/sbin,/usr/local/sbin,$HOME/.local/bin}; do
-#     [[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] && PATH=$sbin_dir:$PATH
+#   [[ -d $sbin_dir && -z "${PATH##*$sbin_dir*}" ]] && PATH=$sbin_dir:$PATH
 # done
 # unset sbin_dir
 
@@ -119,7 +119,7 @@ fi
 # Ngrok | https://ngrok.com
 # ==============================================================================
 # if command -v ngrok >/dev/null 2>&1; then
-#     eval "$(ngrok completion)"
+#   eval "$(ngrok completion)"
 # fi
 
 # ==============================================================================
