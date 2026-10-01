@@ -1,4 +1,5 @@
 ---
+when: ghostty
 maps:
   ~/Library/Application Support/com.mitchellh.ghostty/config.ghostty:
     src: config.ghostty
