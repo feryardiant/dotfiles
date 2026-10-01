@@ -206,14 +206,17 @@ PATH_SAVE2="$PATH"
 
 # macOS branch
 PATH="$FIX/bin:$PATH_SAVE2"
-out=$(DOTFILES_OS=Darwin brew_install haveform); t "brew: skip installed" "  present haveform" "$out"
-out=$(DOTFILES_OS=Darwin brew_install newform);  t "brew: installs missing" "$(printf '  installing (brew): newform\nBREW_INSTALL -y newform')" "$out"
+out=$(DOTFILES_OS=Darwin brew_install haveform); t "brew: skip installed" "  haveform... done" "$out"
+: > "$FIX/brew.log"
+out=$(DOTFILES_OS=Darwin DOTFILES_SETUP_LOG="$FIX/brew.log" brew_install newform)
+t "brew: installs missing" "  installing (brew): newform... done" "$out"
+t "brew: raw output to log (-y)" "1" "$(grep -c 'BREW_INSTALL -y newform' "$FIX/brew.log")"
 x  "brew guard on linux" 1 sh -c 'DOTFILES_OS=Linux; . "$1"; brew_install haveform' sh "$LIB"
 
 # Linux branch, single apt update per run
 export APT_LOG="$FIX/apt.log"; : > "$APT_LOG"
 PATH="$FIX/bin:$PATH_SAVE2"
-out=$(DOTFILES_OS=Linux apt_install havepkg);    t "apt: skip installed" "  present havepkg" "$out"
+out=$(DOTFILES_OS=Linux apt_install havepkg);    t "apt: skip installed" "  havepkg... done" "$out"
 DOTFILES_OS=Linux apt_install pkg-a >/dev/null
 DOTFILES_OS=Linux apt_install pkg-b >/dev/null
 t "apt: one update per run" "1" "$(grep -c 'APT_CALL update' "$APT_LOG")"

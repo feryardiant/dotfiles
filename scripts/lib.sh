@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Shared library for install.sh, link.sh, and scripts/setup.d/*.sh.
 # Sourced, never executed. bash >= 3.2 compatible. No `set -e` here — callers set their own.
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/util.sh"   # colors + one-line status helpers
 
 # ---------------------------------------------------------------------------
 # Frontmatter (schema v2: root maps/when; dest = string | block src/os/copy/when)
@@ -104,12 +105,9 @@ path_setup() {
   esac
 }
 
-c_err='41;37'; c_inf='33'; c_suc='32'; c_rst='37'
-e() { printf '\e[%sm%s\e[0m' "$@"; }
-
 log() { # log <tool> <message>
-  mkdir -p "${LOGS_DIR:-$DOTFILES_DIR/logs}"
-  printf '%s %s\n' "$(date '+%F %T')" "$2" >> "${LOGS_DIR:-$DOTFILES_DIR/logs}/$1.log"
+  mkdir -p "${LOGS_DIR:-$DOTFILES_DIR/scripts/logs}"
+  printf '%s %s\n' "$(date '+%F %T')" "$2" >> "${LOGS_DIR:-$DOTFILES_DIR/scripts/logs}/$1.log"
 }
 
 # _resque <abs path> — move existing file/symlink aside, mirroring its path
@@ -185,14 +183,20 @@ link_apply() {
 # Package mechanism wrappers — the CALLER supplies per-platform package names
 # ---------------------------------------------------------------------------
 
-# brew_install <formula...> — macOS only
+# brew_install <formula...> — macOS only; status line to console,
+# raw brew output to $DOTFILES_SETUP_LOG (silent fallback: /dev/null)
 brew_install() {
   if ! is_macos; then echo "brew_install: not macOS ($*), refusing" >&2; return 1; fi
   local f miss=()
   for f in "$@"; do brew list --versions "$f" >/dev/null 2>&1 || miss+=("$f"); done
-  if [ ${#miss[@]} -eq 0 ]; then printf '  present %s\n' "$*"; return 0; fi
-  printf '  installing (brew): %s\n' "${miss[*]}"
-  brew install -y "${miss[@]}"   # -y: never block on brew's ask-mode confirmation (mirrors apt -y)
+  if [ ${#miss[@]} -eq 0 ]; then msg_begin "$*"; msg_end "done"; return 0; fi
+  msg_begin "installing (brew):" "${miss[*]}"
+  # -y: never block on brew's ask-mode confirmation (mirrors apt -y)
+  if brew install -y "${miss[@]}" >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1; then
+    msg_end "done"
+  else
+    msg_end "fail"; return 1
+  fi
 }
 
 # apt_install <pkg...> — Linux only; one `apt-get update` per run
@@ -200,12 +204,15 @@ apt_install() {
   if ! is_linux; then echo "apt_install: not Linux ($*), refusing" >&2; return 1; fi
   local p miss=()
   for p in "$@"; do dpkg -s "$p" >/dev/null 2>&1 || miss+=("$p"); done
-  if [ ${#miss[@]} -eq 0 ]; then printf '  present %s\n' "$*"; return 0; fi
+  if [ ${#miss[@]} -eq 0 ]; then msg_begin "$*"; msg_end "done"; return 0; fi
+  msg_begin "installing (apt):" "${miss[*]}"
   if [ "${APT_UPDATED:-0}" != 1 ]; then
-    printf '  apt update\n'
-    sudo apt-get update -qq || return 1
+    sudo apt-get update -qq >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || { msg_end "fail"; return 1; }
     APT_UPDATED=1; export APT_UPDATED
   fi
-  printf '  installing (apt): %s\n' "${miss[*]}"
-  sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "${miss[@]}"
+  if sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "${miss[@]}" >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1; then
+    msg_end "done"
+  else
+    msg_end "fail"; return 1
+  fi
 }

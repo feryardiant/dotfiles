@@ -9,6 +9,7 @@ ck() { if [ "$2" = "$3" ]; then printf 'ok - %s\n' "$1"; else FAILS=$((FAILS+1))
 # fixture scripts dir: real lib + link, stub children + phases
 mkdir -p "$FIX/scripts/setup.d" "$FIX/repo/config" "$FIX/h1" "$FIX/h2" "$FIX/h3" "$FIX/h4" "$FIX/h5" "$FIX/h6" "$FIX/h7"
 ln -s "$ROOT/scripts/lib.sh" "$FIX/scripts/lib.sh"
+ln -s "$ROOT/scripts/util.sh" "$FIX/scripts/util.sh"
 ln -s "$ROOT/scripts/link.sh" "$FIX/scripts/link.sh"
 cat > "$FIX/scripts/setup.d/ok.sh" <<'STUB'
 #!/usr/bin/env bash
