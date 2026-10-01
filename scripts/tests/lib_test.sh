@@ -7,14 +7,25 @@ LIB="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/lib.sh"
 TESTS_RUN=0; TESTS_FAIL=0
 t() { # t <name> <expected> <actual>
   TESTS_RUN=$((TESTS_RUN+1))
-  if [ "$2" = "$3" ]; then printf 'ok %d - %s\n' "$TESTS_RUN" "$1"
-  else TESTS_FAIL=$((TESTS_FAIL+1)); printf 'NOT OK %d - %s\n  expected: [%s]\n  actual:   [%s]\n' "$TESTS_RUN" "$1" "$2" "$3"; fi
+
+  if [ "$2" = "$3" ]; then
+    printf 'ok %d - %s\n' "$TESTS_RUN" "$1"
+  else
+    TESTS_FAIL=$((TESTS_FAIL+1))
+    printf 'NOT OK %d - %s\n  expected: [%s]\n  actual:   [%s]\n' "$TESTS_RUN" "$1" "$2" "$3"
+  fi
 }
+
 x() { # x <name> <expected-exit> <cmd...>
   TESTS_RUN=$((TESTS_RUN+1)); local want="$2"; shift 2
   "$@" >/dev/null 2>&1; local got=$?
-  if [ "$want" = "$got" ]; then printf 'ok %d - %s\n' "$TESTS_RUN" "$1"
-  else TESTS_FAIL=$((TESTS_FAIL+1)); printf 'NOT OK %d - %s (want exit %s, got %s)\n' "$TESTS_RUN" "$1" "$want" "$got"; fi
+
+  if [ "$want" = "$got" ]; then
+    printf 'ok %d - %s\n' "$TESTS_RUN" "$1"
+  else
+    TESTS_FAIL=$((TESTS_FAIL+1))
+    printf 'NOT OK %d - %s (want exit %s, got %s)\n' "$TESTS_RUN" "$1" "$want" "$got"
+  fi
 }
 
 FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
@@ -51,6 +62,7 @@ maps:
   ~/.vimrc: {src: vimrc}
 ---
 EOF
+
 cat > "$FIX/badkey.md" <<'EOF'
 ---
 maps:
@@ -58,17 +70,20 @@ maps:
 extra: nope
 ---
 EOF
+
 cat > "$FIX/nomaps.md" <<'EOF'
 ---
 when: foo
 ---
 EOF
+
 cat > "$FIX/baddest.md" <<'EOF'
 ---
 maps:
   .vimrc: vimrc
 ---
 EOF
+
 cat > "$FIX/badwhen.md" <<'EOF'
 ---
 when: [a, b]
@@ -76,6 +91,7 @@ maps:
   ~/.vimrc: vimrc
 ---
 EOF
+
 cat > "$FIX/dup.md" <<'EOF'
 ---
 maps:
@@ -83,6 +99,7 @@ maps:
   ~/.vimrc: vimrc2
 ---
 EOF
+
 cat > "$FIX/nosrc.md" <<'EOF'
 ---
 maps:

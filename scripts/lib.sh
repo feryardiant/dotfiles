@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Shared library for install.sh, link.sh, and scripts/setup.d/*.sh.
 # Sourced, never executed. bash >= 3.2 compatible. No `set -e` here — callers set their own.
+
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/util.sh"   # colors + one-line status helpers
 
 # ---------------------------------------------------------------------------
@@ -116,7 +117,11 @@ _resque() {
   { [ -e "$1" ] || [ -L "$1" ]; } || return 0
   BACKUP_DIR="${BACKUP_DIR:-$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)}"
   local root="${LINK_ROOT:-$HOME}" rel="$1" target
-  case "$rel" in "$root"/*) rel="${rel#"$root"}" ;; esac
+
+  case "$rel" in
+    "$root"/*) rel="${rel#"$root"}" ;;
+  esac
+
   target="$BACKUP_DIR$rel"
   mkdir -p "$(dirname "$target")"
   mv -f "$1" "$target"
@@ -137,46 +142,81 @@ link_apply() {
   local full="${LINK_ROOT:-$HOME}${dest#\~}" cur="" name="" email=""
 
   if [ -n "$os" ]; then
-    os=${os#\[}; os=${os%\]}; os=${os// /}   # fm_entries keeps "[macos, linux]" raw
-    if is_macos; then cur=macos; else cur=linux; fi
+    os=${os#\[}
+    os=${os%\]}
+    os=${os// /}   # fm_entries keeps "[macos, linux]" raw
+
+    if is_macos; then
+      cur=macos
+    else
+      cur=linux
+    fi
+
     case ",$os," in
       *",$cur,"*) ;;
-      *) LINK_RESULT=gated; printf '  gated   %s (os: %s, this: %s)\n' "$dest" "$os" "$cur"; return 0 ;;
+      *)
+        LINK_RESULT=gated
+        printf '  gated   %s (os: %s, this: %s)\n' "$dest" "$os" "$cur"
+        return 0
+        ;;
     esac
   fi
+
   if ! has_when "$root_when"; then
-    LINK_RESULT=gated; printf '  gated   %s (when: %s)\n' "$dest" "$root_when"; return 0
+    LINK_RESULT=gated
+    printf '  gated   %s (when: %s)\n' "$dest" "$root_when"
+    return 0
   fi
+
   if ! has_when "$when"; then
-    LINK_RESULT=gated; printf '  gated   %s (when: %s)\n' "$dest" "$when"; return 0
+    LINK_RESULT=gated
+    printf '  gated   %s (when: %s)\n' "$dest" "$when"
+    return 0
   fi
+
   if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then
-    LINK_RESULT=would; printf '  would   %s\n' "$dest"; return 0
+    LINK_RESULT=would
+    printf '  would   %s\n' "$dest"
+    return 0
   fi
+
   if [ "${DOTFILES_FORCE:-0}" != 1 ]; then
     if [ -L "$full" ] && [ "$(readlink "$full")" = "$src" ]; then
-      LINK_RESULT=noop; printf '  in place %s\n' "$dest"; return 0
+      LINK_RESULT=noop
+      printf '  in place %s\n' "$dest"
+      return 0
     fi
+
     # copy dest: equal modulo [user] → true no-op (no backup churn per run)
     if [ "$copy" = "true" ] && [ -f "$full" ] && _cfg_ignoring_user "$src" "$full"; then
-      LINK_RESULT=noop; printf '  in place %s\n' "$dest"; return 0
+      LINK_RESULT=noop
+      printf '  in place %s\n' "$dest"
+      return 0
     fi
   fi
+
   # capture git identity from a file we are about to replace (copy: true)
   if [ "$copy" = "true" ] && [ -f "$full" ]; then
     name=$(git config --file "$full" user.name 2>/dev/null || true)
     email=$(git config --file "$full" user.email 2>/dev/null || true)
   fi
+
   _resque "$full"
   mkdir -p "$(dirname "$full")"
+
   if [ "$copy" = "true" ]; then
     cp -f "$src" "$full" || { LINK_RESULT=failed; printf '  FAILED  %s\n' "$dest"; return 1; }
     [ -n "$name" ] && git config --file "$full" user.name "$name"
     [ -n "$email" ] && git config --file "$full" user.email "$email"
-    LINK_RESULT=linked; printf '  copied  %s\n' "$dest"; return 0
+    LINK_RESULT=linked
+    printf '  copied  %s\n' "$dest"
+    return 0
   fi
+
   ln -sf "$src" "$full" || { LINK_RESULT=failed; printf '  FAILED  %s\n' "$dest"; return 1; }
-  LINK_RESULT=linked; printf '  linked  %s\n' "$dest"; return 0
+  LINK_RESULT=linked
+  printf '  linked  %s\n' "$dest"
+  return 0
 }
 
 # ---------------------------------------------------------------------------
@@ -186,33 +226,63 @@ link_apply() {
 # brew_install <formula...> — macOS only; status line to console,
 # raw brew output to $DOTFILES_SETUP_LOG (silent fallback: /dev/null)
 brew_install() {
-  if ! is_macos; then echo "brew_install: not macOS ($*), refusing" >&2; return 1; fi
+  if ! is_macos; then
+    echo "brew_install: not macOS ($*), refusing" >&2
+    return 1
+  fi
+
   local f miss=()
-  for f in "$@"; do brew list --versions "$f" >/dev/null 2>&1 || miss+=("$f"); done
-  if [ ${#miss[@]} -eq 0 ]; then msg_begin "$*"; msg_end "done"; return 0; fi
+  for f in "$@"; do
+    brew list --versions "$f" >/dev/null 2>&1 || miss+=("$f")
+  done
+
+  if [ ${#miss[@]} -eq 0 ]; then
+    msg_begin "$*"
+    msg_end "done"
+    return 0
+  fi
+
   msg_begin "installing (brew):" "${miss[*]}"
+
   # -y: never block on brew's ask-mode confirmation (mirrors apt -y)
   if brew install -y "${miss[@]}" >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1; then
     msg_end "done"
   else
-    msg_end "fail"; return 1
+    msg_end "fail"
+    return 1
   fi
 }
 
 # apt_install <pkg...> — Linux only; one `apt-get update` per run
 apt_install() {
-  if ! is_linux; then echo "apt_install: not Linux ($*), refusing" >&2; return 1; fi
+  if ! is_linux; then
+    echo "apt_install: not Linux ($*), refusing" >&2
+    return 1
+  fi
+
   local p miss=()
-  for p in "$@"; do dpkg -s "$p" >/dev/null 2>&1 || miss+=("$p"); done
-  if [ ${#miss[@]} -eq 0 ]; then msg_begin "$*"; msg_end "done"; return 0; fi
+  for p in "$@"; do
+    dpkg -s "$p" >/dev/null 2>&1 || miss+=("$p")
+  done
+
+  if [ ${#miss[@]} -eq 0 ]; then
+    msg_begin "$*"
+    msg_end "done"
+    return 0
+  fi
+
   msg_begin "installing (apt):" "${miss[*]}"
+
   if [ "${APT_UPDATED:-0}" != 1 ]; then
     sudo apt-get update -qq >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || { msg_end "fail"; return 1; }
-    APT_UPDATED=1; export APT_UPDATED
+    APT_UPDATED=1
+    export APT_UPDATED
   fi
+
   if sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "${miss[@]}" >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1; then
     msg_end "done"
   else
-    msg_end "fail"; return 1
+    msg_end "fail"
+    return 1
   fi
 }

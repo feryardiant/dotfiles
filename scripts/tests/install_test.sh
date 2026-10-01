@@ -4,7 +4,14 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
 FAILS=0
-ck() { if [ "$2" = "$3" ]; then printf 'ok - %s\n' "$1"; else FAILS=$((FAILS+1)); printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"; fi; }
+ck() {
+  if [ "$2" = "$3" ]; then
+    printf 'ok - %s\n' "$1"
+  else
+    FAILS=$((FAILS+1))
+    printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"
+  fi
+}
 
 # fixture scripts dir: real lib + link, stub children + phases
 mkdir -p "$FIX/scripts/setup.d" "$FIX/repo/config" "$FIX/h1" "$FIX/h2" "$FIX/h3" "$FIX/h4" "$FIX/h5" "$FIX/h6" "$FIX/h7"

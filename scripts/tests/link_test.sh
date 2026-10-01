@@ -6,8 +6,12 @@ LINK="$ROOT/scripts/link.sh"
 FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
 FAILS=0
 ck() { # ck <name> <expected> <actual>
-  if [ "$2" = "$3" ]; then printf 'ok - %s\n' "$1"
-  else FAILS=$((FAILS+1)); printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"; fi
+  if [ "$2" = "$3" ]; then
+    printf 'ok - %s\n' "$1"
+  else
+    FAILS=$((FAILS+1))
+    printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"
+  fi
 }
 
 # 1) Real corpus in a sandbox HOME — every mapping visited, none failed (Review Focus 4)

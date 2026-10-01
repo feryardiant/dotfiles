@@ -4,7 +4,14 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
 FAILS=0
-ck() { if [ "$2" = "$3" ]; then printf 'ok - %s\n' "$1"; else FAILS=$((FAILS+1)); printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"; fi; }
+ck() {
+  if [ "$2" = "$3" ]; then
+    printf 'ok - %s\n' "$1"
+  else
+    FAILS=$((FAILS+1))
+    printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"
+  fi
+}
 
 mkdir -p "$FIX/bin"
 cat > "$FIX/bin/brew" <<'STUB'
@@ -43,7 +50,10 @@ ck "mac: all four via brew" "4" "$(grep -c '^BREW ' "$FIX/h/p.log" 2>/dev/null |
 
 # presence check: fake installed binary -> no install attempt
 mkdir -p "$FIX/h2/.local/bin"
-for t in starship eza fzf zoxide; do printf '#!/bin/sh\n' > "$FIX/h2/.local/bin/$t"; chmod +x "$FIX/h2/.local/bin/$t"; done
+for t in starship eza fzf zoxide; do
+  printf '#!/bin/sh\n' > "$FIX/h2/.local/bin/$t"
+  chmod +x "$FIX/h2/.local/bin/$t"
+done
 out=$(HOME="$FIX/h2" PATH="$FIX/h2/.local/bin:$CLEAN" DOTFILES_OS=Darwin DOTFILES_DIR="$ROOT" \
   bash "$ROOT/scripts/setup.d/starship.sh")
 ck "present: skip" "  starship... done" "$out"
@@ -55,7 +65,9 @@ cat > "$FIX/bin/curl" <<'STUB'
 # piped installers execute our stdout; -o downloads are recorded directly
 out=""; prev=""
 for a in "$@"; do
-  if [ "$prev" = "-o" ]; then out="$a"; fi
+  if [ "$prev" = "-o" ]; then
+    out="$a"
+  fi
   prev="$a"
 done
 if [ -n "$out" ]; then

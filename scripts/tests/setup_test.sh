@@ -4,7 +4,14 @@ set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
 FAILS=0
-ck() { if [ "$2" = "$3" ]; then printf 'ok - %s\n' "$1"; else FAILS=$((FAILS+1)); printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"; fi; }
+ck() {
+  if [ "$2" = "$3" ]; then
+    printf 'ok - %s\n' "$1"
+  else
+    FAILS=$((FAILS+1))
+    printf 'NOT OK - %s (want [%s], got [%s])\n' "$1" "$2" "$3"
+  fi
+}
 
 bash -n "$ROOT/scripts/setup.d/system.sh"    && ck "bash -n system" 0 0 || ck "bash -n system" 0 1
 bash -n "$ROOT/scripts/setup.d/oh-my-zsh.sh" && ck "bash -n omz" 0 0 || ck "bash -n omz" 0 1
@@ -76,7 +83,15 @@ mkdir -p "$FIX/bin2" "$FIX/h6"
 cat > "$FIX/bin2/curl" <<'STUB'
 #!/usr/bin/env bash
 echo CURL >> "$HOME/v.log"
-p=""; while [ $# -gt 0 ]; do case $1 in -o|--output) p="$2"; shift 2;; -LSso) p="$2"; shift 2;; --create-dirs) shift;; *) shift;; esac; done
+p=""
+while [ $# -gt 0 ]; do
+  case $1 in
+    -o|--output) p="$2"; shift 2 ;;
+    -LSso)       p="$2"; shift 2 ;;
+    --create-dirs) shift ;;
+    *)           shift ;;
+  esac
+done
 [ -n "$p" ] && { mkdir -p "$(dirname "$p")"; echo plug > "$p"; }
 STUB
 chmod +x "$FIX/bin2/curl"
@@ -93,13 +108,25 @@ cat > "$FIX/bin2/curl" <<'STUB'
 #!/usr/bin/env bash
 echo CURL_LAZYGIT >> "$HOME/l.log"
 prev=""
-for a in "$@"; do case $prev in -o) echo FAKE > "$a" ;; esac; prev="$a"; done
+for a in "$@"; do
+  case $prev in
+    -o) echo FAKE > "$a" ;;
+  esac
+  prev="$a"
+done
 echo '{"tag_name": "v0.44.0"}'
 STUB
 cat > "$FIX/bin2/tar" <<'STUB'
 #!/usr/bin/env bash
-dir=""; out=""
-while [ $# -gt 0 ]; do case $1 in -C) dir="$2"; shift 2;; -*) shift;; *) out="$1"; shift;; esac; done
+dir=""
+out=""
+while [ $# -gt 0 ]; do
+  case $1 in
+    -C)    dir="$2"; shift 2 ;;
+    -*)    shift ;;
+    *)     out="$1"; shift ;;
+  esac
+done
 if [ -n "$out" ]; then
   dir="${dir:-/tmp}"
   mkdir -p "$dir"
