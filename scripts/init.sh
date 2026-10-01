@@ -86,8 +86,8 @@ run() { [ "${DRY_RUN:-0}" = 1 ] && return 0; "$@"; }
 # run_quiet: same as run but drops the command's chatter (both streams —
 # locale-gen/dpkg-reconfigure print progress on stderr) so protocol lines stay
 # atomic (`  [TYPE] step... status`). Failures are still visible: on_err prints
-# the `error` status and the failing command; unlike init-lxc, the script stops
-# there instead of carrying on silently.
+# the `error` status and the failing command, and the script stops there
+# instead of carrying on silently.
 run_quiet() { [ "${DRY_RUN:-0}" = 1 ] && return 0; "$@" >/dev/null 2>&1; }
 
 write_vimrc() {
