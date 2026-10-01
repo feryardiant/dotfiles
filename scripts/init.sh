@@ -26,7 +26,11 @@ DRY_RUN="${DRY_RUN:-0}"
 while [ $# -gt 0 ]; do
   case "$1" in
     --profile)
-      [ $# -ge 2 ] || { echo 'init.sh: --profile requires a value' >&2; usage >&2; exit 2; }
+      if [ $# -lt 2 ]; then
+        echo 'init.sh: --profile requires a value' >&2
+        usage >&2
+        exit 2
+      fi
       PROFILE=$2
       shift 2
       ;;
@@ -76,19 +80,61 @@ export DEBIAN_FRONTEND=noninteractive
 
 # inlined util.sh-style helpers — self-contained: no repo checkout when piped
 c_suc='32'; c_red='31'; c_hl='1;33'
-_c() { if [ -t 1 ]; then printf '\e[%sm%s\e[0m' "$1" "$2"; else printf '%s' "$2"; fi; }
-msg_begin() { printf '  [%s] ' "$1"; _c "$c_hl" "$2"; printf '... '; }
-msg_end() { case "$1" in done) _c "$c_suc" done ;; error) _c "$c_red" error ;; esac; printf '\n'; }
-msg_hint() { printf '    %s\n' "$1"; }
-on_err() { msg_end error; msg_hint "$BASH_COMMAND failed (line $LINENO)"; exit 1; }
+_c() {
+  if [ -t 1 ]; then
+    printf '\e[%sm%s\e[0m' "$1" "$2"
+  else
+    printf '%s' "$2"
+  fi
+}
+msg_begin() {
+  printf '  [%s] ' "$1"
+  _c "$c_hl" "$2"
+  printf '... '
+}
+msg_end() {
+  if [ "$1" = done ]; then
+    _c "$c_suc" done
+  else
+    _c "$c_red" error
+  fi
+  printf '\n'
+}
+msg_hint() {
+  printf '    %s\n' "$1"
+}
+on_err() {
+  trap - ERR
+  msg_end error
+  msg_hint "${RUN_CMD:-$BASH_COMMAND} failed (line ${RUN_LINE:-?})"
+  if [ -n "${OUT:-}" ]; then
+    printf '%s\n' "$OUT" | sed 's/^/    /'
+  fi
+  exit 1
+}
 trap on_err ERR
-run() { [ "${DRY_RUN:-0}" = 1 ] && return 0; "$@"; }
-# run_quiet: same as run but drops the command's chatter (both streams —
-# locale-gen/dpkg-reconfigure print progress on stderr) so protocol lines stay
-# atomic (`  [TYPE] step... status`). Failures are still visible: on_err prints
-# the `error` status and the failing command, and the script stops there
-# instead of carrying on silently.
-run_quiet() { [ "${DRY_RUN:-0}" = 1 ] && return 0; "$@" >/dev/null 2>&1; }
+# run: execute a step command with both streams captured, so chatty commands
+# (locale-gen, dpkg-reconfigure, adduser, apt …) can never split a protocol line
+# (`  [TYPE] step... status`). On success the capture is dropped; on failure
+# on_err replays it indented after the status and names the exact command with
+# its call-site line. The ERR trap is suspended during the capture so it cannot
+# fire inside the command substitution.
+run() {
+  if [ "${DRY_RUN:-0}" = 1 ]; then
+    return 0
+  fi
+  RUN_CMD="$*"
+  RUN_LINE=${BASH_LINENO[0]:-?}
+  trap - ERR
+  OUT=$("$@" 2>&1) && rc=0 || rc=$?
+  trap on_err ERR
+  if [ "$rc" -ne 0 ]; then
+    return "$rc"
+  fi
+  RUN_CMD=''
+  RUN_LINE=''
+  OUT=''
+}
 
 write_vimrc() {
   mkdir -p /etc/vim
@@ -130,14 +176,14 @@ VIMRC
 }
 
 msg_begin CONF 'locale settings'
-run_quiet locale-gen "$LANG"
+run locale-gen "$LANG"
 run update-locale "LC_ALL=$LC_ALL" "LANG=$LANG"
-run_quiet dpkg-reconfigure --frontend noninteractive locales
+run dpkg-reconfigure --frontend noninteractive locales
 msg_end done
 
 msg_begin CONF timezone
 run ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime
-run_quiet dpkg-reconfigure --frontend noninteractive tzdata
+run dpkg-reconfigure --frontend noninteractive tzdata
 msg_end done
 
 msg_begin UPDT repositories
@@ -145,7 +191,7 @@ run apt-get update -qq
 msg_end done
 
 msg_begin UPDT 'system packages'
-run_quiet apt-get dist-upgrade -yqq
+run apt-get dist-upgrade -yqq
 msg_end done
 
 if [ "$PROFILE" = lxc ]; then
@@ -155,14 +201,14 @@ else
 fi
 msg_begin INST "basic tools ($PROFILE)"
 # shellcheck disable=SC2086 -- PKGS is deliberately word-split
-run_quiet apt-get install -yqq --no-install-recommends $PKGS
+run apt-get install -yqq --no-install-recommends $PKGS
 msg_end done
 
 msg_begin CONF 'default user'
 TARGET=$(awk -F: '$3 >= 1000 && $3 < 65534 && $7 !~ /(nologin|false)$/ { print $3, $1 }' /etc/passwd | sort -n | head -1 | cut -d' ' -f2)
 if [ -z "$TARGET" ]; then
   TARGET=admin
-  run_quiet adduser --disabled-password --gecos '' admin
+  run adduser --disabled-password --gecos '' admin
   run bash -c 'echo "admin:password" | chpasswd'
 fi
 run usermod -aG adm,root,sudo,www-data "$TARGET"
@@ -178,7 +224,9 @@ fi
 if [ -n "$KEYS_SRC" ]; then
   HOME_DIR=$(getent passwd "$TARGET" | cut -d: -f6)
   run mkdir -p "$HOME_DIR/.ssh"
-  run cp "$KEYS_SRC" "$HOME_DIR/.ssh/authorized_keys"
+  if [ "$KEYS_SRC" != "$HOME_DIR/.ssh/authorized_keys" ]; then
+    run cp "$KEYS_SRC" "$HOME_DIR/.ssh/authorized_keys"
+  fi
   run chown -R "$TARGET:$TARGET" "$HOME_DIR/.ssh"
   run chmod 700 "$HOME_DIR/.ssh"
   run chmod 600 "$HOME_DIR/.ssh/authorized_keys"
@@ -216,8 +264,8 @@ fi
 
 msg_begin UPDT cleanup
 run apt-get clean
-run_quiet apt-get autoclean
-run_quiet apt-get autoremove -y
+run apt-get autoclean
+run apt-get autoremove -y
 msg_end done
 SCRIPT
 )
@@ -225,9 +273,15 @@ SCRIPT
 if [ "$DRY_RUN" = 1 ] || [ "$(id -u)" -eq 0 ]; then
   bash -c "$FLOW"
 else
-  command -v sudo >/dev/null 2>&1 || { echo 'root required: sudo not found' >&2; exit 1; }
+  if ! command -v sudo >/dev/null 2>&1; then
+    echo 'root required: sudo not found' >&2
+    exit 1
+  fi
   sudo -k || true
-  sudo -v || { echo 'root required — run via sudo or "curl … | sudo bash"' >&2; exit 1; }
+  if ! sudo -v; then
+    echo 'root required — run via sudo or "curl … | sudo bash"' >&2
+    exit 1
+  fi
   sudo env "LANG=$LANG" "LC_ALL=$LC_ALL" "PROFILE=$PROFILE" "DRY_RUN=$DRY_RUN" bash -c "$FLOW"
 fi
 

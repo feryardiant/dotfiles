@@ -7,6 +7,9 @@ FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
 INIT="$ROOT/scripts/init.sh"
 
 bash -n "$INIT" && t syntax 'parses `init.sh`' 0 0 || t syntax 'parses `init.sh`' 0 1
+if [ -x /bin/bash ]; then
+  /bin/bash -n "$INIT" && t syntax 'parses under /bin/bash' 0 0 || t syntax 'parses under /bin/bash' 0 1
+fi
 
 out=$("$INIT" --help 2>&1); rc=$?
 t init 'usage: `--help` exits 0' "0" "$rc"
@@ -16,15 +19,15 @@ x init 'usage: unknown flag exits 2' 2 "$INIT" --bogus
 err=$("$INIT" --bogus 2>&1 >/dev/null)
 t init 'usage: unknown flag explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown option')"
 
-# DRY_RUN=1 keeps this banner check harmless once Task 5 adds real execution
+# DRY_RUN=1 keeps this banner check harmless (the script executes for real otherwise)
 out=$(DRY_RUN=1 bash "$INIT" 2>&1); rc=$?
 t init 'banner: dry run starts with the initializing banner' "1" "$(printf '%s' "$out" | grep -c '^Initializing\.\.\.$')"
 
 # --- step protocol + dry-run flow ---
 x init 'dry-run: exits 0' 0 env DRY_RUN=1 bash "$INIT"
 out=$(DRY_RUN=1 bash "$INIT" 2>&1)
-steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  (\[[A-Z]+\]) (.*)\.\.\..*$/\1 \2/')
-want=$'[CONF] locale settings\n[CONF] timezone\n[UPDT] repositories\n[UPDT] system packages'
+steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  //')
+want=$'[CONF] locale settings... done\n[CONF] timezone... done\n[UPDT] repositories... done\n[UPDT] system packages... done'
 t init 'dry-run: prints the upgrade steps in order' "$want" "$(printf '%s\n' "$steps" | head -4)"
 t init 'dry-run: closes with `All done`' "1" "$(printf '%s' "$out" | grep -c '^All done$')"
 t init 'dry-run: prints the no-changes hint' "1" "$(printf '%s' "$out" | grep -c 'dry-run: no changes were made')"
@@ -41,9 +44,9 @@ INIT_TW="$FIX/tw.called" DRY_RUN=1 PATH="$FIX/tw:$PATH" bash "$INIT" >/dev/null 
 t init 'dry-run: never invokes sudo' "0" "$([ -f "$FIX/tw.called" ] && echo 1 || echo 0)"
 
 # --- full protocol sequence ---
-out=$(DRY_RUN=1 bash "$INIT" 2>&1)
-steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  (\[[A-Z]+\]) (.*)\.\.\..*$/\1 \2/')
-want=$'[CONF] locale settings\n[CONF] timezone\n[UPDT] repositories\n[UPDT] system packages\n[INST] basic tools (vps)\n[CONF] default user\n[CONF] sshd hardening\n[CONF] vim defaults\n[UPDT] cleanup'
+out=$(DRY_RUN=1 PROFILE=vps bash "$INIT" 2>&1)
+steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  //')
+want=$'[CONF] locale settings... done\n[CONF] timezone... done\n[UPDT] repositories... done\n[UPDT] system packages... done\n[INST] basic tools (vps)... done\n[CONF] default user... done\n[CONF] sshd hardening... done\n[CONF] vim defaults... done\n[UPDT] cleanup... done'
 t init 'dry-run: prints every step in order' "$want" "$steps"
 t init 'dry-run: hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
 
@@ -72,61 +75,72 @@ x profile 'unknown profile value exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile
 err=$(DRY_RUN=1 bash "$INIT" --profile windows 2>&1 >/dev/null)
 t profile 'unknown profile value explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown profile')"
 
-# --- error path: hermetic stubs, step 1 fails ---
-mkdir -p "$FIX/bin"
-cat > "$FIX/bin/sudo" <<'STUB'
+# Non-dry-run fixtures execute real commands behind their stubs (EACCES being
+# the non-root backstop); as root those commands would touch the host system,
+# so the whole section is skipped instead of run.
+if [ "$(id -u)" -ne 0 ]; then
+
+  # --- error path: hermetic stubs, step 1's second command fails chatty ---
+  mkdir -p "$FIX/bin"
+  cat > "$FIX/bin/sudo" <<'STUB'
 #!/usr/bin/env bash
 case "$1" in -k|-v) exit 0 ;; esac
 exec "$@"
 STUB
-cat > "$FIX/bin/locale-gen" <<'STUB'
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/bin/locale-gen"
+  cat > "$FIX/bin/update-locale" <<'STUB'
 #!/usr/bin/env bash
+echo "update-locale: cannot open /etc/default/locale" >&2
 exit 1
 STUB
-chmod +x "$FIX/bin/sudo" "$FIX/bin/locale-gen"
+  chmod +x "$FIX/bin/sudo" "$FIX/bin/locale-gen" "$FIX/bin/update-locale"
 
-x err 'step failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT"
-out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT" 2>&1)
-t err 'step failure prints the `error` status' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
-t err 'step failure hints the command and line' "1" "$(printf '%s' "$out" | grep -c "failed (line")"
+  x err 'step failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT"
+  out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT" 2>&1)
+  t err 'step failure prints the `error` status' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
+  t err 'step failure hints the command and line' "1" "$(printf '%s' "$out" | grep -c "failed (line")"
+  t err 'hint names the actual failing command' "1" "$(printf '%s' "$out" | grep -c 'update-locale LC_ALL')"
+  t err 'hint contains no wrapper garbage' "0" "$(printf '%s' "$out" | grep -c '"$@"')"
+  t err 'failure reason is replayed below the status' "1" "$(printf '%s' "$out" | grep -c 'cannot open /etc/default/locale')"
 
-# --- sudo credential failure: loud, zero steps ---
-mkdir -p "$FIX/sudo_fail"
-printf '#!/usr/bin/env bash\nexit 1\n' > "$FIX/sudo_fail/sudo"; chmod +x "$FIX/sudo_fail/sudo"
-x priv 'sudo -v failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT"
-out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT" 2>&1)
-t priv 'sudo -v failure prints the root-required message' "1" "$(printf '%s' "$out" | grep -c 'root required')"
-t priv 'sudo -v failure runs zero steps' "0" "$(printf '%s' "$out" | grep -c '\[CONF\] locale')"
+  # --- sudo credential failure: loud, zero steps ---
+  mkdir -p "$FIX/sudo_fail"
+  printf '#!/usr/bin/env bash\nexit 1\n' > "$FIX/sudo_fail/sudo"; chmod +x "$FIX/sudo_fail/sudo"
+  x priv 'sudo -v failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT"
+  out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT" 2>&1)
+  t priv 'sudo -v failure prints the root-required message' "1" "$(printf '%s' "$out" | grep -c 'root required')"
+  t priv 'sudo -v failure runs zero steps' "0" "$(printf '%s' "$out" | grep -c '\[CONF\] locale')"
 
-# --- protocol atomicity: chatty commands must not split the step line ---
-mkdir -p "$FIX/chatty"
-cat > "$FIX/chatty/sudo" <<'STUB'
+  # --- protocol atomicity: chatty commands must not split the step line ---
+  mkdir -p "$FIX/chatty"
+  cat > "$FIX/chatty/sudo" <<'STUB'
 #!/usr/bin/env bash
 case "$1" in -k|-v) exit 0 ;; esac
 exec "$@"
 STUB
-cat > "$FIX/chatty/locale-gen" <<'STUB'
+  cat > "$FIX/chatty/locale-gen" <<'STUB'
 #!/usr/bin/env bash
 echo "Generating locales (this might take a while)..."
 echo "  en_US.UTF-8... done"
 echo "locale-gen: stderr chatter" >&2
 exit 1
 STUB
-chmod +x "$FIX/chatty/sudo" "$FIX/chatty/locale-gen"
-out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/chatty:$PATH" bash "$INIT" 2>&1)
-t protocol 'chatty stdout is suppressed' "0" "$(printf '%s' "$out" | grep -c 'Generating locales')"
-t protocol 'chatty stderr is suppressed' "0" "$(printf '%s' "$out" | grep -c 'stderr chatter')"
-t protocol 'step line stays atomic despite chatter' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
+  chmod +x "$FIX/chatty/sudo" "$FIX/chatty/locale-gen"
+  out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/chatty:$PATH" bash "$INIT" 2>&1)
+  t protocol 'step line stays atomic despite chatter' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
+  t protocol 'failing command stdout is replayed' "1" "$(printf '%s' "$out" | grep -c 'Generating locales')"
+  t protocol 'failing command stderr is replayed' "1" "$(printf '%s' "$out" | grep -c 'stderr chatter')"
+  t protocol 'chatter never lands on the status line' "0" "$(printf '%s' "$out" | grep -cE 'locale settings\.\.\..*(Generating|stderr chatter)')"
 
-# apt's dpkg progress on fresh hosts must not split step lines either
-mkdir -p "$FIX/apt"
-for c in locale-gen update-locale dpkg-reconfigure ln; do printf '#!/bin/sh\nexit 0\n' > "$FIX/apt/$c"; done
-cat > "$FIX/apt/sudo" <<'STUB'
+  # apt's dpkg progress on fresh hosts must not split step lines either
+  mkdir -p "$FIX/apt"
+  for c in locale-gen update-locale dpkg-reconfigure ln; do printf '#!/bin/sh\nexit 0\n' > "$FIX/apt/$c"; done
+  cat > "$FIX/apt/sudo" <<'STUB'
 #!/usr/bin/env bash
 case "$1" in -k|-v) exit 0 ;; esac
 exec "$@"
 STUB
-cat > "$FIX/apt/apt-get" <<'STUB'
+  cat > "$FIX/apt/apt-get" <<'STUB'
 #!/bin/sh
 case "$1" in
   dist-upgrade|install)
@@ -136,10 +150,31 @@ case "$1" in
 esac
 exit 0
 STUB
-chmod +x "$FIX/apt/"*
-out=$(DRY_RUN=0 PROFILE=lxc HOME="$FIX/h" PATH="$FIX/apt:$PATH" bash "$INIT" 2>&1)
-t protocol 'apt progress is suppressed' "0" "$(printf '%s' "$out" | grep -c 'Reading database')"
-t protocol 'upgrade step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'system packages... done')"
-t protocol 'install step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'basic tools (lxc)... done')"
+  chmod +x "$FIX/apt/"*
+  out=$(DRY_RUN=0 PROFILE=lxc HOME="$FIX/h" PATH="$FIX/apt:$PATH" bash "$INIT" 2>&1)
+  t protocol 'apt progress is suppressed' "0" "$(printf '%s' "$out" | grep -c 'Reading database')"
+  t protocol 'upgrade step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'system packages... done')"
+  t protocol 'install step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'basic tools (lxc)... done')"
+
+  # --- adoption: the adopted user's own keys must not be copied onto themselves ---
+  mkdir -p "$FIX/adopt" "$FIX/h/.ssh"
+  printf 'ssh-ed25519 adopt-test-key\n' > "$FIX/h/.ssh/authorized_keys"
+  cat > "$FIX/adopt/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+  printf '#!/bin/sh\necho "1000 testuser"\n' > "$FIX/adopt/awk"
+  printf '#!/bin/sh\necho "testuser:x:1000:1000::%s:/bin/bash"\n' "$FIX/h" > "$FIX/adopt/getent"
+  for c in locale-gen update-locale dpkg-reconfigure ln apt-get systemctl timedatectl \
+    usermod sh chown chmod; do
+    printf '#!/bin/sh\nexit 0\n' > "$FIX/adopt/$c"
+  done
+  chmod +x "$FIX/adopt/"*
+  out=$(DRY_RUN=0 SUDO_USER=testuser HOME="$FIX/h" PATH="$FIX/adopt:$PATH" bash "$INIT" 2>&1)
+  t adopt 'adopted user keys: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
+  t adopt 'adopted user keys: no identical-file copy error' "0" "$(printf '%s' "$out" | grep -cE 'identical|same file')"
+
+fi
 
 finish init

@@ -79,7 +79,7 @@ done
 | `setup_test.sh` | `setup.d/*`: `bash -n` on every script plus behavior (`.env` seed/merge, nvim caches, vim-plug, lazygit apt path) |
 | `plugin_test.sh` | starship, eza, fzf, zoxide install paths: `brew` on macOS, apt markers on Linux, present-check skip |
 | `install_test.sh` | `install.sh` end-to-end with stubbed phases: failure handling + log hint, `--only`/`--skip` (single or comma lists), `--dry-run`, `--link-only`, unknown flags |
-| `init_test.sh` | `init.sh`: CLI usage, profile resolution precedence, dry-run sequence + sudo tripwire, step-error and sudo failure paths (real execution covered by an OrbStack VM run) |
+| `init_test.sh` | `init.sh`: CLI usage, profile resolution precedence, dry-run sequence + sudo tripwire, step-error/sudo failure paths, protocol line atomicity under chatty commands, bash 3.2 parse gate, adoption self-copy guard (real execution covered by an OrbStack VM run) |
 
 A passing assertion prints `[PASS] <scope> - <aspect>` (status word colored,
 scope bold; `**bold**` and `` `literal` `` markup in aspects renders on a TTY and
@@ -90,4 +90,6 @@ is stripped when piped); a failure prints `[FAIL] <scope> - <aspect>` followed b
 
 Suites are hermetic: fixtures in `mktemp -d` directories, stubbed `brew`/`apt-get`/`curl`,
 and a fixture-only `PATH` — no network, no writes outside the fixture, safe to run on
-macOS and Linux at any time.
+macOS and Linux at any time. The `init` suite's non-dry-run fixtures exercise real
+commands behind their stubs (permission errors being the non-root backstop), so that
+section is skipped when the suite runs as root.
