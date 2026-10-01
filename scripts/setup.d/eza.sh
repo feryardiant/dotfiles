@@ -16,16 +16,5 @@ fi
 if is_macos; then
   brew_install eza
 else
-  # eza is not in stock apt — official .deb from GitHub releases
-  case "$(uname -m)" in
-    x86_64) deb=eza_amd64.deb ;;
-    aarch64|arm64) deb=eza_aarch64.deb ;;
-    *) echo "unsupported arch" >&2; exit 1 ;;
-  esac
-
-  msg_begin eza
-  { curl -fsSL "https://github.com/eza-community/eza/releases/latest/download/$deb" -o /tmp/eza.deb \
-    && sudo dpkg -i /tmp/eza.deb && rm -f /tmp/eza.deb; } \
-    >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || { msg_end "fail"; exit 1; }
-  msg_end "done"
+  apt_install eza
 fi
