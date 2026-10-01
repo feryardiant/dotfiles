@@ -330,7 +330,9 @@ fi
 run sed -iE 's~#AllowAgentForwarding .*~AllowAgentForwarding yes~' /etc/ssh/sshd_config
 run sed -iE 's~#AllowTcpForwarding .*~AllowTcpForwarding yes~' /etc/ssh/sshd_config
 run sed -iE 's~#PermitTTY .*~PermitTTY yes~' /etc/ssh/sshd_config
-run systemctl restart sshd
+# Ubuntu 24.04 ships ssh.service only (sshd.service returned in newer
+# openssh packaging); restart ssh to hold on every release
+run systemctl restart ssh
 msg_end done
 if [ "$KEYS_INSTALLED" != 1 ]; then
   msg_hint 'password authentication kept (no authorized_keys found)'

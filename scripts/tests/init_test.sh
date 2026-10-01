@@ -218,6 +218,10 @@ STUB
 case "$1" in -k|-v) exit 0 ;; esac
 exec "$@"
 STUB
+  cat > "$FIX/adm/systemctl" <<STUB
+#!/bin/sh
+printf '%s\n' "\$*" >> "$FIX/adm/calls.systemctl"
+STUB
   chmod +x "$FIX/adm/"*
   out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/adm/h" PATH="$FIX/adm:$PATH" bash "$INIT" 2>&1)
   t admin 'admin fallback: creates the account' "1" "$(grep -c called "$FIX/adm/adduser.called" 2>/dev/null || true)"
@@ -227,6 +231,8 @@ STUB
   t admin 'admin fallback: hint names the store file' "1" "$(printf '%s' "$out" | grep -c '\.init-password')"
   t admin 'admin fallback: store file is mode 600' "1" "$(ls -l "$FIX/adm/h/.init-password" 2>/dev/null | grep -c '^-rw-------')"
   t admin 'admin fallback: store file holds the password' "1" "$(grep -c '^TestPW+abc123xyz$' "$FIX/adm/h/.init-password" 2>/dev/null || true)"
+  t sshd 'restart targets the `ssh` unit' "1" "$(grep -c '^restart ssh$' "$FIX/adm/calls.systemctl" 2>/dev/null || true)"
+  t sshd 'restart never targets `sshd`' "0" "$(grep -c '^restart sshd$' "$FIX/adm/calls.systemctl" 2>/dev/null || true)"
 
   # --- root keys: the account's own keys win; command= wrappers are stripped ---
   mkdir -p "$FIX/rk/h/.ssh"
