@@ -8,12 +8,13 @@ if ! command -v vim >/dev/null 2>&1 || [ "${DOTFILES_FORCE:-0}" = 1 ]; then
   if is_macos; then brew_install vim; else apt_install vim; fi
 fi
 
+msg_begin vim
 plug_dir="$HOME/.local/share/vim-plug"
 if [ ! -f "$plug_dir/plug.vim" ]; then
   curl -LSso "$plug_dir/plug.vim" --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  echo "  fetched plug.vim"
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+    >>"${DOTFILES_SETUP_LOG:-/dev/null}" 2>&1 || { msg_end "fail"; exit 1; }
 fi
 mkdir -p "$HOME/.cache/vim/swap" "$HOME/.cache/vim/undo" "$HOME/.vim/autoload"
 ln -sf "$plug_dir/plug.vim" "$HOME/.vim/autoload/plug.vim"
-echo "  vim setup done"
+msg_end "done"
