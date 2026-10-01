@@ -57,6 +57,7 @@ steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  //')
 want=$'[CONF] locale settings... done\n[CONF] timezone... done\n[UPDT] repositories... done\n[UPDT] system packages... done\n[INST] basic tools (vps)... done\n[CONF] default user... done\n[CONF] sshd hardening... done\n[CONF] vim defaults... done\n[UPDT] cleanup... done'
 t init 'dry-run: prints every step in order' "$want" "$steps"
 t init 'dry-run: hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
+t init 'dry-run: never previews a generated password' "0" "$(printf '%s' "$out" | grep -c 'initial password')"
 
 # --- profile resolution (flag > env > detect) ---
 mkdir -p "$FIX/vt"
@@ -233,6 +234,29 @@ STUB
   t admin 'admin fallback: store file holds the password' "1" "$(grep -c '^TestPW+abc123xyz$' "$FIX/adm/h/.init-password" 2>/dev/null || true)"
   t sshd 'restart targets the `ssh` unit' "1" "$(grep -c '^restart ssh$' "$FIX/adm/calls.systemctl" 2>/dev/null || true)"
   t sshd 'restart never targets `sshd`' "0" "$(grep -c '^restart sshd$' "$FIX/adm/calls.systemctl" 2>/dev/null || true)"
+
+  # --- CWE-214: a failing chpasswd must never echo the generated password ---
+  mkdir -p "$FIX/lk/h"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/lk/awk"
+  printf '#!/bin/sh\necho "admin:x:1001:1001::%s:/bin/bash"\n' "$FIX/lk/h" > "$FIX/lk/getent"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/lk/adduser"
+  printf '#!/bin/sh\nexit 1\n' > "$FIX/lk/chpasswd"
+  printf '#!/bin/sh\nprintf %%s "LeakPW+abc123xyz"\n' > "$FIX/lk/openssl"
+  for c in locale-gen update-locale dpkg-reconfigure ln apt-get timedatectl usermod sh \
+    chown chmod add-apt-repository sed update-alternatives systemctl; do
+    printf '#!/bin/sh\nexit 0\n' > "$FIX/lk/$c"
+  done
+  cat > "$FIX/lk/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+  chmod +x "$FIX/lk/"*
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/lk/h" PATH="$FIX/lk:$PATH" bash "$INIT" 2>&1)
+  t leak 'failing chpasswd aborts the default-user step' "1" "$(printf '%s' "$out" | grep -Fc 'default user... error')"
+  t leak 'failure output names the failing command' "1" "$(printf '%s' "$out" | grep -c 'chpasswd failed')"
+  t leak 'failure output never contains the password' "0" "$(printf '%s' "$out" | grep -c 'LeakPW+abc123xyz')"
+  t leak 'failure output is not an argv-style command dump' "0" "$(printf '%s' "$out" | grep -c 'bash -c')"
 
   # --- root keys: the account's own keys win; command= wrappers are stripped ---
   mkdir -p "$FIX/rk/h/.ssh"

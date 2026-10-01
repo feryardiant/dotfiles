@@ -165,6 +165,13 @@ run() {
   OUT=''
 }
 
+# write_password_file: stdin straight into a mode-600 file, no stdout — the
+# run() capture stays empty and the restrictive mode comes from umask 177
+write_password_file() {
+  umask 177
+  cat > "$1"
+}
+
 write_vimrc() {
   mkdir -p /etc/vim
   cat > /etc/vim/vimrc.local <<'VIMRC'
@@ -272,18 +279,22 @@ if [ -z "$TARGET" ]; then
   TARGET=admin
   run adduser --disabled-password --gecos '' admin
   # known-credential backdoor (CWE-798) removed: random per-bootstrap secret,
-  # hinted below and kept mode 600 in the account's home as an emergency copy
+  # hinted below and kept mode 600 in the account's home as an emergency copy;
+  # previews neither generate nor show a secret for a user they never create
   ADMIN_PW=''
-  if command -v openssl >/dev/null 2>&1; then
+  if [ "${DRY_RUN:-0}" != 1 ] && command -v openssl >/dev/null 2>&1; then
     ADMIN_PW=$(openssl rand -base64 12)
   fi
   if [ -n "$ADMIN_PW" ]; then
-    run bash -c "printf '%s:%s\n' '$TARGET' '$ADMIN_PW' | chpasswd"
     ADMIN_HOME=''
     if command -v getent >/dev/null 2>&1; then
       ADMIN_HOME=$(getent passwd "$TARGET" | cut -d: -f6)
     fi
-    run bash -c "umask 177 && printf '%s\n' '$ADMIN_PW' > '$ADMIN_HOME/.init-password' && chown '$TARGET:' '$ADMIN_HOME/.init-password'"
+    # the secret rides stdin (here-string), never argv or RUN_CMD: neither ps
+    # nor a failure report can echo it (CWE-214)
+    run chpasswd <<< "$TARGET:$ADMIN_PW"
+    run write_password_file "$ADMIN_HOME/.init-password" <<< "$ADMIN_PW"
+    run chown "$TARGET:" "$ADMIN_HOME/.init-password"
   fi
 fi
 run usermod -aG adm,root,sudo,www-data "$TARGET"
