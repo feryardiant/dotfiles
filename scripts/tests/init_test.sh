@@ -40,4 +40,11 @@ chmod +x "$FIX/tw/sudo"
 INIT_TW="$FIX/tw.called" DRY_RUN=1 PATH="$FIX/tw:$PATH" bash "$INIT" >/dev/null 2>&1
 t init 'dry-run: never invokes sudo' "0" "$([ -f "$FIX/tw.called" ] && echo 1 || echo 0)"
 
+# --- full protocol sequence ---
+out=$(DRY_RUN=1 bash "$INIT" 2>&1)
+steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  (\[[A-Z]+\]) (.*)\.\.\..*$/\1 \2/')
+want=$'[CONF] locale settings\n[CONF] timezone\n[UPDT] repositories\n[UPDT] system packages\n[INST] basic tools (vps)\n[CONF] default user\n[CONF] sshd hardening\n[CONF] vim defaults\n[UPDT] cleanup'
+t init 'dry-run: prints every step in order' "$want" "$steps"
+t init 'dry-run: hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
+
 finish init
