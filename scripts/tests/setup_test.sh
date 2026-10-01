@@ -31,9 +31,9 @@ cat > "$FIX/bin/git" <<'STUB'
 [ "$1" = clone ] && { mkdir -p "$4/.git"; echo CLONED >> "$HOME/omz.log"; }
 STUB
 chmod +x "$FIX/bin/git"
-HOME="$FIX/h3" ZSH= PATH="$FIX/bin:$PATH" DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/oh-my-zsh.sh" >/dev/null
+HOME="$FIX/h3" ZSH='' PATH="$FIX/bin:$PATH" DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/oh-my-zsh.sh" >/dev/null
 ck "omz: cloned once" "1" "$(grep -c CLONED "$FIX/h3/omz.log")"
-HOME="$FIX/h3" ZSH= PATH="$FIX/bin:$PATH" DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/oh-my-zsh.sh" | grep -q present && p=1 || p=0
+HOME="$FIX/h3" ZSH='' PATH="$FIX/bin:$PATH" DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/oh-my-zsh.sh" | grep -q present && p=1 || p=0
 ck "omz: idempotent" "1" "$p"
 ck "omz: no second clone" "1" "$(grep -c CLONED "$FIX/h3/omz.log")"
 

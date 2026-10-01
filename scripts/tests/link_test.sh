@@ -45,7 +45,7 @@ ck "missing src: warned" "1" "$m"
 
 # 5) Dry-run writes nothing
 mkdir -p "$FIX/home4"
-out5=$(LINK_ROOT="$FIX/home4" DOTFILES_DIR="$ROOT" bash "$LINK" --dry-run 2>&1); rc5=$?
+LINK_ROOT="$FIX/home4" DOTFILES_DIR="$ROOT" bash "$LINK" --dry-run >/dev/null 2>&1; rc5=$?
 ck "dry-run: exit 0" "0" "$rc5"
 n=$(find "$FIX/home4" \( -type l -o -type f \) | wc -l | tr -d ' ')
 ck "dry-run: sandbox untouched" "0" "$n"
