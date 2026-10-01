@@ -47,4 +47,29 @@ want=$'[CONF] locale settings\n[CONF] timezone\n[UPDT] repositories\n[UPDT] syst
 t init 'dry-run: prints every step in order' "$want" "$steps"
 t init 'dry-run: hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
 
+# --- profile resolution (flag > env > detect) ---
+mkdir -p "$FIX/vt"
+printf '#!/bin/sh\nexit 0\n' > "$FIX/vt/systemd-detect-virt"; chmod +x "$FIX/vt/systemd-detect-virt"
+prof() { printf '%s' "$1" | sed -nE 's/.*basic tools \((lxc|vps)\).*/\1/p'; }
+
+out=$(DRY_RUN=1 PATH="$FIX/vt:$PATH" bash "$INIT" 2>&1)
+t profile 'detect: container selects `lxc`' "lxc" "$(prof "$out")"
+
+printf '#!/bin/sh\nexit 1\n' > "$FIX/vt/systemd-detect-virt"
+out=$(DRY_RUN=1 PATH="$FIX/vt:$PATH" bash "$INIT" 2>&1)
+t profile 'detect: no container selects `vps`' "vps" "$(prof "$out")"
+
+out=$(DRY_RUN=1 PROFILE=lxc PATH="$FIX/vt:$PATH" bash "$INIT" 2>&1)
+t profile '`PROFILE` env beats detection' "lxc" "$(prof "$out")"
+
+out=$(DRY_RUN=1 PROFILE=lxc PATH="$FIX/vt:$PATH" bash "$INIT" --profile vps 2>&1)
+t profile '`--profile` flag beats `PROFILE` env' "vps" "$(prof "$out")"
+
+out=$(DRY_RUN=1 PATH="$FIX/vt:$PATH" bash "$INIT" --profile=lxc 2>&1)
+t profile '`--profile=` equals form is accepted' "lxc" "$(prof "$out")"
+
+x profile 'unknown profile value exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile windows
+err=$(DRY_RUN=1 bash "$INIT" --profile windows 2>&1 >/dev/null)
+t profile 'unknown profile value explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown profile')"
+
 finish init

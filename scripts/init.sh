@@ -50,7 +50,21 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-PROFILE="${PROFILE:-vps}"    # default when neither --profile nor PROFILE env is set
+if [ -z "$PROFILE" ]; then
+  if command -v systemd-detect-virt >/dev/null 2>&1 && systemd-detect-virt --quiet --container; then
+    PROFILE=lxc
+  else
+    PROFILE=vps
+  fi
+fi
+case "$PROFILE" in
+  lxc|vps) ;;
+  *)
+    echo "init.sh: unknown profile: $PROFILE (want lxc or vps)" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
 export LANG LC_ALL PROFILE DRY_RUN
 
 printf 'Initializing...\n'
