@@ -4,26 +4,35 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 .directory
-*.bak
-*.swp
-*.cache
-*.old
-*.log
-*.zip
 ._*
-*~
+*.DS_Store
+*.gz
+*.log
+*.old
+*.zip
 
-# Developments
+# Backup, Cache, and Temporary
+.cache
+*~
+*.bak*
+*.bak
+*.cache
+*.swp
+
+# AI Agents
 # --------------------------
-nbproject
-.vagrant
-.idea
-.settings
-.project
-*.sublime-*
+.ai
+.gemini
+.opencode
+.superpowers
+
+# Development files
+# --------------------------
+.env.*
 .env
 
 # But Keep these
 # --------------------------
+!.env.example
+!.env.*.example
 !.gitkeep
-
