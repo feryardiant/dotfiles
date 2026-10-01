@@ -21,6 +21,12 @@ _has_pkg() {
 	command -v $1 >/dev/null 2>&1
 }
 
-if [ "$LANG" != "en_US.UTF-8" ]; then
-	export LANG="en_US.UTF-8"
-fi
+_resque() {
+	if [ -f $1 ]; then
+		if [ -L $1 ]; then
+			rm -f $1
+		else
+			mv -f $1 $backup_dir/
+		fi
+	fi
+}
