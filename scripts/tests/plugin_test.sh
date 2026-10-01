@@ -46,7 +46,7 @@ mkdir -p "$FIX/h2/.local/bin"
 for t in starship eza fzf zoxide; do printf '#!/bin/sh\n' > "$FIX/h2/.local/bin/$t"; chmod +x "$FIX/h2/.local/bin/$t"; done
 out=$(HOME="$FIX/h2" PATH="$FIX/h2/.local/bin:$CLEAN" DOTFILES_OS=Darwin DOTFILES_DIR="$ROOT" \
   bash "$ROOT/scripts/setup.d/starship.sh")
-ck "present: skip" "  present starship" "$out"
+ck "present: skip" "  starship... done" "$out"
 
 # linux path: fzf + zoxide via apt (2 markers), starship + eza via curl installers
 mkdir -p "$FIX/h3"
