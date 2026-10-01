@@ -166,3 +166,32 @@ link_apply() {
   ln -sf "$src" "$full" || { LINK_RESULT=failed; printf '  FAILED  %s\n' "$dest"; return 1; }
   LINK_RESULT=linked; printf '  linked  %s\n' "$dest"; return 0
 }
+
+# ---------------------------------------------------------------------------
+# Package mechanism wrappers — the CALLER supplies per-platform package names
+# ---------------------------------------------------------------------------
+
+# brew_install <formula...> — macOS only
+brew_install() {
+  if ! is_macos; then echo "brew_install: not macOS ($*), refusing" >&2; return 1; fi
+  local f miss=()
+  for f in "$@"; do brew list --versions "$f" >/dev/null 2>&1 || miss+=("$f"); done
+  if [ ${#miss[@]} -eq 0 ]; then printf '  present %s\n' "$*"; return 0; fi
+  printf '  installing (brew): %s\n' "${miss[*]}"
+  brew install "${miss[@]}"
+}
+
+# apt_install <pkg...> — Linux only; one `apt-get update` per run
+apt_install() {
+  if ! is_linux; then echo "apt_install: not Linux ($*), refusing" >&2; return 1; fi
+  local p miss=()
+  for p in "$@"; do dpkg -s "$p" >/dev/null 2>&1 || miss+=("$p"); done
+  if [ ${#miss[@]} -eq 0 ]; then printf '  present %s\n' "$*"; return 0; fi
+  if [ "${APT_UPDATED:-0}" != 1 ]; then
+    printf '  apt update\n'
+    sudo apt-get update -qq || return 1
+    APT_UPDATED=1; export APT_UPDATED
+  fi
+  printf '  installing (apt): %s\n' "${miss[*]}"
+  sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq "${miss[@]}"
+}

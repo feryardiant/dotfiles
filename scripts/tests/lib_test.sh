@@ -178,5 +178,47 @@ t "copy: old file backed up" "1" "$(grep -c '\[user\]' "$FIX/bak/.gitconfig" 2>/
 unset LINK_ROOT BACKUP_DIR
 export HOME="$HOME_SAVE" DOTFILES_DIR="$ROOT_DIR"
 
+# --- wrappers (stubbed package managers) ---
+mkdir -p "$FIX/bin"
+cat > "$FIX/bin/brew" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in
+  list) [ "$2" = "--versions" ] && [ "$3" = "haveform" ] ;;
+  install) echo "BREW_INSTALL $2" ;;
+esac
+STUB
+cat > "$FIX/bin/dpkg" <<'STUB'
+#!/usr/bin/env bash
+[ "$2" = "havepkg" ]
+STUB
+cat > "$FIX/bin/apt-get" <<'STUB'
+#!/usr/bin/env bash
+echo "APT_CALL $* DEBIAN_FRONTEND=${DEBIAN_FRONTEND:-}" >> "${APT_LOG:?}"
+STUB
+cat > "$FIX/bin/sudo" <<'STUB'
+#!/usr/bin/env bash
+exec "$@"
+STUB
+chmod +x "$FIX/bin/"*
+PATH_SAVE2="$PATH"
+
+# macOS branch
+PATH="$FIX/bin:$PATH_SAVE2"
+out=$(DOTFILES_OS=Darwin brew_install haveform); t "brew: skip installed" "  present haveform" "$out"
+out=$(DOTFILES_OS=Darwin brew_install newform);  t "brew: installs missing" "$(printf '  installing (brew): newform\nBREW_INSTALL newform')" "$out"
+x  "brew guard on linux" 1 sh -c 'DOTFILES_OS=Linux; . "$1"; brew_install haveform' sh "$LIB"
+
+# Linux branch, single apt update per run
+export APT_LOG="$FIX/apt.log"; : > "$APT_LOG"
+PATH="$FIX/bin:$PATH_SAVE2"
+out=$(DOTFILES_OS=Linux apt_install havepkg);    t "apt: skip installed" "  present havepkg" "$out"
+DOTFILES_OS=Linux apt_install pkg-a >/dev/null
+DOTFILES_OS=Linux apt_install pkg-b >/dev/null
+t "apt: one update per run" "1" "$(grep -c 'APT_CALL update' "$APT_LOG")"
+t "apt: installs issued"    "2" "$(grep -c 'APT_CALL install' "$APT_LOG")"
+t "apt: noninteractive"     "2" "$(grep -c 'APT_CALL install.*DEBIAN_FRONTEND=noninteractive' "$APT_LOG")"
+x  "apt guard on macos" 1 sh -c 'DOTFILES_OS=Darwin; . "$1"; apt_install havepkg' sh "$LIB"
+PATH="$PATH_SAVE2"; unset APT_LOG
+
 printf '\n%d tests, %d failures\n' "$TESTS_RUN" "$TESTS_FAIL"
 [ "$TESTS_FAIL" -eq 0 ]
