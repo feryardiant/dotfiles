@@ -12,12 +12,12 @@ bash -n "$ROOT/scripts/setup.d/oh-my-zsh.sh"  && t syntax 'parses `oh-my-zsh.sh`
 # (fixture repo holds .env.example/.env so the real $DOTFILES_DIR/.env is never touched)
 mkdir -p "$FIX/repo"
 cp "$ROOT/.env.example" "$FIX/repo/.env.example"
-HOME="$FIX/h" DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
+HOME="$FIX/h" DOTFILES_OS=Darwin DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
 t system 'creates the XDG state dir' "1" "$([ -d "$FIX/h/.local/state" ] && echo 1)"
 t system 'seeds `.env` from `.env.example`' "1" "$(grep -c "export DOTFILES_DIR='$FIX/repo'" "$FIX/repo/.env")"
 echo "MY_KEY=preserved" >> "$FIX/repo/.env"
 before=$(md5 -q "$FIX/repo/.env" 2>/dev/null || md5sum "$FIX/repo/.env" | cut -d' ' -f1)
-HOME="$FIX/h" DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
+HOME="$FIX/h" DOTFILES_OS=Darwin DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
 after=$(md5 -q "$FIX/repo/.env" 2>/dev/null || md5sum "$FIX/repo/.env" | cut -d' ' -f1)
 t system 'reruns leave `.env` byte-identical' "$before" "$after"
 t system 'keeps user keys across the merge' "1" "$(grep -c 'MY_KEY=preserved' "$FIX/repo/.env")"
