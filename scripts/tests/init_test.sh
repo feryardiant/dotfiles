@@ -5,6 +5,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 . "$ROOT/scripts/tests/harness.sh"
 FIX=$(mktemp -d); trap 'rm -rf "$FIX"' EXIT
 INIT="$ROOT/scripts/init.sh"
+printf 'ID=ubuntu\n' > "$FIX/os-release-ubuntu"
 
 bash -n "$INIT" && t syntax 'parses `init.sh`' 0 0 || t syntax 'parses `init.sh`' 0 1
 if [ -x /bin/bash ]; then
@@ -18,6 +19,13 @@ t init 'usage: `--help` prints the usage line' "1" "$(printf '%s' "$out" | grep 
 x init 'usage: unknown flag exits 2' 2 "$INIT" --bogus
 err=$("$INIT" --bogus 2>&1 >/dev/null)
 t init 'usage: unknown flag explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown option')"
+
+# piped door: the script arrives on stdin ($0 = `bash`), usage must not read $0
+out=$(cat "$INIT" | bash -s -- --help 2>&1); rc=$?
+t init 'usage: piped `--help` exits 0' "0" "$rc"
+t init 'usage: piped `--help` prints the usage line' "1" "$(printf '%s' "$out" | grep -c '^Usage:')"
+cat "$INIT" | bash -s -- --bogus >/dev/null 2>&1; rc=$?
+t init 'usage: piped unknown flag exits 2' "2" "$rc"
 
 # DRY_RUN=1 keeps this banner check harmless (the script executes for real otherwise)
 out=$(DRY_RUN=1 bash "$INIT" 2>&1); rc=$?
@@ -71,9 +79,25 @@ t profile '`--profile` flag beats `PROFILE` env' "vps" "$(prof "$out")"
 out=$(DRY_RUN=1 PATH="$FIX/vt:$PATH" bash "$INIT" --profile=lxc 2>&1)
 t profile '`--profile=` equals form is accepted' "lxc" "$(prof "$out")"
 
+x profile 'empty `--profile=` exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile=
+x profile 'empty `--profile ""` exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile ""
+err=$(DRY_RUN=1 bash "$INIT" --profile= 2>&1 >/dev/null)
+t profile 'empty `--profile=` explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'requires a value')"
+
 x profile 'unknown profile value exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile windows
 err=$(DRY_RUN=1 bash "$INIT" --profile windows 2>&1 >/dev/null)
 t profile 'unknown profile value explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown profile')"
+
+# --- distro guard: non-Ubuntu fails before the banner; dry run previews anywhere ---
+printf 'ID=debian\n' > "$FIX/os-debian"
+out=$(OS_RELEASE="$FIX/os-debian" DRY_RUN=0 bash "$INIT" 2>&1 </dev/null); rc=$?
+t guard 'non-Ubuntu release exits 1' "1" "$rc"
+t guard 'non-Ubuntu release names the requirement' "1" "$(printf '%s' "$out" | grep -c 'requires Ubuntu')"
+t guard 'non-Ubuntu release fails before the banner' "0" "$(printf '%s' "$out" | grep -c '^Initializing\.\.\.$')"
+
+out=$(OS_RELEASE="$FIX/os-debian" DRY_RUN=1 bash "$INIT" 2>&1); rc=$?
+t guard 'dry run skips the distro guard' "0" "$rc"
+t guard 'dry run previews on a non-Ubuntu release' "1" "$(printf '%s' "$out" | grep -c '^All done$')"
 
 # Non-dry-run fixtures execute real commands behind their stubs (EACCES being
 # the non-root backstop); as root those commands would touch the host system,
@@ -98,8 +122,8 @@ exit 1
 STUB
   chmod +x "$FIX/bin/sudo" "$FIX/bin/locale-gen" "$FIX/bin/update-locale"
 
-  x err 'step failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT"
-  out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT" 2>&1)
+  x err 'step failure exits 1' 1 env DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT"
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/h" PATH="$FIX/bin:$PATH" bash "$INIT" 2>&1)
   t err 'step failure prints the `error` status' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
   t err 'step failure hints the command and line' "1" "$(printf '%s' "$out" | grep -c "failed (line")"
   t err 'hint names the actual failing command' "1" "$(printf '%s' "$out" | grep -c 'update-locale LC_ALL')"
@@ -109,8 +133,8 @@ STUB
   # --- sudo credential failure: loud, zero steps ---
   mkdir -p "$FIX/sudo_fail"
   printf '#!/usr/bin/env bash\nexit 1\n' > "$FIX/sudo_fail/sudo"; chmod +x "$FIX/sudo_fail/sudo"
-  x priv 'sudo -v failure exits 1' 1 env DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT"
-  out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT" 2>&1)
+  x priv 'sudo -v failure exits 1' 1 env DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT"
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/h" PATH="$FIX/sudo_fail:$PATH" bash "$INIT" 2>&1)
   t priv 'sudo -v failure prints the root-required message' "1" "$(printf '%s' "$out" | grep -c 'root required')"
   t priv 'sudo -v failure runs zero steps' "0" "$(printf '%s' "$out" | grep -c '\[CONF\] locale')"
 
@@ -129,7 +153,7 @@ echo "locale-gen: stderr chatter" >&2
 exit 1
 STUB
   chmod +x "$FIX/chatty/sudo" "$FIX/chatty/locale-gen"
-  out=$(DRY_RUN=0 HOME="$FIX/h" PATH="$FIX/chatty:$PATH" bash "$INIT" 2>&1)
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/h" PATH="$FIX/chatty:$PATH" bash "$INIT" 2>&1)
   t protocol 'step line stays atomic despite chatter' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... error')"
   t protocol 'failing command stdout is replayed' "1" "$(printf '%s' "$out" | grep -c 'Generating locales')"
   t protocol 'failing command stderr is replayed' "1" "$(printf '%s' "$out" | grep -c 'stderr chatter')"
@@ -137,7 +161,7 @@ STUB
 
   # apt's dpkg progress on fresh hosts must not split step lines either
   mkdir -p "$FIX/apt"
-  for c in locale-gen update-locale dpkg-reconfigure ln; do printf '#!/bin/sh\nexit 0\n' > "$FIX/apt/$c"; done
+  for c in locale-gen update-locale dpkg-reconfigure ln add-apt-repository; do printf '#!/bin/sh\nexit 0\n' > "$FIX/apt/$c"; done
   cat > "$FIX/apt/sudo" <<'STUB'
 #!/usr/bin/env bash
 case "$1" in -k|-v) exit 0 ;; esac
@@ -154,7 +178,7 @@ esac
 exit 0
 STUB
   chmod +x "$FIX/apt/"*
-  out=$(DRY_RUN=0 PROFILE=lxc HOME="$FIX/h" PATH="$FIX/apt:$PATH" bash "$INIT" 2>&1)
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" PROFILE=lxc HOME="$FIX/h" PATH="$FIX/apt:$PATH" bash "$INIT" 2>&1)
   t protocol 'apt progress is suppressed' "0" "$(printf '%s' "$out" | grep -c 'Reading database')"
   t protocol 'upgrade step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'system packages... done')"
   t protocol 'install step line stays atomic' "1" "$(printf '%s' "$out" | grep -Fc 'basic tools (lxc)... done')"
@@ -170,11 +194,11 @@ STUB
   printf '#!/bin/sh\necho "1000 testuser"\n' > "$FIX/adopt/awk"
   printf '#!/bin/sh\necho "testuser:x:1000:1000::%s:/bin/bash"\n' "$FIX/h" > "$FIX/adopt/getent"
   for c in locale-gen update-locale dpkg-reconfigure ln apt-get systemctl timedatectl \
-    usermod sh chown chmod; do
+    usermod sh chown chmod add-apt-repository; do
     printf '#!/bin/sh\nexit 0\n' > "$FIX/adopt/$c"
   done
   chmod +x "$FIX/adopt/"*
-  out=$(DRY_RUN=0 SUDO_USER=testuser HOME="$FIX/h" PATH="$FIX/adopt:$PATH" bash "$INIT" 2>&1)
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" SUDO_USER=testuser HOME="$FIX/h" PATH="$FIX/adopt:$PATH" bash "$INIT" 2>&1)
   t adopt 'adopted user keys: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
   t adopt 'adopted user keys: no identical-file copy error' "0" "$(printf '%s' "$out" | grep -cE 'identical|same file')"
 
