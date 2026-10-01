@@ -11,7 +11,7 @@ path_setup
 [ "${DOTFILES_DRY_RUN:-0}" = 1 ] && { echo "would run: system setup (dirs + $DOTFILES_DIR/.env)"; exit 0; }
 
 msg_begin system
-mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.local/state"
+mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/"{bin,share,state}
 
 # $DOTFILES_DIR/.env: seed from sample; merge never duplicates and never drops user keys.
 env_file="$DOTFILES_DIR/.env"
@@ -46,7 +46,7 @@ fi
 
 msg_end "done"
 
-# Base packages (Ubuntu only — macOS ships curl/git/zsh)
+# Base packages (Ubuntu only — macOS ships curl/git/zsh); git from the git-core PPA
 if is_linux; then
-  apt_install curl git zsh build-essential
+  ppa_install ppa:git-core/ppa curl git zsh build-essential
 fi
