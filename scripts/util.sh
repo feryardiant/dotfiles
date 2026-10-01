@@ -38,7 +38,7 @@ msg_begin() {
 
 msg_end() {
 	case "$1" in
-		done) printf '%s\n' "$(_c "$c_suc" done)" ;;
+		done) printf '%s\n' "$(_c "$c_suc" "done")" ;;
 		warn) printf '%s\n' "$(_c "$c_inf" warn)" ;;
 		fail) printf '%s\n' "$(_c "$c_red" fail)" ;;
 		*)    printf '%s\n' "$1" ;;
