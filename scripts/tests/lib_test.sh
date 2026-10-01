@@ -17,14 +17,18 @@ t() { # t <name> <expected> <actual>
 }
 
 x() { # x <name> <expected-exit> <cmd...>
-  TESTS_RUN=$((TESTS_RUN+1)); local want="$2"; shift 2
-  "$@" >/dev/null 2>&1; local got=$?
+  TESTS_RUN=$((TESTS_RUN+1))
+  local name="$1"
+  local want="$2"
+  shift 2
+  "$@" >/dev/null 2>&1
+  local got=$?
 
   if [ "$want" = "$got" ]; then
-    printf 'ok %d - %s\n' "$TESTS_RUN" "$1"
+    printf 'ok %d - %s\n' "$TESTS_RUN" "$name"
   else
     TESTS_FAIL=$((TESTS_FAIL+1))
-    printf 'NOT OK %d - %s (want exit %s, got %s)\n' "$TESTS_RUN" "$1" "$want" "$got"
+    printf 'NOT OK %d - %s (want exit %s, got %s)\n' "$TESTS_RUN" "$name" "$want" "$got"
   fi
 }
 
@@ -133,15 +137,15 @@ x "missing file"             1 fm_entries "$FIX/nope.md"
 HOME_SAVE="$HOME"; ROOT_DIR="${DOTFILES_DIR:-}"
 
 # --- predicates ---
-x "is_linux via override" 0 sh -c 'DOTFILES_OS=Linux; . "$1"; is_linux' sh "$LIB"
-x "is_macos via override" 0 sh -c 'DOTFILES_OS=Darwin; . "$1"; is_macos' sh "$LIB"
+x "is_linux via override" 0 bash -c 'DOTFILES_OS=Linux; . "$1"; is_linux' bash "$LIB"
+x "is_macos via override" 0 bash -c 'DOTFILES_OS=Darwin; . "$1"; is_macos' bash "$LIB"
 x "has_when empty = pass" 0 has_when ""
 x "has_when missing cmd" 1 has_when nosuchcmd-$$
 x "has_when present cmd" 0 has_when sh
 
 # --- path_setup puts ~/.local/bin on PATH (Review Focus 2) ---
 mkdir -p "$FIX/home/.local/bin"; printf '#!/bin/sh\n' > "$FIX/home/.local/bin/fakecmd"; chmod +x "$FIX/home/.local/bin/fakecmd"
-x "path_setup exposes ~/.local/bin" 0 sh -c 'HOME="$1"; PATH=/usr/bin:/bin; . "$2"; path_setup; command -v fakecmd >/dev/null' sh "$FIX/home" "$LIB"
+x "path_setup exposes ~/.local/bin" 0 bash -c 'HOME="$1"; PATH=/usr/bin:/bin; . "$2"; path_setup; command -v fakecmd >/dev/null' bash "$FIX/home" "$LIB"
 
 # --- link_apply in a sandbox ---
 export HOME="$FIX/home" LINK_ROOT="$FIX/home" BACKUP_DIR="$FIX/bak"
@@ -161,8 +165,14 @@ t "link: force re-links" "linked" "$LINK_RESULT"
 unset DOTFILES_FORCE
 rm -rf "$FIX/bak"
 
-# os gate (this test machine is macOS)
-link_apply "~/b.txt" "$FIX/src/a.txt" "linux" "" "" ""
+# os gate (against the platform this machine is not)
+if is_macos; then
+  OTHER_OS=linux
+else
+  OTHER_OS=macos
+fi
+
+link_apply "~/b.txt" "$FIX/src/a.txt" "$OTHER_OS" "" "" ""
 t "os gate: result" "gated" "$LINK_RESULT"
 x "os gate: no file" 1 test -e "$FIX/home/b.txt"
 link_apply "~/b.txt" "$FIX/src/a.txt" "macos,linux" "" "" ""
@@ -228,7 +238,7 @@ out=$(DOTFILES_OS=Darwin brew_install haveform); t "brew: skip installed" "  hav
 out=$(DOTFILES_OS=Darwin DOTFILES_SETUP_LOG="$FIX/brew.log" brew_install newform)
 t "brew: installs missing" "  installing (brew): newform... done" "$out"
 t "brew: raw output to log (-y)" "1" "$(grep -c 'BREW_INSTALL -y newform' "$FIX/brew.log")"
-x  "brew guard on linux" 1 sh -c 'DOTFILES_OS=Linux; . "$1"; brew_install haveform' sh "$LIB"
+x  "brew guard on linux" 1 bash -c 'DOTFILES_OS=Linux; . "$1"; brew_install haveform' bash "$LIB"
 
 # Linux branch, single apt update per run
 export APT_LOG="$FIX/apt.log"; : > "$APT_LOG"
@@ -239,7 +249,7 @@ DOTFILES_OS=Linux apt_install pkg-b >/dev/null
 t "apt: one update per run" "1" "$(grep -c 'APT_CALL update' "$APT_LOG")"
 t "apt: installs issued"    "2" "$(grep -c 'APT_CALL install' "$APT_LOG")"
 t "apt: noninteractive"     "2" "$(grep -c 'APT_CALL install.*DEBIAN_FRONTEND=noninteractive' "$APT_LOG")"
-x  "apt guard on macos" 1 sh -c 'DOTFILES_OS=Darwin; . "$1"; apt_install havepkg' sh "$LIB"
+x  "apt guard on macos" 1 bash -c 'DOTFILES_OS=Darwin; . "$1"; apt_install havepkg' bash "$LIB"
 PATH="$PATH_SAVE2"; unset APT_LOG
 
 printf '\n%d tests, %d failures\n' "$TESTS_RUN" "$TESTS_FAIL"
