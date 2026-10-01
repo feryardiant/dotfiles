@@ -33,11 +33,6 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
-# Fix OBJC initialization issue
-# see: https://github.com/rails/rails/issues/38560
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-export DYLD_FALLBACK_LIBRARY_PATH="`brew --prefix`/lib:$DYLD_FALLBACK_LIBRARY_PATH"
-
 # ==============================================================================
 # DOTFILE DIRECTORY
 # ==============================================================================
@@ -45,13 +40,13 @@ export DOTFILES_DIR=~/Config/dotfiles
 
 # Import basic utilities
 if [[ -d $DOTFILES_DIR ]]; then
-    [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
+  [[ -s $DOTFILES_DIR/scripts/util.sh ]] && source $DOTFILES_DIR/scripts/util.sh
 
-    for _base in $DOTFILES_DIR/config/*.sh; do
-        [[ -r $_base ]] && source $_base
-    done
+  for _base in $DOTFILES_DIR/config/*.sh; do
+    [[ -r $_base ]] && source $_base
+  done
 
-    [[ -f $DOTFILES_DIR/.env ]] && source $DOTFILES_DIR/.env
+  [[ -f $DOTFILES_DIR/.env ]] && source $DOTFILES_DIR/.env
 
-    unset _base
+  unset _base
 fi

@@ -1,259 +1,259 @@
 # Create a new directory and enter it
 function take() {
-	mkdir $1 && cd $_
+  mkdir $1 && cd $_
 }
 
 # find shorthand
 function f() {
-	find . -name "$1"
+  find . -name "$1"
 }
 
 # Copy w/ progress
 function copy() {
-	rsync -WavP --human-readable --progress $1 $2
+  rsync -WavP --human-readable --progress $1 $2
 }
 
 # get gzipped size
 function gz() {
-	echo "orig size    (bytes): "
-	cat "$1" | wc -c
-	echo "gzipped size (bytes): "
-	gzip -c "$1" | wc -c
+  echo "orig size    (bytes): "
+  cat "$1" | wc -c
+  echo "gzipped size (bytes): "
+  gzip -c "$1" | wc -c
 }
 
 # Get filesize in human-readable format
 function sizeof() {
-	local fsize=`cat "$1" | wc -c`
+  local fsize=`cat "$1" | wc -c`
 
-	if [[ $size -ge 1073741824 ]]; then
-		fsize=`echo "scale=2;$fsize/1073741824"| bc`G
-	elif [[ $fsize -ge 1048576 ]]; then
-		fsize=`echo "scale=2;$fsize/1048576"| bc`M
-	elif [[ $fsize -ge 1024 ]]; then
-		fsize=`echo "scale=2;$fsize/1024" | bc`K
-	fi
+  if [[ $size -ge 1073741824 ]]; then
+    fsize=`echo "scale=2;$fsize/1073741824"| bc`G
+  elif [[ $fsize -ge 1048576 ]]; then
+    fsize=`echo "scale=2;$fsize/1048576"| bc`M
+  elif [[ $fsize -ge 1024 ]]; then
+    fsize=`echo "scale=2;$fsize/1024" | bc`K
+  fi
 
-	echo $fsize
+  echo $fsize
 }
 
 # Fixing file and folder permissions
 function fixperms() {
-	local inPath='.'
-	local filePerm=664
-	local dirPerm=775
+  local inPath='.'
+  local filePerm=664
+  local dirPerm=775
 
-	while getopts ':f:d:p:' opts; do
-		case $opts in
-			p) $inPath="./$OPTARG" ;;
-			f) $filePerm=$OPTARG ;;
-			d) $dirPerm=$OPTARG ;;
-			:) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
-			\?) echo "Invalid option -$OPTARG" >&2; exit 1 ;;
-		esac
-	done
+  while getopts ':f:d:p:' opts; do
+    case $opts in
+      p) $inPath="./$OPTARG" ;;
+      f) $filePerm=$OPTARG ;;
+      d) $dirPerm=$OPTARG ;;
+      :) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
+      \?) echo "Invalid option -$OPTARG" >&2; exit 1 ;;
+    esac
+  done
 
-	# Change all files perm to 664
-	find $inPath -type f -exec chmod $filePerm {} +
-	# Change all directories perm to 775
-	find $inPath -type d -exec chmod $dirPerm {} +
+  # Change all files perm to 664
+  find $inPath -type f -exec chmod $filePerm {} +
+  # Change all directories perm to 775
+  find $inPath -type d -exec chmod $dirPerm {} +
 }
 
 # Extract archives - usage: extract <file>
 # Based on http://dotfiles.org/~pseup/.bashrc
 function extract() {
-	if [ -f "$1" ] ; then
-		local filename=$(basename "$1")
-		local foldername="${filename%%.*}"
-		local fullpath=`perl -e 'use Cwd "abs_path";print abs_path(shift)' "$1"`
-		local didfolderexist=false
-		if [ -d "$foldername" ]; then
-			didfolderexist=true
-			read -p "$foldername already exists, do you want to overwrite it? (y/n) " -n 1
-			echo
-			if [[ $REPLY =~ ^[Nn]$ ]]; then
-				return
-			fi
-		fi
-		mkdir -p "$foldername" && cd "$foldername"
-		case $1 in
-			*.tar.bz2) tar xjf "$fullpath" ;;
-			*.tar.gz) tar xzf "$fullpath" ;;
-			*.tar.xz) tar Jxvf "$fullpath" ;;
-			*.tar.Z) tar xzf "$fullpath" ;;
-			*.tar) tar xf "$fullpath" ;;
-			*.taz) tar xzf "$fullpath" ;;
-			*.tb2) tar xjf "$fullpath" ;;
-			*.tbz) tar xjf "$fullpath" ;;
-			*.tbz2) tar xjf "$fullpath" ;;
-			*.tgz) tar xzf "$fullpath" ;;
-			*.txz) tar Jxvf "$fullpath" ;;
-			*.zip) unzip "$fullpath" ;;
-			*) _err "'$1' cannot be extracted via extract()"$'\n' && cd .. && ! $didfolderexist && rm -r "$foldername" ;;
-		esac
-	else
-		echo "'$1' is not a valid file"
-	fi
+  if [ -f "$1" ] ; then
+    local filename=$(basename "$1")
+    local foldername="${filename%%.*}"
+    local fullpath=`perl -e 'use Cwd "abs_path";print abs_path(shift)' "$1"`
+    local didfolderexist=false
+    if [ -d "$foldername" ]; then
+      didfolderexist=true
+      read -p "$foldername already exists, do you want to overwrite it? (y/n) " -n 1
+      echo
+      if [[ $REPLY =~ ^[Nn]$ ]]; then
+        return
+      fi
+    fi
+    mkdir -p "$foldername" && cd "$foldername"
+    case $1 in
+      *.tar.bz2) tar xjf "$fullpath" ;;
+      *.tar.gz) tar xzf "$fullpath" ;;
+      *.tar.xz) tar Jxvf "$fullpath" ;;
+      *.tar.Z) tar xzf "$fullpath" ;;
+      *.tar) tar xf "$fullpath" ;;
+      *.taz) tar xzf "$fullpath" ;;
+      *.tb2) tar xjf "$fullpath" ;;
+      *.tbz) tar xjf "$fullpath" ;;
+      *.tbz2) tar xjf "$fullpath" ;;
+      *.tgz) tar xzf "$fullpath" ;;
+      *.txz) tar Jxvf "$fullpath" ;;
+      *.zip) unzip "$fullpath" ;;
+      *) _err "'$1' cannot be extracted via extract()"$'\n' && cd .. && ! $didfolderexist && rm -r "$foldername" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
 }
 
 # PHP Server
 function phpserv() {
-	if ! _has_pkg 'php'; then
-		_err "Your system does not have PHP binnary installed"$'\n'
-		return 1;
-	fi
+  if ! command -v php >/dev/null 2>&1; then
+    _err "Your system does not have PHP binnary installed"$'\n'
+    return 1;
+  fi
 
-	if [ $# -eq 0 ]; then
-		echo "usage: phpserv <port>[ <docroot>]"
-	else
-		if [ -z "$2" ]; then
-			docroot="-t ."
-		else
-			docroot="-t $2"
-		fi
+  if [ $# -eq 0 ]; then
+    echo "usage: phpserv <port>[ <docroot>]"
+  else
+    if [ -z "$2" ]; then
+      docroot="-t ."
+    else
+      docroot="-t $2"
+    fi
 
-		php -S localhost:$1 $docroot
-	fi
+    php -S localhost:$1 $docroot
+  fi
 }
 
 # credit https://askubuntu.com/a/1044728
 function test_colours() {
-	curl -s https://gist.githubusercontent.com/WoLpH/8b6f697ecc06318004728b8c0127d9b3/raw/colortest.py | python3
+  curl -s https://gist.githubusercontent.com/WoLpH/8b6f697ecc06318004728b8c0127d9b3/raw/colortest.py | python3
 }
 
 function print_colours() {
-	if [ -z $1 ]; then
-		BREAK=1
-	else
-		BREAK=$1
-	fi
-	for i in {0..255} ; do
-		printf "\x1b[38;5;${i}mcolour${i} \t"
-		if [ $(( i % $BREAK )) -eq $(($BREAK-1)) ] ; then
-			printf "\n"
-		fi
-	done
+  if [ -z $1 ]; then
+    BREAK=1
+  else
+    BREAK=$1
+  fi
+  for i in {0..255} ; do
+    printf "\x1b[38;5;${i}mcolour${i} \t"
+    if [ $(( i % $BREAK )) -eq $(($BREAK-1)) ] ; then
+      printf "\n"
+    fi
+  done
 }
 
 function evalssh() {
-	# evaluating ssh-agent
-	eval `ssh-agent -s`
-	ssh-add ~/.ssh/*_rsa
+  # evaluating ssh-agent
+  eval `ssh-agent -s`
+  ssh-add ~/.ssh/*_rsa
 }
 
 function clipboard() {
-	case "$OSTYPE" in
-		linux-gnu)
-			if ! _has_pkg 'xclip'; then
-				_err "This command require xclip to be installed"$'\n'
-				return 1
-			fi
+  case "$OSTYPE" in
+    linux-gnu)
+      if ! command -v xclip >/dev/null 2>&1; then
+        _err "This command require xclip to be installed"$'\n'
+        return 1
+      fi
 
-			xclip -selection clipboard -i
-			;;
-		darwin*) pbcopy ;;
-		cygwin) clip ;;
-	esac
+      xclip -selection clipboard -i
+      ;;
+    darwin*) pbcopy ;;
+    cygwin) clip ;;
+  esac
 }
 
 function repo() {
-	if [[ $OSTYPE != 'linux-gnu' ]]; then
-		_err "This command only work on Linux"$'\n'
-		return 1
-	fi
+  if [[ $OSTYPE != 'linux-gnu' ]]; then
+    _err "This command only work on Linux"$'\n'
+    return 1
+  fi
 
-	if [ $# -eq 0 ]; then
-		echo "usage: repo [command] <ppa>"
-		echo ""
-		echo "Available commands:"
-		echo ""
-		echo " add   Add new repository"
-		echo " list  List all installed repository"
-		return 1
-	fi
+  if [ $# -eq 0 ]; then
+    echo "usage: repo [command] <ppa>"
+    echo ""
+    echo "Available commands:"
+    echo ""
+    echo " add   Add new repository"
+    echo " list  List all installed repository"
+    return 1
+  fi
 
-	case $1 in
-		add)
-			if [ -z $2 ]; then
-				echo "usage: repo add <ppa>"
-				echo ""
-				echo "examples:"
-				echo " - repo add vendor/repo"
-				echo "   that's mean you run"
-				echo "   $ sudo add-apt-repository -y ppa:vendor/repo"
-				echo "   $ sudo apt-get update"
-				return 1
-			fi
+  case $1 in
+    add)
+      if [ -z $2 ]; then
+        echo "usage: repo add <ppa>"
+        echo ""
+        echo "examples:"
+        echo " - repo add vendor/repo"
+        echo "   that's mean you run"
+        echo "   $ sudo add-apt-repository -y ppa:vendor/repo"
+        echo "   $ sudo apt-get update"
+        return 1
+      fi
 
-			sudo add-apt-repository -y ppa:$2
-			;;
-		list)
-			for APT in `find /etc/apt/ -name \*.list`; do
-				grep -Po "(?<=^deb\s).*?(?=#|$)" $APT | while read ENTRY ; do
-					echo '  '${ENTRY}
-				done
-			done
-			;;
-	esac
+      sudo add-apt-repository -y ppa:$2
+      ;;
+    list)
+      for APT in `find /etc/apt/ -name \*.list`; do
+        grep -Po "(?<=^deb\s).*?(?=#|$)" $APT | while read ENTRY ; do
+          echo '  '${ENTRY}
+        done
+      done
+      ;;
+  esac
 }
 
 # BrowserStack Local
 function bslocal() {
-	if ! (command -v BrowserStackLocal >/dev/null 2>&1); then
-		echo "Your system does not have Browserstack Local binnary installed"$'\n'
-		echo "https://www.browserstack.com/docs/local-testing/releases-and-downloads"$'\n'
-		return 1;
-	fi
+  if ! (command -v BrowserStackLocal >/dev/null 2>&1); then
+    echo "Your system does not have Browserstack Local binnary installed"$'\n'
+    echo "https://www.browserstack.com/docs/local-testing/releases-and-downloads"$'\n'
+    return 1;
+  fi
 
-	if [[ ! -d $PWD/.git ]]; then
-		echo "This command can only run inside git repository"$'\n';
-		return 1;
-	fi
+  if [[ ! -d $PWD/.git ]]; then
+    echo "This command can only run inside git repository"$'\n';
+    return 1;
+  fi
 
-	local help_ctx="usage: bslocal [command] [options]
+  local help_ctx="usage: bslocal [command] [options]
 
 Available commands:
 
  start    Start browserstack local daemon
  stop     Stop browserstack local daemon"
 
-	if [ $# -eq 0 ]; then
-		echo $help_ctx
-		return 1
-	fi
+  if [ $# -eq 0 ]; then
+    echo $help_ctx
+    return 1
+  fi
 
-	case $1 in
-		start)
-			export BROWSERSTACK_LOCAL_IDENTIFIER=${PWD##*/}-`git rev-parse --short HEAD`
+  case $1 in
+    start)
+      export BROWSERSTACK_LOCAL_IDENTIFIER=${PWD##*/}-`git rev-parse --short HEAD`
 
-			BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
-			--local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
-			--use-ca-certificate ${HOME}/Workspace/localhost.pem \
-			--force-local --daemon start --log-file ${PWD}/browserstack.log ${@:2}
+      BrowserStackLocal --key ${BROWSERSTACK_ACCESS_KEY} \
+      --local-identifier ${BROWSERSTACK_LOCAL_IDENTIFIER} \
+      --use-ca-certificate ${HOME}/Workspace/localhost.pem \
+      --force-local --daemon start --log-file ${PWD}/browserstack.log ${@:2}
 
-			echo "identifier: ${BROWSERSTACK_LOCAL_IDENTIFIER}"
-			;;
-		stop)
-			BrowserStackLocal --daemon stop
+      echo "identifier: ${BROWSERSTACK_LOCAL_IDENTIFIER}"
+      ;;
+    stop)
+      BrowserStackLocal --daemon stop
 
-			unset BROWSERSTACK_LOCAL_IDENTIFIER
-			;;
-		*)
-			echo "command ${1} is invalid"
-			echo ""
-			echo $help_ctx
-			;;
-	esac
+      unset BROWSERSTACK_LOCAL_IDENTIFIER
+      ;;
+    *)
+      echo "command ${1} is invalid"
+      echo ""
+      echo $help_ctx
+      ;;
+  esac
 }
 
 # credit https://github.com/mislav/dotfiles/blob/master/bin/consolidate-path
 function consolidate_path() {
-	result=":"
+  result=":"
 
-	IFS=:
-	for p in $1; do
-		[[ "$result" == *:"$p":* || -z "${result##*:$p:*}" ]] || result="${result}${p}:"
-	done
+  IFS=:
+  for p in $1; do
+    [[ "$result" == *:"$p":* || -z "${result##*:$p:*}" ]] || result="${result}${p}:"
+  done
 
-	result="${result#:}"
-	echo "${result%:}"
+  result="${result#:}"
+  echo "${result%:}"
 }

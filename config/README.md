@@ -17,6 +17,7 @@ Two value forms:
 
 ```yaml
 ---
+when: starship
 maps:
   # string form — plain symlink (the common case)
   ~/.config/tmux/tmux.conf: tmux.conf
@@ -28,6 +29,9 @@ maps:
   ~/.config/ghostty/config:
     src: config.ghostty
     os: [linux]
+  ~/.config/starship.toml:
+    src: starship.toml
+    when: starship
 ---
 ```
 
@@ -38,6 +42,7 @@ Qualifiers (object form requires `src`):
 | `src` | Source path relative to the README's directory. String form is `src` shorthand. |
 | `copy: true` | Copy the file instead of symlinking. |
 | `os: [tokens]` | Allowed platforms: `macos`, `linux`, `windows`. Absent = universal. |
+| `when: cmd` | Gate: apply only when command `cmd` is on PATH (`command -v`). Absent = always. Allowed at root (whole file) and per dest. |
 
 Semantics:
 
@@ -47,6 +52,9 @@ Semantics:
 | Source missing | Skip with warning, never an error (e.g. gitignored sources) |
 | Source is a directory | Symlinked as a whole directory |
 | Platform mismatch | Entry skipped with a note |
+| `when` missing consumer | Entry skipped with `(when: cmd)` note — never an error |
+| Root + dest `when` | Both must pass (AND); root `when` requires `maps:` |
+| `when` value form | Single command name only; flow-lists (`[a, b]`) are a parse error |
 | Detection | `uname`: `Darwin`→macos, `Linux`→linux, `MINGW/MSYS/CYGWIN`→windows; WSL = linux |
 | Re-run | Already-correct link/copy is a no-op; conflicting target → backup (script phase) |
 | `maps: {}` or absent | No mappings (e.g. `php/`) |

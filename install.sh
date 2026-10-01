@@ -1,204 +1,129 @@
 #!/usr/bin/env bash
+# Frontmatter-driven dotfiles installer.
+#   1) run scripts/setup.d/<tool>.sh children in phase order (idempotent, isolated)
+#   2) apply all maps: via scripts/link.sh (os/when gated) — linking happens only there
+# Usage: install.sh [--only <name>[,<name>...]] [--skip <name>[,<name>...]] [--link-only] [--force] [--dry-run]
 
-set -e
+set -euo pipefail
 
-sudo -k
+DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+SCRIPTS_DIR=${DOTFILES_SCRIPTS_DIR:-$DOTFILES_DIR/scripts}
+export DOTFILES_DIR
+. "$SCRIPTS_DIR/lib.sh"
+. "${DOTFILES_PHASES_FILE:-$SCRIPTS_DIR/phases.sh}"
+path_setup
+export BACKUP_DIR="$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)"
+LOGS_DIR="${LOGS_DIR:-$DOTFILES_DIR/scripts/logs}"; export LOGS_DIR
+mkdir -p "$LOGS_DIR"
 
-. ./scripts/util.sh
-
-my_user="$USER"
-my_pwd="$PWD"
-now=`date +'%Y-%m-%d_%H-%M-%S'`
-backup_dir=$my_pwd/dotfiles.old/$now
-
-# Create backup dir if not exists
-[[ ! -d $backup_dir ]] && mkdir -p $backup_dir
-
-_resque() {
-	if [ -f $1 ]; then
-		if [ -L $1 ]; then
-			rm -f $1
-		else
-			mv -f $1 $backup_dir/
-		fi
-	fi
+usage() {
+  sed -n '2,6s/^# //p' "${BASH_SOURCE[0]}"
+  exit "${1:-1}"
 }
 
-with_zsh='0'
-with_neovim='0'
-export _LOG_FILE=$my_pwd/install.log
-
+ONLY=""; SKIP=""; LINK_ONLY=0; ONLY_SET=0; SKIP_SET=0
 while [ $# -ne 0 ]; do
-	case $1 in
-		--with-zsh)
-			with_zsh='1'
-			shift
-		;;
-		--with-neovim)
-			with_neovim='1'
-			shift
-		;;
-		--)
-			shift
-			break
-		;;
-		-?*)
-			echo "Invalid argument: $1" 1>&2
-			exit 1
-		;;
-		*)
-			break
-		;;
-	esac
+  case $1 in
+    --only)      [ $# -ge 2 ] || usage; ONLY=$2; ONLY_SET=1; shift 2 ;;
+    --skip)      [ $# -ge 2 ] || usage; SKIP=$2; SKIP_SET=1; shift 2 ;;
+    --link-only) LINK_ONLY=1; shift ;;
+    --force)     DOTFILES_FORCE=1; export DOTFILES_FORCE; shift ;;
+    --dry-run)   DOTFILES_DRY_RUN=1; export DOTFILES_DRY_RUN; shift ;;
+    --)          shift; break ;;
+    -?*)         echo "Invalid argument: $1" 1>&2; usage ;;
+    *)           break ;;
+  esac
 done
 
-# Initialize
-for userlocal in ~/.local/{bin,lib,share}; do
-	[ ! -d $userlocal ] && mkdir -p $userlocal
+ALL=(${PHASE_SYSTEM[@]+"${PHASE_SYSTEM[@]}"} ${PHASE_MANAGERS[@]+"${PHASE_MANAGERS[@]}"} ${PHASE_TOOLS[@]+"${PHASE_TOOLS[@]}"})
+
+split_words() { # split_words <raw> — fills SPLIT: comma-split, trimmed, empties dropped
+  SPLIT=()
+  local item rest=$1
+  while [ -n "$rest" ]; do
+    item=${rest%%,*}
+    if [ "$rest" = "$item" ]; then rest=""; else rest=${rest#*,}; fi
+    item=${item#"${item%%[![:space:]]*}"}
+    item=${item%"${item##*[![:space:]]}"}
+    [ -n "$item" ] && SPLIT+=("$item")
+  done
+  return 0
+}
+
+in_list() { # in_list <needle> [<hay>...]
+  local needle=$1 x
+  shift
+  for x in "$@"; do [ "$x" = "$needle" ] && return 0; done
+  return 1
+}
+
+split_words "$ONLY"
+[ "$ONLY_SET" -eq 1 ] && [ "${#SPLIT[@]}" -eq 0 ] && usage
+ONLY_LIST=(${SPLIT[@]+"${SPLIT[@]}"})
+split_words "$SKIP"
+[ "$SKIP_SET" -eq 1 ] && [ "${#SPLIT[@]}" -eq 0 ] && usage
+SKIP_LIST=(${SPLIT[@]+"${SPLIT[@]}"})
+
+for _name in ${ONLY_LIST[@]+"${ONLY_LIST[@]}"} ${SKIP_LIST[@]+"${SKIP_LIST[@]}"}; do
+  in_list "$_name" ${ALL[@]+"${ALL[@]}"} || { echo "unknown tool: $_name" >&2; exit 1; }
 done
-unset userlocal
+unset _name
 
-# e $c_inf $'Configure (this might take a while)...\n'
-# . $my_pwd/scripts/init.sh
+trap 'echo; _c "$c_inf" "interrupted — backups (if any): ${BACKUP_DIR}"; printf "\n"; exit 130' INT TERM
 
-cd $HOME
+FAILED=()
+ok_count=0
+run_phase() { # run_phase <label> <names...>
+  local label="$1"; shift
+  [ $# -eq 0 ] && return 0
+  printf '\n== %s ==\n' "$label"
 
-# ------------------------------------------------------------------------------
-# Basic
-# ------------------------------------------------------------------------------
+  local name
 
-e $c_inf 'Setup dotfiles'
+  for name in "$@"; do
+    [ "${#SKIP_LIST[@]}" -gt 0 ] && in_list "$name" ${SKIP_LIST[@]+"${SKIP_LIST[@]}"} && { echo "  skipped (--skip): $name"; continue; }
+    [ "${#ONLY_LIST[@]}" -gt 0 ] && ! in_list "$name" ${ONLY_LIST[@]+"${ONLY_LIST[@]}"} && continue
 
-# Setup
-_resque ~/.profile && ln -sf $my_pwd/.profile .
+    if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then
+      echo "  would run: setup.d/$name.sh"
+      continue
+    fi
 
-# Cleanup
-unset dotfile dotfiles
+    DOTFILES_SETUP_LOG="$LOGS_DIR/setup-$name.txt"; export DOTFILES_SETUP_LOG
+    : > "$DOTFILES_SETUP_LOG"   # fresh log per child per run
 
-e $c_suc $' ✔ Done\n'
+    if bash "$SCRIPTS_DIR/setup.d/$name.sh"; then
+      ok_count=$((ok_count+1))
+    else
+      msg_hint "$DOTFILES_SETUP_LOG"
+      FAILED+=("$name")
+    fi
+  done
+}
 
-# ------------------------------------------------------------------------------
-# ENV
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup dotenv'
-
-envContent="`cat $my_pwd/.env.sample`"
-
-if [ -f ~/.env ]; then
-	mv -f ~/.env $backup_dir/
-	envContent="$envContent"$'\n\n'"$(cat $backup_dir/.env)"
+if [ "$LINK_ONLY" -eq 0 ]; then
+  run_phase "system"   ${PHASE_SYSTEM[@]+"${PHASE_SYSTEM[@]}"}
+  run_phase "managers" ${PHASE_MANAGERS[@]+"${PHASE_MANAGERS[@]}"}
+  run_phase "tools"    ${PHASE_TOOLS[@]+"${PHASE_TOOLS[@]}"}
 fi
 
-echo "$envContent" > ~/.env
-sed -i "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$my_pwd'@g" ~/.env
+printf '\n== link ==\n'
+LINK_ARGS=()
+[ "${DOTFILES_FORCE:-0}" = 1 ] && LINK_ARGS+=(--force)
+[ "${DOTFILES_DRY_RUN:-0}" = 1 ] && LINK_ARGS+=(--dry-run)
 
-e $c_suc $' ✔ Done\n'
-
-# ------------------------------------------------------------------------------
-# GIT
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup git'
-
-# Installing
-. $my_pwd/scripts/git.sh > $_LOG_FILE
-
-# Backup
-if [ -f ~/.gitconfig ]; then
-	git_email="`git config --global user.email`"
-	git_name="`git config --global user.name`"
-
-	_resque ~/.gitconfig
+if ! bash "$SCRIPTS_DIR/link.sh" ${LINK_ARGS[@]+"${LINK_ARGS[@]}"}; then
+  FAILED+=(link)
 fi
 
-# Setup
-cp -f $my_pwd/.gitconfig ~/.gitconfig
+printf '\n== summary ==\n'
+nfail=${#FAILED[@]}
+printf 'tools: %d ok, %d failed\n' "$ok_count" "$nfail"
 
-# Restore default user name & email
-[[ ! -z $git_email ]] && git config --global user.email "$git_email"
-[[ ! -z $git_name ]] && git config --global user.name "$git_name"
-
-e $c_suc $' ✔ Done\n'
-
-# ------------------------------------------------------------------------------
-# TMUX
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup TMUX'
-
-# Installing
-. $my_pwd/scripts/tmux.sh > $_LOG_FILE
-
-# Backup
-_resque ~/.tmux.conf
-
-# Setup
-ln -sf $my_pwd/.tmux.conf ~/.tmux.conf
-
-e $c_suc $' ✔ Done\n'
-
-# ------------------------------------------------------------------------------
-# VIM & NeoVIM
-# ------------------------------------------------------------------------------
-
-plug_dir=~/.local/share/vim-plug
-
-if [[ ! -d $plug_dir ]]; then
-	curl -LSso $plug_dir/plug.vim --create-dirs \
-		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	[ ! -d $plug_dir/plugged ] && mkdir $plug_dir/plugged
+if [ "$nfail" -gt 0 ]; then
+  printf 'failed: %s\n' "${FAILED[*]}"
+  [ -d "$BACKUP_DIR" ] && printf 'backups: %s\n' "$BACKUP_DIR"
+  exit 1
 fi
-
-if _has_pkg 'vim'; then
-	e $c_inf 'Setup VIM'
-
-	# Setup
-	for vim_dir in {swap,undo,backup}; do
-		[ -d ~/.cache/vim/$vim_dir ] || mkdir -p ~/.cache/vim/$vim_dir
-	done
-	unset vim_dir
-
-	[ -d ~/.vim ] || mkdir -p ~/.vim/autoload
-	ln -sf $my_pwd/.vimrc ~/.vimrc
-	ln -sf $plug_dir/plug.vim ~/.vim/autoload/plug.vim
-
-	e $c_suc $' ✔ Done\n'
-fi
-
-if _has_pkg 'nvim'; then
-	e $c_inf 'Setup NeoVIM'
-
-	# Setup
-	for vim_dir in {swap,undo,backup}; do
-		[ -d ~/.cache/nvim/$vim_dir ] || mkdir -p ~/.cache/nvim/$vim_dir
-	done
-	unset vim_dir
-
-	[ -d ~/.config/nvim ] || mkdir -p ~/.config/nvim/autoload
-	ln -sf $my_pwd/.vimrc ~/.config/nvim/init.vim
-	ln -sf $plug_dir/plug.vim ~/.config/nvim/autoload/plug.vim
-
-	# sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
-
-	e $c_suc $' ✔ Done\n'
-fi
-
-# Clean up
-unset plug_dir
-
-# ------------------------------------------------------------------------------
-# DONE
-# ------------------------------------------------------------------------------
-
-# Reload shell
-cd $my_pwd
-
-e $c_suc $'\nEverything is done ✔\n'
-e $c_rst 'Your old files are backed up in '
-e $c_inf "=> $backup_dir"$'\n'
-
-e $c_rst 'Thank you'
-[[ ! -z $git_name ]] && e $c_inf ' $git_name'
-[[ ! -z $git_email ]] && e $c_inf ' <$git_email>'
-echo $'\n'
+_c "$c_suc" 'Everything is done ✔'
+printf '\n'

@@ -1,4 +1,5 @@
 ---
+when: wakatime-cli
 maps:
   ~/.wakatime.cfg: private.cfg
 ---

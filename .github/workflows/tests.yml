@@ -1,0 +1,44 @@
+name: Tests
+run-name: "test(${{ github.ref_name }}): quality check against `${{ github.sha }}`"
+
+on:
+  pull_request:
+  # Only verify PRs for now
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  validation:
+    name: Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Lib tests
+        run: bash scripts/tests/lib_test.sh
+
+      - name: Link tests
+        run: bash scripts/tests/link_test.sh
+
+      - name: Setup tests
+        run: bash scripts/tests/setup_test.sh
+
+      - name: Plugin tests
+        run: bash scripts/tests/plugin_test.sh
+
+      - name: Install tests
+        run: bash scripts/tests/install_test.sh
+
+      - name: Init tests
+        run: bash scripts/tests/init_test.sh

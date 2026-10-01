@@ -1,4 +1,5 @@
 ---
+when: kilo
 maps:
   ~/.config/kilo/kilo.jsonc: config.jsonc
 ---
