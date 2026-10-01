@@ -1,195 +1,88 @@
 #!/usr/bin/env bash
+# Frontmatter-driven dotfiles installer.
+#   1) run scripts/setup.d/<tool>.sh children in phase order (idempotent, isolated)
+#   2) apply all maps: via scripts/link.sh (os/when gated) — linking happens only there
+# Usage: install.sh [--only <name>] [--skip <name>] [--link-only] [--force] [--dry-run]
+set -euo pipefail
 
-set -e
+DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+SCRIPTS_DIR=${DOTFILES_SCRIPTS_DIR:-$DOTFILES_DIR/scripts}
+export DOTFILES_DIR
+. "$SCRIPTS_DIR/lib.sh"
+. "${DOTFILES_PHASES_FILE:-$SCRIPTS_DIR/phases.sh}"
+path_setup
+export BACKUP_DIR="$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)"
+LOGS_DIR="$DOTFILES_DIR/logs"; export LOGS_DIR
 
-sudo -k
+usage() {
+  sed -n '2,6s/^# //p' "${BASH_SOURCE[0]}"
+  exit "${1:-1}"
+}
 
-DOTFILES_DIR=`dirname ${BASH_SOURCE[0]}`
-CONFIG_DIR="$DOTFILES_DIR/config"
-SCRIPTS_DIR="$DOTFILES_DIR/scripts"
-LOGS_DIR="$DOTFILES_DIR/logs"
-
-echo "Current directory: $DOTFILES_DIR"
-exit 0
-
-source $SCRIPTS_DIR/util.sh
-
-export LANG=${LANG:-"en_US.UTF-8"}
-
-now=`date +'%Y-%m-%d_%H-%M-%S'`
-BACKUP_DIR=$DOTFILES_DIR/dotfiles.old/$now
-
-# Create backup dir if not exists
-[[ ! -d $BACKUP_DIR ]] && mkdir -p $BACKUP_DIR
-
-with_zsh='0'
-with_neovim='0'
-export _LOG_FILE=$LOGS_DIR/install.log
-
+ONLY=""; SKIP=""; LINK_ONLY=0
 while [ $# -ne 0 ]; do
-    case $1 in
-        --with-zsh)
-            with_zsh='1'
-            shift
-        ;;
-        --with-neovim)
-            with_neovim='1'
-            shift
-        ;;
-        --)
-            shift
-            break
-        ;;
-        -?*)
-            echo "Invalid argument: $1" 1>&2
-            exit 1
-        ;;
-        *)
-            break
-        ;;
-    esac
+  case $1 in
+    --only)      [ $# -ge 2 ] || usage; ONLY=$2; shift 2 ;;
+    --skip)      [ $# -ge 2 ] || usage; SKIP=$2; shift 2 ;;
+    --link-only) LINK_ONLY=1; shift ;;
+    --force)     DOTFILES_FORCE=1; export DOTFILES_FORCE; shift ;;
+    --dry-run)   DOTFILES_DRY_RUN=1; export DOTFILES_DRY_RUN; shift ;;
+    --)          shift; break ;;
+    -?*)         echo "Invalid argument: $1" 1>&2; usage ;;
+    *)           break ;;
+  esac
 done
 
-mkdir -p ~/.{cache,config,local} ~/.local/{bin,share,state}
-
-# e $c_inf $'Configure (this might take a while)...\n'
-# . $SCRIPTS_DIR/init.sh
-
-cd $HOME
-
-# ------------------------------------------------------------------------------
-# Basic
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup dotfiles'
-
-# Setup
-_resque ~/.profile && ln -sf $DOTFILES_DIR/.profile .
-
-# Cleanup
-unset dotfile dotfiles
-
-e $c_suc $' ✔ Done\n'
-
-# ------------------------------------------------------------------------------
-# ENV
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup dotenv'
-
-envContent="`cat $DOTFILES_DIR/.env.sample`"
-
-if [ -f ~/.env ]; then
-    mv -f ~/.env $BACKUP_DIR/
-    envContent="$envContent"$'\n\n'"$(cat $BACKUP_DIR/.env)"
+ALL_TOOLS=" ${PHASE_SYSTEM[*]-} ${PHASE_MANAGERS[*]-} ${PHASE_TOOLS[*]-} "
+if [ -n "$ONLY" ]; then
+  case "$ALL_TOOLS" in *" $ONLY "*) ;; *) echo "unknown tool: $ONLY" >&2; exit 1 ;; esac
+fi
+if [ -n "$SKIP" ]; then
+  case "$ALL_TOOLS" in *" $SKIP "*) ;; *) echo "unknown tool: $SKIP" >&2; exit 1 ;; esac
 fi
 
-echo "$envContent" > ~/.env
-sed -i "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$DOTFILES_DIR'@g" ~/.env
+trap 'echo; e "$c_inf" "interrupted — backups (if any): ${BACKUP_DIR}"; exit 130' INT TERM
 
-e $c_suc $' ✔ Done\n'
+FAILED=()
+ok_count=0
+run_phase() { # run_phase <label> <names...>
+  local label="$1"; shift
+  [ $# -eq 0 ] && return 0
+  printf '\n== %s ==\n' "$label"
+  local name
+  for name in "$@"; do
+    [ -n "$SKIP" ] && [ "$name" = "$SKIP" ] && { echo "  skipped (--skip): $name"; continue; }
+    [ -n "$ONLY" ] && [ "$name" != "$ONLY" ] && continue
+    if [ "${DOTFILES_DRY_RUN:-0}" = 1 ]; then echo "  would run: setup.d/$name.sh"; continue; fi
+    if bash "$SCRIPTS_DIR/setup.d/$name.sh"; then
+      echo "  ok: $name"; ok_count=$((ok_count+1))
+    else
+      echo "  FAILED: $name"; FAILED+=("$name")
+    fi
+  done
+}
 
-# ------------------------------------------------------------------------------
-# GIT
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup git'
-
-# Installing
-. $SCRIPTS_DIR/git.sh > $_LOG_FILE
-
-# Backup
-if [ -f ~/.gitconfig ]; then
-    git_email="`git config --global user.email`"
-    git_name="`git config --global user.name`"
-
-    _resque ~/.gitconfig
+if [ "$LINK_ONLY" -eq 0 ]; then
+  run_phase "system"   ${PHASE_SYSTEM[@]+"${PHASE_SYSTEM[@]}"}
+  run_phase "managers" ${PHASE_MANAGERS[@]+"${PHASE_MANAGERS[@]}"}
+  run_phase "tools"    ${PHASE_TOOLS[@]+"${PHASE_TOOLS[@]}"}
 fi
 
-# Setup
-cp -f $DOTFILES_DIR/.gitconfig ~/.gitconfig
-
-# Restore default user name & email
-[[ ! -z $git_email ]] && git config --global user.email "$git_email"
-[[ ! -z $git_name ]] && git config --global user.name "$git_name"
-
-e $c_suc $' ✔ Done\n'
-
-# ------------------------------------------------------------------------------
-# TMUX
-# ------------------------------------------------------------------------------
-
-e $c_inf 'Setup TMUX'
-
-# Installing
-. $SCRIPTS_DIR/tmux.sh > $_LOG_FILE
-
-# Backup
-_resque ~/.tmux.conf
-
-# Setup
-ln -sf $DOTFILES_DIR/.tmux.conf ~/.tmux.conf
-
-e $c_suc $' ✔ Done\n'
-
-# ------------------------------------------------------------------------------
-# VIM & NeoVIM
-# ------------------------------------------------------------------------------
-
-plug_dir=~/.local/share/vim-plug
-
-if [[ ! -d $plug_dir ]]; then
-    curl -LSso $plug_dir/plug.vim --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    [ ! -d $plug_dir/plugged ] && mkdir $plug_dir/plugged
+printf '\n== link ==\n'
+LINK_ARGS=()
+[ "${DOTFILES_FORCE:-0}" = 1 ] && LINK_ARGS+=(--force)
+[ "${DOTFILES_DRY_RUN:-0}" = 1 ] && LINK_ARGS+=(--dry-run)
+if ! bash "$SCRIPTS_DIR/link.sh" ${LINK_ARGS[@]+"${LINK_ARGS[@]}"}; then
+  FAILED+=(link)
 fi
 
-if _has_pkg 'vim'; then
-    e $c_inf 'Setup VIM'
-
-    # Setup
-    mkdir -p ~/.cache/vim/{swap,undo}
-
-    [ -d ~/.vim ] || mkdir -p ~/.vim/autoload
-    ln -sf $DOTFILES_DIR/.vimrc ~/.vimrc
-    ln -sf $plug_dir/plug.vim ~/.vim/autoload/plug.vim
-
-    e $c_suc $' ✔ Done\n'
+printf '\n== summary ==\n'
+nfail=${#FAILED[@]}
+printf 'tools: %d ok, %d failed\n' "$ok_count" "$nfail"
+if [ "$nfail" -gt 0 ]; then
+  printf 'failed: %s\n' "${FAILED[*]}"
+  [ -d "$BACKUP_DIR" ] && printf 'backups: %s\n' "$BACKUP_DIR"
+  exit 1
 fi
-
-if _has_pkg 'nvim'; then
-    e $c_inf 'Setup NeoVIM'
-
-    # Setup
-    for vim_dir in {swap,undo,backup}; do
-        [ -d ~/.cache/nvim/$vim_dir ] || mkdir -p ~/.cache/nvim/$vim_dir
-    done
-    unset vim_dir
-
-    [ -d ~/.config/nvim ] || mkdir -p ~/.config/nvim/autoload
-    ln -sf $DOTFILES_DIR/.vimrc ~/.config/nvim/init.vim
-    ln -sf $plug_dir/plug.vim ~/.config/nvim/autoload/plug.vim
-
-    # sudo update-alternatives --install /usr/bin/editor editor $vim_bin 60 > $_LOG_FILE
-
-    e $c_suc $' ✔ Done\n'
-fi
-
-# Clean up
-unset plug_dir
-
-# ------------------------------------------------------------------------------
-# DONE
-# ------------------------------------------------------------------------------
-
-# Reload shell
-cd $DOTFILES_DIR
-
-e $c_suc $'\nEverything is done ✔\n'
-e $c_rst 'Your old files are backed up in '
-e $c_inf "=> $BACKUP_DIR"$'\n'
-
-e $c_rst 'Thank you'
-[[ ! -z $git_name ]] && e $c_inf ' $git_name'
-[[ ! -z $git_email ]] && e $c_inf ' <$git_email>'
-echo $'\n'
+e "$c_suc" 'Everything is done ✔'
+printf '\n'
