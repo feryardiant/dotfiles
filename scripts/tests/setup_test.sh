@@ -17,19 +17,24 @@ bash -n "$ROOT/scripts/setup.d/system.sh"    && ck "bash -n system" 0 0 || ck "b
 bash -n "$ROOT/scripts/setup.d/oh-my-zsh.sh" && ck "bash -n omz" 0 0 || ck "bash -n omz" 0 1
 
 # system: seed dirs + .env, idempotent merge, user keys preserved
-HOME="$FIX/h" DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
+# (fixture repo holds .env.sample/.env so the real $DOTFILES_DIR/.env is never touched)
+mkdir -p "$FIX/repo"
+cp "$ROOT/.env.sample" "$FIX/repo/.env.sample"
+HOME="$FIX/h" DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
 ck "system: XDG dir" "1" "$([ -d "$FIX/h/.local/state" ] && echo 1)"
-ck "system: env seeded" "1" "$(grep -c "export DOTFILES_DIR='$ROOT'" "$FIX/h/.env")"
-echo "MY_KEY=preserved" >> "$FIX/h/.env"
-before=$(md5 -q "$FIX/h/.env" 2>/dev/null || md5sum "$FIX/h/.env" | cut -d' ' -f1)
-HOME="$FIX/h" DOTFILES_DIR="$ROOT" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
-after=$(md5 -q "$FIX/h/.env" 2>/dev/null || md5sum "$FIX/h/.env" | cut -d' ' -f1)
+ck "system: env seeded" "1" "$(grep -c "export DOTFILES_DIR='$FIX/repo'" "$FIX/repo/.env")"
+echo "MY_KEY=preserved" >> "$FIX/repo/.env"
+before=$(md5 -q "$FIX/repo/.env" 2>/dev/null || md5sum "$FIX/repo/.env" | cut -d' ' -f1)
+HOME="$FIX/h" DOTFILES_DIR="$FIX/repo" bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
+after=$(md5 -q "$FIX/repo/.env" 2>/dev/null || md5sum "$FIX/repo/.env" | cut -d' ' -f1)
 ck "system: env merge idempotent" "$before" "$after"
-ck "system: user key survives" "1" "$(grep -c 'MY_KEY=preserved' "$FIX/h/.env")"
+ck "system: user key survives" "1" "$(grep -c 'MY_KEY=preserved' "$FIX/repo/.env")"
 
 # system dry-run: nothing created
-HOME="$FIX/h2" DOTFILES_DIR="$ROOT" DOTFILES_DRY_RUN=1 bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
-ck "system dry-run: no env" "0" "$([ -f "$FIX/h2/.env" ] && echo 1 || echo 0)"
+mkdir -p "$FIX/repo2"
+cp "$ROOT/.env.sample" "$FIX/repo2/.env.sample"
+HOME="$FIX/h2" DOTFILES_DIR="$FIX/repo2" DOTFILES_DRY_RUN=1 bash "$ROOT/scripts/setup.d/system.sh" >/dev/null
+ck "system dry-run: no env" "0" "$([ -f "$FIX/repo2/.env" ] && echo 1 || echo 0)"
 
 # oh-my-zsh: stub git (no network); ZSH= so the host's exported ZSH can't short-circuit
 mkdir -p "$FIX/bin"

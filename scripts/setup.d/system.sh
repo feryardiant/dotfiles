@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Machine base: XDG dirs + ~/.env seed/merge (spec §8).
+# Machine base: XDG dirs + $DOTFILES_DIR/.env seed/merge (the .env that config/profile sources).
 
 set -euo pipefail
 
@@ -8,16 +8,18 @@ SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)   # scripts/ — ch
 : "${DOTFILES_DIR:?DOTFILES_DIR must be set}"
 path_setup
 
-[ "${DOTFILES_DRY_RUN:-0}" = 1 ] && { echo "would run: system setup (dirs + ~/.env)"; exit 0; }
+[ "${DOTFILES_DRY_RUN:-0}" = 1 ] && { echo "would run: system setup (dirs + $DOTFILES_DIR/.env)"; exit 0; }
 
 msg_begin system
 mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/bin" "$HOME/.local/share" "$HOME/.local/state"
 
-# ~/.env: seed from sample; merge never duplicates and never drops user keys.
-if [ ! -f "$HOME/.env" ]; then
+# $DOTFILES_DIR/.env: seed from sample; merge never duplicates and never drops user keys.
+env_file="$DOTFILES_DIR/.env"
+
+if [ ! -f "$env_file" ]; then
   sed "s@export DOTFILES_DIR=''@export DOTFILES_DIR='$DOTFILES_DIR'@g" \
-    "$DOTFILES_DIR/.env.sample" > "$HOME/.env"
-  echo "  created ~/.env from .env.sample" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
+    "$DOTFILES_DIR/.env.sample" > "$env_file"
+  echo "  created $env_file from .env.sample" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
 else
   # append any sample line not already present
   while IFS= read -r line; do
@@ -28,18 +30,18 @@ else
     esac
 
     key="${line%%=*}"
-    grep -qF "$key" "$HOME/.env" || printf '%s\n' "$line" >> "$HOME/.env"
+    grep -qF "$key" "$env_file" || printf '%s\n' "$line" >> "$env_file"
   done < "$DOTFILES_DIR/.env.sample"
 
   # refresh the DOTFILES_DIR export
-  if grep -q "^export DOTFILES_DIR=" "$HOME/.env"; then
-    sed -i.bak "s@^export DOTFILES_DIR=.*@export DOTFILES_DIR='$DOTFILES_DIR'@g" "$HOME/.env"
-    rm -f "$HOME/.env.bak"
+  if grep -q "^export DOTFILES_DIR=" "$env_file"; then
+    sed -i.bak "s@^export DOTFILES_DIR=.*@export DOTFILES_DIR='$DOTFILES_DIR'@g" "$env_file"
+    rm -f "$env_file.bak"
   else
-    printf "export DOTFILES_DIR='%s'\n" "$DOTFILES_DIR" >> "$HOME/.env"
+    printf "export DOTFILES_DIR='%s'\n" "$DOTFILES_DIR" >> "$env_file"
   fi
 
-  echo "  ~/.env merged (existing keys preserved)" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
+  echo "  $env_file merged (existing keys preserved)" >>"${DOTFILES_SETUP_LOG:-/dev/null}"
 fi
 
 msg_end "done"
