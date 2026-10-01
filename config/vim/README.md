@@ -1,4 +1,5 @@
 ---
+when: vim
 maps:
   ~/.vimrc: vimrc
 ---
