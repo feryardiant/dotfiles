@@ -39,3 +39,6 @@ jobs:
 
       - name: Install tests
         run: bash scripts/tests/install_test.sh
+
+      - name: Init tests
+        run: bash scripts/tests/init_test.sh
