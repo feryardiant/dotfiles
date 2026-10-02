@@ -13,7 +13,7 @@ Directories first, then files, alphabetical.
 | `logs/` | Raw installer output — one `setup-{tool}.txt` per tool, fresh each run |
 | `setup.d/` | One bootstrapper per tool: `system`, `oh-my-zsh`, `vim`, `nvim`, `tmux`, `fzf`, `zoxide`, `eza`, `starship`, `lazygit`, `mise`. Present-check + dry-run guard, then `brew` on macOS / `apt_install` on Linux |
 | `tests/` | Self-contained test suites — see [Tests](#tests) |
-| `init.sh` | Unified first-boot bootstrap (locale, timezone, upgrade, packages, sudo user, sshd, vim) — cloud-init user-data or `curl … \| bash`; `--profile lxc\|vps`, `--dry-run` |
+| `init.sh` | Unified first-boot bootstrap (locale, timezone, upgrade, packages, sudo user, sshd, vim) — cloud-init user-data or `wget -O - ... \| bash`; `--locale <locale>`, `--profile lxc\|vps`, `--dry-run` |
 | `lib.sh` | Shared library sourced by `install.sh`, `link.sh`, and every `setup.d/` script: `when:`/`maps:` frontmatter parser, `is_macos`/`is_linux`, `link_apply`, `brew_install`/`apt_install`/`ppa_install` |
 | `link.sh` | Standalone applier of every `maps:` entry (os/`when:` gated) — what `--link-only` runs |
 | `phases.sh` | Phase membership and order; each name maps to `setup.d/<name>.sh` |
@@ -45,9 +45,9 @@ One self-contained script (no repo checkout needed) for fresh Ubuntu hosts —
 runs as cloud-init user-data or piped:
 
 ```bash
-sudo ./scripts/init.sh [--profile lxc|vps] [--dry-run]
-curl -fsSL https://raw.githubusercontent.com/feryardiant/dotfiles/main/scripts/init.sh | sudo bash
-curl -fsSL https://raw.githubusercontent.com/feryardiant/dotfiles/main/scripts/init.sh | bash -s -- --profile vps
+sudo ./scripts/init.sh [--profile lxc|vps] [--locale <locale>] [--dry-run]
+wget -O - https://raw.githubusercontent.com/feryardiant/dotfiles/refs/heads/main/scripts/init.sh | sudo bash
+wget -O - https://raw.githubusercontent.com/feryardiant/dotfiles/refs/heads/main/scripts/init.sh | bash -s -- --profile vps
 ```
 
 Profiles: `lxc` (container, lean package set, creates `admin` when no login user

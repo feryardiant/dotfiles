@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # Unified first-boot bootstrap for Ubuntu - one file
-# Usage: init.sh [--profile lxc|vps] [--dry-run] [-h|--help]
+# Usage: init.sh [--profile lxc|vps] [--locale <locale>] [--dry-run] [-h|--help]
 #
 #   --profile <p>   bootstrap profile: lxc or vps (default: auto-detect)
+#   --locale <l>    bootstrap locale (default: en_US.UTF-8)
 #   --dry-run       print every step; never calls sudo, never changes anything
 #   -h, --help      show this help
 #
-# Environment: PROFILE, DRY_RUN=1  (for cloud-init runcmd wrappers)
+# Environment: LOCALE, PROFILE, DRY_RUN=1  (for cloud-init runcmd wrappers)
 #
 # Examples:
-#   sudo ./scripts/init.sh [--profile lxc|vps] [--dry-run]
+#   sudo ./scripts/init.sh [--profile lxc|vps] [--locale <locale>] [--dry-run]
 #   curl -fsSL <raw>/scripts/init.sh | sudo bash
 #   curl -fsSL <raw>/scripts/init.sh | bash -s -- --profile vps
 #   cloud-init user-data: paste this file as-is (it runs as root)
@@ -18,24 +19,47 @@ set -euo pipefail
 
 usage() {
   cat <<'USAGE'
-Usage: init.sh [--profile lxc|vps] [--dry-run] [-h|--help]
+Usage: init.sh [--profile lxc|vps] [--locale <locale>] [--dry-run] [-h|--help]
 
   --profile <p>   bootstrap profile: lxc or vps (default: auto-detect)
+  --locale <l>    bootstrap locale (default: en_US.UTF-8)
   --dry-run       print every step; never calls sudo, never changes anything
   -h, --help      show this help
 
-Environment: PROFILE, DRY_RUN=1  (for cloud-init runcmd wrappers)
+Environment: LOCALE, PROFILE, DRY_RUN=1  (for cloud-init runcmd wrappers)
 USAGE
 }
 
-LANG="${LANG:-en_US.UTF-8}"
-LC_ALL="${LC_ALL:-en_US.UTF-8}"
+LOCALE="${LOCALE:-en_US.UTF-8}"
 PROFILE="${PROFILE:-}"
 DRY_RUN="${DRY_RUN:-0}"
 OS_RELEASE="${OS_RELEASE:-/etc/os-release}"
 
 while [ $# -gt 0 ]; do
   case "$1" in
+    --locale)
+      if [ $# -lt 2 ]; then
+        echo 'init.sh: --locale requires a value' >&2
+        usage >&2
+        exit 2
+      fi
+      LOCALE=$2
+      if [ -z "$LOCALE" ]; then
+        echo 'init.sh: --locale requires a value' >&2
+        usage >&2
+        exit 2
+      fi
+      shift 2
+      ;;
+    --locale=*)
+      LOCALE=${1#--locale=}
+      if [ -z "$LOCALE" ]; then
+        echo 'init.sh: --locale requires a value' >&2
+        usage >&2
+        exit 2
+      fi
+      shift
+      ;;
     --profile)
       if [ $# -lt 2 ]; then
         echo 'init.sh: --profile requires a value' >&2
@@ -90,7 +114,14 @@ case "$PROFILE" in
     exit 2
     ;;
 esac
-export LANG LC_ALL PROFILE DRY_RUN
+case "$LOCALE" in
+  ''|-*|*[!A-Za-z@_+.0-9-]*)
+    echo "init.sh: invalid locale: $LOCALE (want e.g. en_US.UTF-8)" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
+export LOCALE PROFILE DRY_RUN
 
 # Ubuntu-only: every step below (locale-gen, the git PPA) assumes an Ubuntu release
 if [ "$DRY_RUN" != 1 ] && ! grep -qsE '^ID="?ubuntu"?$' "$OS_RELEASE"; then
@@ -241,8 +272,11 @@ VIMRC
 }
 
 msg_begin CONF 'locale settings'
-run locale-gen "$LANG"
-run update-locale "LC_ALL=$LC_ALL" "LANG=$LANG"
+run locale-gen "$LOCALE"
+if [ "$DRY_RUN" != 1 ]; then
+  export LANG="$LOCALE" LC_ALL="$LOCALE" 2>/dev/null
+fi
+run update-locale "LC_ALL=$LOCALE" "LANG=$LOCALE"
 run dpkg-reconfigure --frontend noninteractive locales
 msg_end done
 
@@ -385,7 +419,7 @@ else
     echo 'root required — run via sudo or "curl … | sudo bash"' >&2
     exit 1
   fi
-  sudo env "LANG=$LANG" "LC_ALL=$LC_ALL" "PROFILE=$PROFILE" "DRY_RUN=$DRY_RUN" bash -c "$FLOW"
+  sudo env "LOCALE=$LOCALE" "PROFILE=$PROFILE" "DRY_RUN=$DRY_RUN" bash -c "$FLOW"
 fi
 
 if [ "$DRY_RUN" = 1 ]; then
