@@ -20,6 +20,10 @@ x usage 'unknown flag exits 2' 2 "$INIT" --bogus
 err=$("$INIT" --bogus 2>&1 >/dev/null)
 t usage 'unknown flag explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown option')"
 
+t usage '`--help` documents the `--locale` flag' "1" "$("$INIT" --help 2>&1 | grep -c -- '--locale <locale>')"
+t usage '`--help` documents the `LOCALE` env' "1" "$("$INIT" --help 2>&1 | grep -c 'Environment:.*LOCALE')"
+t usage 'file header documents `--locale`' "1" "$(sed -n '1,16p' "$INIT" | grep -c '^# Usage: init\.sh.*--locale')"
+
 # piped door: the script arrives on stdin ($0 = `bash`), usage must not read $0
 out=$(cat "$INIT" | bash -s -- --help 2>&1); rc=$?
 t usage 'piped `--help` exits 0' "0" "$rc"
@@ -88,6 +92,19 @@ t profile 'empty `--profile=` explains on stderr' "1" "$(printf '%s' "$err" | gr
 x profile 'unknown profile value exits 2' 2 env DRY_RUN=1 bash "$INIT" --profile windows
 err=$(DRY_RUN=1 bash "$INIT" --profile windows 2>&1 >/dev/null)
 t profile 'unknown profile value explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown profile')"
+
+# --- locale resolution: flag > env; the chosen value must reach locale-gen ---
+x locale '`--locale` accepts a value' 0 env DRY_RUN=1 bash "$INIT" --locale id_ID.UTF-8
+x locale '`--locale=` equals form is accepted' 0 env DRY_RUN=1 bash "$INIT" --locale=de_DE.UTF-8
+x locale 'missing `--locale` value exits 2' 2 env DRY_RUN=1 bash "$INIT" --locale
+x locale 'empty `--locale=` exits 2' 2 env DRY_RUN=1 bash "$INIT" --locale=
+err=$(DRY_RUN=1 bash "$INIT" --locale 2>&1 >/dev/null)
+t locale 'missing `--locale` value explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'requires a value')"
+
+x locale 'value starting with `-` exits 2' 2 env DRY_RUN=1 bash "$INIT" --locale --dry-run
+x locale 'value outside the locale charset exits 2' 2 env DRY_RUN=1 bash "$INIT" --locale ../etc
+err=$(DRY_RUN=1 bash "$INIT" --locale --dry-run 2>&1 >/dev/null)
+t locale 'invalid locale explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'invalid locale')"
 
 # --- distro guard: non-Ubuntu fails before the banner; dry run previews anywhere ---
 printf 'ID=debian\n' > "$FIX/os-debian"
@@ -314,6 +331,60 @@ STUB
   t keys 'keyless target: step completes' "1" "$(printf '%s' "$out" | grep -Fc 'default user... done')"
   t keys 'keyless target: plain key lands' "1" "$(grep -c '^ssh-ed25519 cloud-instance-key$' "$FIX/rk2/h/.ssh/authorized_keys" 2>/dev/null || true)"
   t keys 'keyless target: command wrapper stripped' "0" "$(grep -c 'command=' "$FIX/rk2/h/.ssh/authorized_keys" 2>/dev/null || true)"
+
+  # --- --locale: the chosen value must reach locale-gen (flag and env forms) ---
+  mkdir -p "$FIX/lc/h"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/lc/awk"
+  printf '#!/bin/sh\necho "admin:x:1001:1001::%s:/bin/bash"\n' "$FIX/lc/h" > "$FIX/lc/getent"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/lc/adduser"
+  printf '#!/bin/sh\ncat > /dev/null\n' > "$FIX/lc/chpasswd"
+  printf '#!/bin/sh\nprintf %%s "LCMockPW+abc123xyz"\n' > "$FIX/lc/openssl"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" > "%s/locale-gen.args"\n' "$FIX/lc" > "$FIX/lc/locale-gen"
+  for c in update-locale dpkg-reconfigure ln apt-get timedatectl usermod sh chown chmod \
+    add-apt-repository sed update-alternatives systemctl; do
+    printf '#!/bin/sh\nexit 0\n' > "$FIX/lc/$c"
+  done
+  cat > "$FIX/lc/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec "$@"
+STUB
+  chmod +x "$FIX/lc/"*
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/lc/h" \
+    PATH="$FIX/lc:$PATH" bash "$INIT" --locale id_ID.UTF-8 2>&1)
+  t locale 'flag: locale step completes' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... done')"
+  t locale 'flag: locale-gen receives the flag value' "1" "$(grep -cFx 'id_ID.UTF-8' "$FIX/lc/locale-gen.args" 2>/dev/null || true)"
+  t locale 'flag: run reaches sshd hardening' "1" "$(printf '%s' "$out" | grep -Fc 'sshd hardening... done')"
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/lc/h" \
+    LOCALE=fr_FR.UTF-8 PATH="$FIX/lc:$PATH" bash "$INIT" 2>&1)
+  t locale 'env: `LOCALE` env reaches locale-gen' "1" "$(grep -cFx 'fr_FR.UTF-8' "$FIX/lc/locale-gen.args" 2>/dev/null || true)"
+
+  # --- sudo env_reset: everything FLOW reads must be passed explicitly ---
+  cp -R "$FIX/lc" "$FIX/se"
+  printf '#!/bin/sh\nprintf "%%s\\n" "$*" > "%s/locale-gen.args"\n' "$FIX/se" > "$FIX/se/locale-gen"
+  rm -f "$FIX/se/locale-gen.args"
+  cat > "$FIX/se/sudo" <<'STUB'
+#!/usr/bin/env bash
+case "$1" in -k|-v) exit 0 ;; esac
+exec env -i PATH="$PATH" HOME="$HOME" "$@"
+STUB
+  chmod +x "$FIX/se/sudo"
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/se/h" \
+    PATH="$FIX/se:$PATH" bash "$INIT" 2>&1)
+  t senv 'sudo path: locale step completes' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... done')"
+  t senv 'sudo path: locale-gen receives LOCALE' "1" "$(grep -cFx 'en_US.UTF-8' "$FIX/se/locale-gen.args" 2>/dev/null || true)"
+  t senv 'sudo path: run reaches sshd hardening' "1" "$(printf '%s' "$out" | grep -Fc 'sshd hardening... done')"
+
+  # --- root path: FLOW children must run under the chosen locale, not ambient ---
+  mkdir -p "$FIX/rt"
+  printf '#!/bin/sh\necho 0\n' > "$FIX/rt/id"
+  printf '#!/bin/sh\nprintf "%%s\\n" "${LANG:-UNSET}" > "%s/lang.txt"\n' "$FIX/rt" > "$FIX/rt/locale-gen"
+  for c in update-locale dpkg-reconfigure; do printf '#!/bin/sh\nexit 0\n' > "$FIX/rt/$c"; done
+  chmod +x "$FIX/rt/"*
+  out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" LANG=POSIX HOME="$FIX/h" \
+    PATH="$FIX/rt:$PATH" bash "$INIT" --locale id_ID.UTF-8 2>&1)
+  t renv 'root path: children run under the chosen locale' "1" "$(grep -cFx 'id_ID.UTF-8' "$FIX/rt/lang.txt" 2>/dev/null || true)"
+  t renv 'root path: locale step completes' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... done')"
 
 fi
 
