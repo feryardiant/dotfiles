@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/mimo-v2.6-flash-free",
+  "model": "opencode/nemotron-3.5-lightning-free",
   "instructions": [
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
@@ -26,7 +26,7 @@
     },
     "context-mode": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["context-mode"],
     },
     "dbx": {
@@ -57,10 +57,11 @@
       "*": "allow"
     },
   },
-  "plugin": [
+  "plugins": [
     // "context-mode@git+https://github.com/mksglu/context-mode.git",
     // "ponytail@git+https://github.com/DietrichGebert/ponytail.git",
-    "superpowers@git+https://github.com/obra/superpowers.git",
+    // "superpowers@git+https://github.com/obra/superpowers.git",
+    "~/.local/share/obra-superpowers",
   ],
   "provider": {}
 }
