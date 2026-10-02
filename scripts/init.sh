@@ -121,7 +121,7 @@ case "$LOCALE" in
     exit 2
     ;;
 esac
-export LANG="$LOCALE" LC_ALL="$LOCALE" LOCALE PROFILE DRY_RUN
+export LOCALE PROFILE DRY_RUN
 
 # Ubuntu-only: every step below (locale-gen, the git PPA) assumes an Ubuntu release
 if [ "$DRY_RUN" != 1 ] && ! grep -qsE '^ID="?ubuntu"?$' "$OS_RELEASE"; then
@@ -273,6 +273,9 @@ VIMRC
 
 msg_begin CONF 'locale settings'
 run locale-gen "$LOCALE"
+if [ "$DRY_RUN" != 1 ]; then
+  export LANG="$LOCALE" LC_ALL="$LOCALE" 2>/dev/null
+fi
 run update-locale "LC_ALL=$LOCALE" "LANG=$LOCALE"
 run dpkg-reconfigure --frontend noninteractive locales
 msg_end done
@@ -416,7 +419,7 @@ else
     echo 'root required — run via sudo or "curl … | sudo bash"' >&2
     exit 1
   fi
-  sudo env "LOCALE=$LOCALE" "LANG=$LOCALE" "LC_ALL=$LOCALE" "PROFILE=$PROFILE" "DRY_RUN=$DRY_RUN" bash -c "$FLOW"
+  sudo env "LOCALE=$LOCALE" "PROFILE=$PROFILE" "DRY_RUN=$DRY_RUN" bash -c "$FLOW"
 fi
 
 if [ "$DRY_RUN" = 1 ]; then

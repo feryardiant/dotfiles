@@ -63,6 +63,10 @@ t dry-run '`--dry-run` prints every step in order' "$want" "$steps"
 t dry-run '`--dry-run` hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
 t dry-run '`--dry-run` never previews a generated password' "0" "$(printf '%s' "$out" | grep -c 'initial password')"
 
+# the chosen locale may not exist on the previewing host yet — never force it early
+out=$(DRY_RUN=1 bash "$INIT" --locale zz_ZZ.UTF-8 2>&1)
+t warn '`--dry-run` prints no setlocale warnings for a missing locale' "0" "$(printf '%s' "$out" | grep -c 'warning: setlocale')"
+
 # --- profile resolution (flag > env > detect) ---
 mkdir -p "$FIX/vt"
 printf '#!/bin/sh\nexit 0\n' > "$FIX/vt/systemd-detect-virt"; chmod +x "$FIX/vt/systemd-detect-virt"
@@ -363,10 +367,11 @@ STUB
   cp -R "$FIX/lc" "$FIX/se"
   printf '#!/bin/sh\nprintf "%%s\\n" "$*" > "%s/locale-gen.args"\n' "$FIX/se" > "$FIX/se/locale-gen"
   rm -f "$FIX/se/locale-gen.args"
-  cat > "$FIX/se/sudo" <<'STUB'
+  cat > "$FIX/se/sudo" <<STUB
 #!/usr/bin/env bash
-case "$1" in -k|-v) exit 0 ;; esac
-exec env -i PATH="$PATH" HOME="$HOME" "$@"
+case "\$1" in -k|-v) exit 0 ;; esac
+printf '%s\n' "\$*" >> "$FIX/se/sudo.argv"
+exec env -i PATH="\$PATH" HOME="\$HOME" "\$@"
 STUB
   chmod +x "$FIX/se/sudo"
   out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" HOME="$FIX/se/h" \
@@ -374,17 +379,21 @@ STUB
   t senv 'sudo path: locale step completes' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... done')"
   t senv 'sudo path: locale-gen receives LOCALE' "1" "$(grep -cFx 'en_US.UTF-8' "$FIX/se/locale-gen.args" 2>/dev/null || true)"
   t senv 'sudo path: run reaches sshd hardening' "1" "$(printf '%s' "$out" | grep -Fc 'sshd hardening... done')"
+  t senv 'spawn env carries no LANG/LC_ALL (set only after locale-gen)' "0" "$(grep -cE '(LC_ALL|LANG)=[^$"]' "$FIX/se/sudo.argv" 2>/dev/null || true)"
 
-  # --- root path: FLOW children must run under the chosen locale, not ambient ---
+  # --- root path: no locale forcing before locale-gen; chosen locale right after ---
   mkdir -p "$FIX/rt"
   printf '#!/bin/sh\necho 0\n' > "$FIX/rt/id"
-  printf '#!/bin/sh\nprintf "%%s\\n" "${LANG:-UNSET}" > "%s/lang.txt"\n' "$FIX/rt" > "$FIX/rt/locale-gen"
-  for c in update-locale dpkg-reconfigure; do printf '#!/bin/sh\nexit 0\n' > "$FIX/rt/$c"; done
+  printf '#!/bin/sh\nprintf "%%s\\n" "${LANG:-UNSET}" > "%s/lang.gen.txt"\n' "$FIX/rt" > "$FIX/rt/locale-gen"
+  printf '#!/bin/sh\nprintf "%%s\\n" "${LANG:-UNSET}" > "%s/lang.upd.txt"\n' "$FIX/rt" > "$FIX/rt/update-locale"
+  printf '#!/bin/sh\nexit 0\n' > "$FIX/rt/dpkg-reconfigure"
   chmod +x "$FIX/rt/"*
   out=$(DRY_RUN=0 OS_RELEASE="$FIX/os-release-ubuntu" LANG=POSIX HOME="$FIX/h" \
-    PATH="$FIX/rt:$PATH" bash "$INIT" --locale id_ID.UTF-8 2>&1)
-  t renv 'root path: children run under the chosen locale' "1" "$(grep -cFx 'id_ID.UTF-8' "$FIX/rt/lang.txt" 2>/dev/null || true)"
+    PATH="$FIX/rt:$PATH" bash "$INIT" --locale zz_ZZ.UTF-8 2>&1)
+  t renv 'step 1 still runs under the ambient locale' "1" "$(grep -cFx 'POSIX' "$FIX/rt/lang.gen.txt" 2>/dev/null || true)"
+  t renv 'chosen locale is in effect by update-locale' "1" "$(grep -cFx 'zz_ZZ.UTF-8' "$FIX/rt/lang.upd.txt" 2>/dev/null || true)"
   t renv 'root path: locale step completes' "1" "$(printf '%s' "$out" | grep -Fc 'locale settings... done')"
+  t warn 'root path: no setlocale warnings on a locale-less host' "0" "$(printf '%s' "$out" | grep -c 'warning: setlocale')"
 
 fi
 
