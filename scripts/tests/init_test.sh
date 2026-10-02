@@ -13,32 +13,32 @@ if [ -x /bin/bash ]; then
 fi
 
 out=$("$INIT" --help 2>&1); rc=$?
-t init 'usage: `--help` exits 0' "0" "$rc"
-t init 'usage: `--help` prints the usage line' "1" "$(printf '%s' "$out" | grep -c '^Usage:')"
+t usage '`--help` exits 0' "0" "$rc"
+t usage '`--help` prints the usage line' "1" "$(printf '%s' "$out" | grep -c '^Usage:')"
 
-x init 'usage: unknown flag exits 2' 2 "$INIT" --bogus
+x usage 'unknown flag exits 2' 2 "$INIT" --bogus
 err=$("$INIT" --bogus 2>&1 >/dev/null)
-t init 'usage: unknown flag explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown option')"
+t usage 'unknown flag explains on stderr' "1" "$(printf '%s' "$err" | grep -c 'unknown option')"
 
 # piped door: the script arrives on stdin ($0 = `bash`), usage must not read $0
 out=$(cat "$INIT" | bash -s -- --help 2>&1); rc=$?
-t init 'usage: piped `--help` exits 0' "0" "$rc"
-t init 'usage: piped `--help` prints the usage line' "1" "$(printf '%s' "$out" | grep -c '^Usage:')"
+t usage 'piped `--help` exits 0' "0" "$rc"
+t usage 'piped `--help` prints the usage line' "1" "$(printf '%s' "$out" | grep -c '^Usage:')"
 cat "$INIT" | bash -s -- --bogus >/dev/null 2>&1; rc=$?
-t init 'usage: piped unknown flag exits 2' "2" "$rc"
+t usage 'piped unknown flag exits 2' "2" "$rc"
 
 # DRY_RUN=1 keeps this banner check harmless (the script executes for real otherwise)
 out=$(DRY_RUN=1 bash "$INIT" 2>&1); rc=$?
-t init 'banner: dry run starts with the initializing banner' "1" "$(printf '%s' "$out" | grep -c '^Initializing\.\.\.$')"
+t banner 'dry run starts with the initializing banner' "1" "$(printf '%s' "$out" | grep -c '^Initializing\.\.\.$')"
 
 # --- step protocol + dry-run flow ---
-x init 'dry-run: exits 0' 0 env DRY_RUN=1 bash "$INIT"
+x dry-run '`--dry-run` exits 0' 0 env DRY_RUN=1 bash "$INIT"
 out=$(DRY_RUN=1 bash "$INIT" 2>&1)
 steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  //')
 want=$'[CONF] locale settings... done\n[CONF] timezone... done\n[UPDT] repositories... done\n[UPDT] system packages... done'
-t init 'dry-run: prints the upgrade steps in order' "$want" "$(printf '%s\n' "$steps" | head -4)"
-t init 'dry-run: closes with `All done`' "1" "$(printf '%s' "$out" | grep -c '^All done$')"
-t init 'dry-run: prints the no-changes hint' "1" "$(printf '%s' "$out" | grep -c 'dry-run: no changes were made')"
+t dry-run '`--dry-run` prints the upgrade steps in order' "$want" "$(printf '%s\n' "$steps" | head -4)"
+t dry-run '`--dry-run` closes with `All done`' "1" "$(printf '%s' "$out" | grep -c '^All done$')"
+t dry-run '`--dry-run` prints the no-changes hint' "1" "$(printf '%s' "$out" | grep -c 'dry-run: no changes were made')"
 
 # tripwire: sudo must never be reachable from a dry run
 mkdir -p "$FIX/tw"
@@ -49,15 +49,15 @@ exit 99
 STUB
 chmod +x "$FIX/tw/sudo"
 INIT_TW="$FIX/tw.called" DRY_RUN=1 PATH="$FIX/tw:$PATH" bash "$INIT" >/dev/null 2>&1
-t init 'dry-run: never invokes sudo' "0" "$([ -f "$FIX/tw.called" ] && echo 1 || echo 0)"
+t dry-run '`--dry-run` never invokes sudo' "0" "$([ -f "$FIX/tw.called" ] && echo 1 || echo 0)"
 
 # --- full protocol sequence ---
 out=$(DRY_RUN=1 PROFILE=vps bash "$INIT" 2>&1)
 steps=$(printf '%s\n' "$out" | grep -E '^  \[[A-Z]+\]' | sed -E 's/^  //')
 want=$'[CONF] locale settings... done\n[CONF] timezone... done\n[UPDT] repositories... done\n[UPDT] system packages... done\n[INST] basic tools (vps)... done\n[CONF] default user... done\n[CONF] sshd hardening... done\n[CONF] vim defaults... done\n[UPDT] cleanup... done'
-t init 'dry-run: prints every step in order' "$want" "$steps"
-t init 'dry-run: hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
-t init 'dry-run: never previews a generated password' "0" "$(printf '%s' "$out" | grep -c 'initial password')"
+t dry-run '`--dry-run` prints every step in order' "$want" "$steps"
+t dry-run '`--dry-run` hints that groups apply next login' "1" "$(printf '%s' "$out" | grep -c 'group changes apply at next login')"
+t dry-run '`--dry-run` never previews a generated password' "0" "$(printf '%s' "$out" | grep -c 'initial password')"
 
 # --- profile resolution (flag > env > detect) ---
 mkdir -p "$FIX/vt"
