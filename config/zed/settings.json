@@ -224,7 +224,7 @@
     },
     "PHP": {
       "document_symbols": "on",
-      "language_servers": ["phpantom", "!laravel", "!intelephense", "!phptools", "!phpactor", "..."]
+      "language_servers": ["intelephense", "!phpantom", "!laravel", "!phptools", "!phpactor", "..."]
     },
   },
   "lsp": {
