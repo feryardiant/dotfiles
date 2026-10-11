@@ -1,9 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "opencode/nemotron-3.5-lightning-free",
-  "instructions": [
-    "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
-  ],
   "lsp": {
     "php": {
       "command": ["phpantom_lsp", "--stdio"],

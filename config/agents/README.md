@@ -1,6 +1,9 @@
 ---
 maps:
   ~/.agents/global-instructions.md: global-instructions.md
+  ~/.config/opencode/AGENTS.md:
+    src: global-instructions.md
+    when: opencode
   ~/.config/zed/AGENTS.md:
     src: global-instructions.md
     when: zed
