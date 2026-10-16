@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/nemotron-3.5-lightning-free",
+  "model": "opencode/mimo-v2.6-flash-free",
   "lsp": {
     "php": {
       "command": ["phpantom_lsp", "--stdio"],
@@ -8,57 +8,46 @@
     }
   },
   "mcp": {
-    "chrome-devtools": {
-      "type": "local",
-      "enabled": false,
-      "command": ["chrome-devtools-mcp"],
-      "environment": {
-        "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
+    "servers": {
+      "chrome-devtools": {
+        "type": "local",
+        "disabled": false,
+        "command": ["chrome-devtools-mcp"],
+        "environment": {
+          "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
+        }
+      },
+      "context7": {
+        "type": "local",
+        "disabled": true,
+        "command": ["npx", "-y", "@upstash/context7-mcp"],
+      },
+      "context-mode": {
+        "type": "local",
+        "disabled": true,
+        "command": ["context-mode"],
+      },
+      "dbx": {
+        "type": "local",
+        "disabled": true,
+        "command": ["npx", "-y", "@dbx-app/mcp-server"]
+      },
+      "sequential-thinking": {
+        "type": "local",
+        "disabled": true,
+        "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+      },
+      "shadcn": {
+        "type": "local",
+        "disabled": true,
+        "command": ["npx", "-y", "shadcn@latest", "mcp"]
       }
     },
-    "context7": {
-      "type": "local",
-      "enabled": false,
-      "command": ["npx", "-y", "@upstash/context7-mcp"],
-    },
-    "context-mode": {
-      "type": "local",
-      "enabled": false,
-      "command": ["context-mode"],
-    },
-    "dbx": {
-      "type": "local",
-      "enabled": false,
-      "command": ["npx", "-y", "@dbx-app/mcp-server"]
-    },
-    "sequential-thinking": {
-      "type": "local",
-      "enabled": false,
-      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
-    "shadcn": {
-      "type": "local",
-      "enabled": false,
-      "command": ["npx", "-y", "shadcn@latest", "mcp"]
-    }
   },
-  "permission": {
-    "bash": "allow",
-    "context-mode_ctx_fetch_and_index": {
-      "*": "allow"
-    },
-    "context-mode_ctx_search": {
-      "*": "allow"
-    },
-    "read": {
-      "*": "allow"
-    },
-  },
+  "permissions": [],
   "plugins": [
     // "context-mode@git+https://github.com/mksglu/context-mode.git",
     // "ponytail@git+https://github.com/DietrichGebert/ponytail.git",
-    // "superpowers@git+https://github.com/obra/superpowers.git",
     "~/.local/share/obra-superpowers",
-  ],
-  "provider": {}
+  ]
 }
