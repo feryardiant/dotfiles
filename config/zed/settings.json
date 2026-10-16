@@ -415,6 +415,9 @@
       ]
     }
   ],
+  "search": {
+    "case_sensitive": true
+  },
   "theme": {
     "mode": "system",
     "light": "Ayu Light",
