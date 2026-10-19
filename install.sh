@@ -6,13 +6,16 @@
 
 set -euo pipefail
 
-DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source-path=SCRIPTDIR
+DOTFILES_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd); export DOTFILES_DIR
 SCRIPTS_DIR=${DOTFILES_SCRIPTS_DIR:-$DOTFILES_DIR/scripts}
-export DOTFILES_DIR
+
+# shellcheck source=scripts/lib.sh
 . "$SCRIPTS_DIR/lib.sh"
+# shellcheck source=scripts/phases.sh
 . "${DOTFILES_PHASES_FILE:-$SCRIPTS_DIR/phases.sh}"
 path_setup
-export BACKUP_DIR="$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)"
+BACKUP_DIR="$DOTFILES_DIR/dotfiles.old/$(date +%Y-%m-%d_%H-%M-%S)"; export BACKUP_DIR
 LOGS_DIR="${LOGS_DIR:-$DOTFILES_DIR/scripts/logs}"; export LOGS_DIR
 mkdir -p "$LOGS_DIR"
 
