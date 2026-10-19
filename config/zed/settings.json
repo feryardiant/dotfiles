@@ -188,6 +188,11 @@
     }
   },
   "edit_predictions": {
+    "provider": "open_ai_compatible_api",
+    "open_ai_compatible_api": {
+      "model": "kr/claude-sonnet-4.5",
+      "api_url": "http://10.10.0.100:20128/v1"
+    },
     "mode": "subtle"
   },
   "base_keymap": "VSCode",
