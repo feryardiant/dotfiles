@@ -44,6 +44,17 @@
       }
     },
   },
+  "providers": {
+    "9router": {
+      "name": "9Router",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "http://10.10.0.100:20128/v1"
+      },
+      "models": {
+      }
+    }
+  },
   "permissions": [],
   "plugins": [
     // "context-mode@git+https://github.com/mksglu/context-mode.git",
