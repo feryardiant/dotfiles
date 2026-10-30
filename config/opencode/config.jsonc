@@ -1,12 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "opencode/mimo-v2.6-flash-free",
-  "lsp": {
-    "php": {
-      "command": ["phpantom_lsp", "--stdio"],
-      "extensions": [".php"]
-    }
-  },
   "mcp": {
     "servers": {
       "chrome-devtools": {
@@ -20,7 +14,7 @@
       "context7": {
         "type": "local",
         "disabled": true,
-        "command": ["npx", "-y", "@upstash/context7-mcp"],
+        "command": ["context7-mcp"],
       },
       "context-mode": {
         "type": "local",
