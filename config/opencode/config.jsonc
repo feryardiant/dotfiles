@@ -52,7 +52,7 @@
   "permissions": [],
   "plugins": [
     // "context-mode@git+https://github.com/mksglu/context-mode.git",
-    // "ponytail@git+https://github.com/DietrichGebert/ponytail.git",
-    "~/.local/share/obra-superpowers",
+    "@dietrichgebert/ponytail",
+    // "~/.local/share/obra-superpowers",
   ]
 }
