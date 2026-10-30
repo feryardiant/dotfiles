@@ -39,6 +39,13 @@
     },
   },
   "providers": {
+    "kenari": {
+      "name": "Kenari.id",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "https://kenari.id/v1"
+      },
+    },
     "9router": {
       "name": "9Router",
       "package": "@opencode/ai/providers/openai-compatible",
