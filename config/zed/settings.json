@@ -143,13 +143,13 @@
     "OpenCode": {
       "favorite_config_option_values": {
         "model": [
-          "opencode/deepseek-v4.1-flash",
+          "opencode-go/deepseek-v4.1-flash",
           "opencode/deepseek-v4.1-flash-free",
           "opencode/mimo-v2.6-flash-free",
         ]
       },
       "default_config_options": {
-        "model": "opencode/deepseek-v4.1-flash",
+        "model": "opencode-go/deepseek-v4.1-flash",
         "mode": "build",
       },
       "type": "custom",

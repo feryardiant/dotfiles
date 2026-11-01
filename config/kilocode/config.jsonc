@@ -1,6 +1,6 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "model": "opencode/deepseek-v4.1-flash",
+  "model": "opencode-go/deepseek-v4.1-flash",
   "instructions": [
     "/Users/fery/Config/dotfiles/config/agents/global-instructions.md"
   ],
