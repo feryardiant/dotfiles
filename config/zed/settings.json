@@ -144,6 +144,7 @@
       "favorite_config_option_values": {
         "model": [
           "opencode-go/deepseek-v4.1-flash",
+          "opencode-go/gpt-6-luna",
           "opencode/deepseek-v4.1-flash-free",
           "opencode/mimo-v2.6-flash-free",
         ]
