@@ -53,6 +53,30 @@
         "baseURL": "http://10.10.0.100:20128/v1"
       },
       "models": {
+        "ag/gemini-3.8-flash": {
+          "name": "ag/Gemini 3.8 flash",
+        },
+        "ag/claude-sonnet-4-6": {
+          "name": "ag/Cloude Sonnet 4.6",
+        },
+        "ag/claude-opus-4-6-thinking": {
+          "name": "ag/Cloude Opus 4.6 (thinking)",
+        },
+        "ag/gpt-oss-120b-medium": {
+          "name": "ag/GPT OSS 120b",
+        },
+        "kr/claude-sonnet-4.5": {
+          "name": "kr/Cloude Sonnet 4.5",
+        },
+        "kr/claude-sonnet-4.5-thinking": {
+          "name": "kr/Cloude Sonnet 4.5 (thinking)",
+        },
+        "kr/claude-sonnet-4.5-agentic": {
+          "name": "kr/Cloude Sonnet 4.5 (agentic)",
+        },
+        "kr/claude-sonnet-4.5-thinking-agentic": {
+          "name": "kr/Cloude Sonnet 4.5 (thinking, agentic)",
+        },
       }
     }
   },
