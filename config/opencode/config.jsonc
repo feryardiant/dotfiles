@@ -21,20 +21,10 @@
         "disabled": true,
         "command": ["context-mode"],
       },
-      "dbx": {
-        "type": "local",
-        "disabled": true,
-        "command": ["npx", "-y", "@dbx-app/mcp-server"]
-      },
-      "sequential-thinking": {
-        "type": "local",
-        "disabled": true,
-        "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
-      },
       "shadcn": {
         "type": "local",
         "disabled": true,
-        "command": ["npx", "-y", "shadcn@latest", "mcp"]
+        "command": ["shadcn", "mcp"]
       }
     },
   },

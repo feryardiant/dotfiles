@@ -162,37 +162,22 @@
     "chrome-devtools": {
       "enabled": false,
       "command": "chrome-devtools",
-      // "command": "npx",
-      // "args": ["-y", "chrome-devtools-mcp@latest"],
       "env": {
         "CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS": "1"
       }
     },
     "context7": {
       "enabled": false,
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "command": "context7-mcp",
     },
     "context-mode": {
       "enabled": true,
       "command": "context-mode",
-      // "command": "npx",
-      // "args": ["-y", "context-mode@latest"]
-    },
-    "dbx": {
-      "enabled": false,
-      "command": "npx",
-      "args": ["-y", "@dbx-app/mcp-server"]
-    },
-    "sequential-thinking": {
-      "enabled": false,
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     },
     "shadcn": {
       "enabled": false,
-      "command": "npx",
-      "args": ["-y", "shadcn@latest", "mcp"]
+      "command": "shadcn",
+      "args": ["mcp"]
     }
   },
   "cli_default_open_behavior": "new_window",
