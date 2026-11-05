@@ -218,6 +218,12 @@
   "git_panel": {
     "file_icons": true,
   },
+  "language_models": {
+    "llama.cpp": {
+      "api_url": "http://127.0.0.1:1",
+      "auto_discover": false,
+    }
+  },
   "languages": {
     "Blade": {
       "document_symbols": "on",
