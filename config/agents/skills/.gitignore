@@ -1,2 +1,4 @@
-*
+*/*
 !.gitignore
+!leaving-github-comments/*
+!receiving-code-review/*
