@@ -8,6 +8,10 @@
 - **Do NOT** use any other directory for persistent or multi-step agent artifacts (single-command throwaways as defined above excepted).
 - **Local-Only Scope**: Local-only is enforced by an ignore file: on first write, run `git check-ignore .agents` — if unprotected, create `.agents/.gitignore` containing `*` and `!.gitignore` (house pattern; the guard file is the one tracked file under `.agents/` — committing it waits for an explicit request). **Sharing is per-project and per-path**: default everything stays ignored; to share specific dirs (e.g. `specs/`, `plans/`) carve negations into the guard file (`!specs/`, `!specs/**`) — the ignore file makes sharing *possible*, an explicit commit makes it *actual*; a skill mandating commits is not by itself authorization.
 
+### Skills
+
+- Before non-trivial work, check the skills the harness lists plus any `<project>/.agents/skills/*/SKILL.md` or `~/.agents/skills/*/SKILL.md` (list the dirs, read each frontmatter `description`, not the whole file). Load only the skills that match; several may. Project dirs are usually absent.
+
 ## Git commits
 
 - **Execution Control:** Do NOT run `git commit` unless the user explicitly requests it in the current turn (e.g., "commit", "commit please").
